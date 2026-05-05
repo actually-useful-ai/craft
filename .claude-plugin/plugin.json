@@ -1,0 +1,21 @@
+{
+  "name": "craft",
+  "version": "0.1.0",
+  "description": "Workflow toolbelt for Claude Code: session lifecycle (begin/quicksave/wrap), execution (hitit/plan/fix), distribution (pushit/shipit), hygiene (janitor/harvest), validation (doublecheck/thinkagain), and research (enhance/search/foresight/context).",
+  "author": {
+    "name": "Luke Steuber",
+    "url": "https://github.com/lukeslp"
+  },
+  "homepage": "https://github.com/actually-useful-ai/craft",
+  "repository": "https://github.com/actually-useful-ai/craft",
+  "license": "MIT",
+  "keywords": [
+    "workflow",
+    "session",
+    "execution",
+    "planning",
+    "hygiene",
+    "research",
+    "claude-code"
+  ]
+}

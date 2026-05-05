@@ -1,0 +1,19 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "lukeslp-craft",
+  "description": "Workflow toolbelt: session lifecycle, execution, planning, hygiene, research utilities for Claude Code",
+  "owner": {
+    "name": "Luke Steuber",
+    "email": "luke@lukesteuber.com"
+  },
+  "plugins": [
+    {
+      "name": "craft",
+      "source": "./",
+      "description": "Workflow toolbelt for Claude Code: session start/save/end, execution, planning, hygiene, research, and project memory refresh. 16 skills, no agents.",
+      "version": "0.1.0",
+      "category": "workflow",
+      "homepage": "https://github.com/actually-useful-ai/craft"
+    }
+  ]
+}
