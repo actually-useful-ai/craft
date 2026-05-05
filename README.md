@@ -37,10 +37,10 @@ The earlier swarm approach had 21 discrete slash commands. Most users learn 5 ve
 
 ## What it doesn't do
 
-- Pitch a codebase as a product — that's [team](https://github.com/actually-useful-ai/team).
-- Code refinement at depth or 14-agent council debate — that's [elegance](https://github.com/actually-useful-ai/elegance).
-- Strip robot language from prose — that's [humanize](https://github.com/actually-useful-ai/humanize).
-- WCAG audits — that's [accessibility](https://github.com/actually-useful-ai/accessibility).
+- Pitch a codebase as a product: that's [team](https://github.com/actually-useful-ai/team).
+- Code refinement at depth or 14-agent council debate: that's [elegance](https://github.com/actually-useful-ai/elegance).
+- Strip robot language from prose: that's [humanize](https://github.com/actually-useful-ai/humanize).
+- WCAG audits: that's [accessibility](https://github.com/actually-useful-ai/accessibility).
 
 Craft does the workflow, not the specialized analysis.
 
@@ -48,7 +48,7 @@ Craft does the workflow, not the specialized analysis.
 
 Several scripts try to call out to other CLIs (codex, gemini, aider, cursor-agent) for second opinions when those are installed. If none are available, craft degrades gracefully to Claude-only.
 
-For richer multi-provider access, install `geepers-kernel` (`pip install geepers-kernel`) — `scripts/llm-query.py` will use the bundled `ProviderFactory` for unified access to 12 LLM providers.
+For richer multi-provider access, install `geepers-kernel` (`pip install geepers-kernel`): `scripts/llm-query.py` will use the bundled `ProviderFactory` for unified access to 12 LLM providers.
 
 Nothing in craft is hard-dependent on these. Skills work standalone.
 

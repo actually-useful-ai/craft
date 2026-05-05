@@ -61,12 +61,12 @@ All in `scripts/`, called from skills via `${CLAUDE_PLUGIN_ROOT}/scripts/`:
 
 All under `~/craft/`:
 
-- `reports/by-date/YYYY-MM-DD/` — discuss summaries, distill findings, reconsider analyses
-- `recommendations/by-project/<project>.md` — accumulated recommendations (append-only)
-- `status/` — session work logs
-- `snippets/` — internal harvest staging (canonical archive remains `~/SNIPPETS/`)
-- `logs/` — agent execution logs
-- `board.json` — kanban state
+- `reports/by-date/YYYY-MM-DD/`: discuss summaries, distill findings, reconsider analyses
+- `recommendations/by-project/<project>.md`: accumulated recommendations (append-only)
+- `status/`: session work logs
+- `snippets/`: internal harvest staging (canonical archive remains `~/SNIPPETS/`)
+- `logs/`: agent execution logs
+- `board.json`: kanban state
 
 Board HTML: `~/html/craft/board/index.html` (served via Caddy if configured).
 
@@ -89,17 +89,17 @@ Board HTML: `~/html/craft/board/index.html` (served via Caddy if configured).
 | Standalone Claude only | Graceful degradation; Claude-only output with a noted gap |
 
 Optional MCP servers (`.mcp.json`, not yet shipped) would expose:
-- `craft-providers` — multi-LLM via `ProviderFactory` from `~/shared/llm_providers`
-- `craft-data` — data fetching via `ClientFactory` from `~/shared/data_fetching`
+- `craft-providers`: multi-LLM via `ProviderFactory` from `~/shared/llm_providers`
+- `craft-data`: data fetching via `ClientFactory` from `~/shared/data_fetching`
 
 Both require `pip install geepers-kernel`. Not required.
 
 ## Relationship to other plugins
 
-- `team` — council-style codebase-to-pitch. Different scope; team is for product/business pitches with adversarial review. Cross-link: `/craft:discuss --debate` is lighter-weight; `/team` is the heavyweight version.
-- `elegance` — code refinement and decision council. `/craft:reconsider --validate` for routine checks; `/elegance` for deep refinement with the 14-agent council.
-- `humanize` — owns `/humanize`. Craft never bundles its own.
-- `accessibility` — owns `/accessibility`, the dedicated WCAG plugin. `craft-a11y` agent does internal a11y checks during `compose` and `reconsider`; full audits go to `/accessibility`.
+- `team`: council-style codebase-to-pitch. Different scope; team is for product/business pitches with adversarial review. Cross-link: `/craft:discuss --debate` is lighter-weight; `/team` is the heavyweight version.
+- `elegance`: code refinement and decision council. `/craft:reconsider --validate` for routine checks; `/elegance` for deep refinement with the 14-agent council.
+- `humanize`: owns `/humanize`. Craft never bundles its own.
+- `accessibility`: owns `/accessibility`, the dedicated WCAG plugin. `craft-a11y` agent does internal a11y checks during `compose` and `reconsider`; full audits go to `/accessibility`.
 
 ## Development
 
