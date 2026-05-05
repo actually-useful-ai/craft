@@ -1,6 +1,6 @@
 {
   "name": "craft",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Workflow toolbelt for Claude Code: session lifecycle (begin/quicksave/wrap), execution (hitit/plan/fix), distribution (pushit/shipit), hygiene (janitor/harvest), validation (doublecheck/thinkagain), and research (enhance/search/foresight/context).",
   "author": {
     "name": "Luke Steuber",
