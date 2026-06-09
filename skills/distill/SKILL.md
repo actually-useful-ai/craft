@@ -20,13 +20,13 @@ Refine and clean. This is the hygiene phase (`discuss → compose → distill �
 ## Procedure
 
 ### `--begin` (session start)
-1. Run `bash scripts/session-state.sh start` to capture git state.
+1. Run `bash ${CLAUDE_PLUGIN_ROOT}/scripts/session-state.sh start` to capture git state.
 2. Launch `craft-scout` to recon recent changes and project context.
 3. Read project `CLAUDE.md` if present; flag staleness.
 4. Produce a session briefing: what's open, what's blocked, what to do first.
 
 ### `--full` (default hygiene pass)
-1. **Harvest** — `bash scripts/harvest.sh` to capture reusable snippets and patterns to `~/SNIPPETS/`.
+1. **Harvest** — `bash ${CLAUDE_PLUGIN_ROOT}/scripts/harvest.sh` to capture reusable snippets and patterns to `~/SNIPPETS/`.
 2. **Janitor** — `craft-janitor` agent: detect agent-generated cruft (CRITIC.md, REPO_AUDIT.md, *_STATUS.md, .aider.*), unused dependencies, dead code branches.
 3. **Audit** — `craft-validator` agent: surface code quality issues (long functions, duplicate logic, missing tests).
 4. Output findings, propose fixes, apply with confirmation.
@@ -35,7 +35,7 @@ Refine and clean. This is the hygiene phase (`discuss → compose → distill �
 Skip steps 1 and 4. Findings only.
 
 ### `--conclude` (session end)
-1. Verify state — run `bash scripts/session-state.sh end`.
+1. Verify state — run `bash ${CLAUDE_PLUGIN_ROOT}/scripts/session-state.sh end`.
 2. Harvest new snippets generated this session.
 3. Document next steps to `~/craft/status/<project>-next-YYYY-MM-DD.md`.
 4. Update accumulated recommendations at `~/craft/recommendations/by-project/<project>.md` (append, never delete).
