@@ -1,8 +1,8 @@
-Decision: for a modern React app, use `@dnd-kit/react` (currently 0.5.0) if its React 18/19 peer requirement matches the app. No files were changed.
+Decision: for a modern React app, use `@dnd-kit/react` (currently 0.5.0) if its React 18/19 peer requirement matches the app. The local project and `<configured-shared-root>` were searched for existing implementations and conventions. No files were changed.
 
 ### Reuse now
 
-No local React project, dependency manifest, or existing drag-and-drop implementation was provided; local reuse is therefore empty.
+No local React dependency manifest or existing drag-and-drop implementation was found in the project or configured shared code; local reuse is therefore empty.
 
 Selected reusable target: `@dnd-kit/react`.
 

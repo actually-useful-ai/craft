@@ -2,7 +2,7 @@
 
 **Decision:** Do not let the review deadline force a remembered custom pattern. Build one modal palette with a labeled filtering input, flat grouped results, visible keyboard shortcuts where available, and `Arrow`/`Enter`/`Escape` behavior. Defer multi-mode syntax, nested palettes, and persistent history until the first palette is proven.
 
-Evidence checked **2026-07-18**. I searched `/Users/luke/craft-plugin` for palette, combobox, dialog, and command-menu precedents; it has no implementation or package manifest. The configured shared-code location, `/home/coolhand/shared`, is unavailable in this environment, so it is not evidence of reuse. I also checked current canonical standards, package registry/repository sources, and live product documentation. No files were changed.
+Evidence checked **2026-07-18**. I searched `<project-root>` for palette, combobox, dialog, and command-menu precedents; it has no implementation or package manifest. `<configured-shared-root>` is unavailable in this environment, so it is not evidence of reuse. I also checked current canonical standards, package registry/repository sources, and live product documentation. No files were changed.
 
 ### Reuse now
 
