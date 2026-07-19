@@ -56,7 +56,23 @@ for name in provider-abstraction drag-and-drop command-palette; do
   done
 done
 
-if grep -En '/Users/|/home/|~/|CLAUDE\.md|scripts/llm-query\.py|llm_providers|data_fetching|ProviderFactory|geepers-kernel|dreamer|WebSearch|WebFetch|Claude|Codex|Gemini|Aider|(^|[^[:alnum:]_])(Task|Explore)([^[:alnum:]_]|$)' \
+provider_fixture="$fixture_dir/provider-abstraction.md"
+provider_package_block=$(awk '
+  /^## Conventional vs niche$/ { capture = 1; next }
+  capture && /^## / { exit }
+  capture { print }
+' "$provider_fixture")
+
+for claim in 'geepers-kernel' 'https://pypi.org/project/geepers-kernel/' 'MIT' \
+  'Python >=3.8' 'version 1.2.0' 'released Feb 20 2026' '10+ providers' \
+  'routing/failover/tracking'; do
+  case "$provider_package_block" in
+    *"$claim"*) ;;
+    *) fail "provider package evidence block missing traceable claim: $claim" ;;
+  esac
+done
+
+if grep -En '/Users/|/home/|~/|CLAUDE\.md|scripts/llm-query\.py|llm_providers|data_fetching|ProviderFactory|dreamer|WebSearch|WebFetch|Claude|Codex|Gemini|Aider|(^|[^[:alnum:]_])(Task|Explore)([^[:alnum:]_]|$)' \
   "$skill" "$fixture_dir/provider-abstraction.md" "$fixture_dir/drag-and-drop.md" "$fixture_dir/command-palette.md"; then
   fail "skill or GREEN fixture contains a personal, provider-specific, or platform-specific shortcut"
 fi
