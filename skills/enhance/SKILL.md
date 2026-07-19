@@ -24,7 +24,9 @@ configuration, or make a selection irreversible. Hand construction to
 
 1. State the decision, constraints, and what reuse would mean.
 2. Search local project code, tests, documentation, and configured shared-code
-   locations for implementations, usages, and conventions.
+   locations for implementations, usages, and conventions. Discover shared-code
+   roots from project instructions, configuration, environment references, and documentation;
+   never assume a personal directory or machine layout.
 3. Search current primary sources appropriate to the decision: package
    registries, upstream repositories, canonical documentation, and relevant
    formal standards. Use secondary sources only as leads, then verify the

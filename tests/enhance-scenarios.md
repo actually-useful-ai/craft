@@ -5,6 +5,9 @@ Run a scenario in a fresh context twice: once without the skill to establish the
 baseline and once after loading it. Record the response against the acceptance
 checks; do not perform implementation during either run.
 
+The checked-in GREEN outputs are under `tests/fixtures/enhance/`. Validate the
+skill and all three outputs with `sh tests/validate-enhance.sh`.
+
 ## Baseline evidence (RED)
 
 | Scenario | Observed baseline | Failure to prevent |
