@@ -1,6 +1,6 @@
-# craft v0.1
+# craft v0.2
 
-Workflow toolbelt for Claude Code. Five modal commands plus board and context, organized around the work cycle:
+Portable workflow package for Codex and Claude Code. Five modal commands plus activation, board, context, and prior-art research, organized around the work cycle:
 
 ```
 discuss → compose → distill → reconsider → present
@@ -18,19 +18,20 @@ discuss → compose → distill → reconsider → present
 | `/craft:present` | Save, ship, publish, PR, wrap | `save`, `ship`, `publish`, `pr`, `wrap` |
 | `/craft:board` | Kanban for tracking work | `add`, `done`, `show` |
 | `/craft:context` | Deep CLAUDE.md hierarchy refresh | (none) |
+| `/craft:activate` | Start a focused session with repository context | (none) |
+| `/craft:enhance` | Research local and current prior art before building | (none) |
 
 ## Architecture
 
 **Self-contained, pure markdown.** No build step. No Python package. Edit `.md` files directly.
 
-- 7 commands (entry points in `commands/`)
-- 7 skills (one per command in `skills/<name>/SKILL.md`)
-- 14 specialized agents in `agents/`
+- 9 user-facing skills (entry points in `skills/<name>/SKILL.md`)
+- 14 helper profiles in `agents/`
 - 9 stdlib scripts in `scripts/`
 
 **No dependency** on any other plugin. Where second-opinion or data-fetching capability matters, scripts try CLI tools (codex, gemini, aider), fall through to MCP servers (`etiquette-providers` if installed), then to direct API calls, then degrade to Claude-only with a graceful note.
 
-## Agents
+## Helper profiles
 
 All prefixed `craft-`:
 
@@ -80,13 +81,13 @@ Board HTML: `~/html/craft/board/index.html` (served via Caddy if configured).
 - Skills under 2,000 tokens; heavy reference material goes in `references/` subdirectories (none yet)
 - All scripts try-then-degrade; nothing hard-depends on optional infrastructure
 
-## Multi-LLM strategy
+## Multi-model strategy
 
 | Environment | How second opinions work |
 |---|---|
 | CLI shell with codex/gemini/aider installed | `cli-invoke.sh` |
 | Geepers-kernel installed | `scripts/llm-query.py` via `Bash` |
-| Standalone Claude only | Graceful degradation; Claude-only output with a noted gap |
+| Standalone client | Continue with the current model and note the missing second opinion |
 
 Optional MCP servers (`.mcp.json`, not yet shipped) would expose:
 - `craft-providers`: multi-LLM via `ProviderFactory` from `~/shared/llm_providers`
@@ -103,4 +104,4 @@ Both require `pip install geepers-kernel`. Not required.
 
 ## Development
 
-Pure-markdown plugin. No build step, no test runner. Edit `.md` files directly. Banner script (`scripts/banner.sh`) requires `pyfiglet`/`toilet`/`figlet` (falls back to plain text).
+The package has no build step. Edit the Markdown files directly and run `python3 tests/test_manifests.py` plus the shell validators before release. Banner script (`scripts/banner.sh`) uses `pyfiglet`, `toilet`, or `figlet` when available and falls back to plain text.

@@ -1,0 +1,41 @@
+{
+  "name": "craft",
+  "version": "0.2.0",
+  "description": "A portable workflow for deliberate planning, focused building, careful refinement, validation, and delivery.",
+  "author": {
+    "name": "Luke Steuber",
+    "email": "luke@lukesteuber.com",
+    "url": "https://lukesteuber.com"
+  },
+  "homepage": "https://github.com/actually-useful-ai/craft#readme",
+  "repository": "https://github.com/actually-useful-ai/craft",
+  "license": "MIT",
+  "keywords": [
+    "workflow",
+    "planning",
+    "delivery",
+    "research",
+    "developer-tools"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Craft",
+    "shortDescription": "Plan, build, refine, validate, and deliver",
+    "longDescription": "A portable work cycle with focused entry points for research, planning, implementation, refinement, validation, and delivery.",
+    "developerName": "Luke Steuber",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/actually-useful-ai/craft#readme",
+    "defaultPrompt": [
+      "Plan this change before implementation",
+      "Build this feature and verify the result",
+      "Research prior art before choosing an approach"
+    ],
+    "brandColor": "#6B4F3A",
+    "screenshots": []
+  }
+}
