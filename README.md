@@ -1,16 +1,29 @@
 # craft
 
-Workflow toolbelt for Claude Code. Five modal commands organized around the work cycle.
+A portable workflow for deliberate planning, focused building, careful refinement, validation, and delivery.
 
 ```
 discuss → compose → distill → reconsider → present
  think      build    refine    challenge     ship
 ```
 
-## Install
+## Install in Codex
 
-```bash
-claude plugin add actually-useful-ai/craft
+Open the Codex app's **Plugin Directory**, choose the option to import a plugin, and use:
+
+```text
+https://github.com/actually-useful-ai/craft
+```
+
+The repository includes the Codex manifest and discovers all nine workflow entry points from `skills/`.
+
+## Install in Claude Code
+
+From a Claude Code session, add the repository as a marketplace and install Craft:
+
+```text
+/plugin marketplace add actually-useful-ai/craft
+/plugin install craft@lukeslp-craft
 ```
 
 ## Usage
@@ -25,32 +38,31 @@ claude plugin add actually-useful-ai/craft
 
 Every command takes a mode flag and a target. Defaults are sensible: `--quick` for `discuss`, `--full` for `distill`, `--validate` for `reconsider`, `save` for `present`. Modes are listed in each command's `--help`.
 
-## What's in here
+## What's included
 
-- 7 slash commands (`discuss`, `compose`, `distill`, `reconsider`, `present`, `board`, `context`)
-- 14 specialized agents (deliberation, quality, build/ship, utility)
+- 9 workflow entry points (`activate`, `board`, `compose`, `context`, `discuss`, `distill`, `enhance`, `present`, `reconsider`)
+- 14 optional helper profiles for deliberation, quality, implementation, delivery, and project maintenance
 - 9 stdlib scripts (multi-LLM query, data fetching, code analysis, kanban board, CLI detection, harvest, session state, nav validation)
 
 ## Why modal commands
 
-The earlier swarm approach had 21 discrete slash commands. Most users learn 5 verbs and never touch the rest. The modal design here keeps the 5 verbs as commands and tucks the variants (quick/debate/plan/research, viz/frontend/docs, save/ship/publish, etc.) behind flags. Same coverage, less to memorize.
+The core stays centered on five verbs. Variants such as quick research, planning, visual work, focused fixes, and publishing live behind modes so the workflow stays easy to remember.
 
 ## What it doesn't do
 
 - Pitch a codebase as a product: that's [team](https://github.com/actually-useful-ai/team).
-- Code refinement at depth or 14-agent council debate: that's [elegance](https://github.com/actually-useful-ai/elegance).
-- Strip robot language from prose: that's [humanize](https://github.com/actually-useful-ai/humanize).
+- Code refinement at depth or council-style debate: that's [elegance](https://github.com/actually-useful-ai/elegance).
 - WCAG audits: that's [accessibility](https://github.com/actually-useful-ai/accessibility).
 
 Craft does the workflow, not the specialized analysis.
 
-## Multi-LLM second opinions (optional)
+## Multi-model second opinions (optional)
 
-Several scripts try to call out to other CLIs (codex, gemini, aider, cursor-agent) for second opinions when those are installed. If none are available, craft degrades gracefully to Claude-only.
+Several scripts can ask installed command-line tools such as Codex, Gemini, Aider, or Cursor for a second opinion. If none are available, Craft continues with the current model.
 
 For richer multi-provider access, install `geepers-kernel` (`pip install geepers-kernel`): `scripts/llm-query.py` will use the bundled `ProviderFactory` for unified access to 12 LLM providers.
 
-Nothing in craft is hard-dependent on these. Skills work standalone.
+Nothing in Craft depends on these optional integrations. The workflow entry points work on their own.
 
 ## Output
 
@@ -62,7 +74,7 @@ Everything goes under `~/craft/`:
 ├── recommendations/by-project/      accumulated, append-only
 ├── status/                          session work logs
 ├── snippets/                        internal harvest staging
-├── logs/                            agent execution logs
+├── logs/                            execution logs
 └── board.json                       kanban state
 ```
 

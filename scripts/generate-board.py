@@ -10,8 +10,8 @@ Usage: python3 generate-board.py
 from __future__ import annotations
 
 import json
-import os
 from datetime import datetime
+from html import escape
 from pathlib import Path
 
 BOARD_PATH = Path.home() / "craft" / "board.json"
@@ -59,16 +59,16 @@ h1 {{ margin: 0 0 8px; font-size: 24px; }}
 
 
 def render_card(card: dict) -> str:
-    title = card.get("title", "(untitled)")
-    project = card.get("project", "")
-    created = card.get("created", "")
+    title = escape(str(card.get("title", "(untitled)")), quote=True)
+    project = escape(str(card.get("project", "")), quote=True)
+    created = escape(str(card.get("created", ""))[:10], quote=True)
     meta_parts = []
     if project:
         meta_parts.append(project)
     if created:
-        meta_parts.append(created[:10])
+        meta_parts.append(created)
     meta = " · ".join(meta_parts)
-    notes = card.get("notes", "")
+    notes = escape(str(card.get("notes", "")), quote=True)
     notes_html = f'<div class="meta">{notes}</div>' if notes else ""
     return f'''<div class="card">
         <div class="title">{title}</div>
@@ -80,7 +80,7 @@ def render_card(card: dict) -> str:
 def render_column(name: str, cards: list[dict]) -> str:
     cards_html = "".join(render_card(c) for c in cards) if cards else '<div class="empty">empty</div>'
     return f'''<div class="column">
-        <h2>{name} <span class="count">{len(cards)}</span></h2>
+        <h2>{escape(str(name), quote=True)} <span class="count">{len(cards)}</span></h2>
         {cards_html}
     </div>'''
 
