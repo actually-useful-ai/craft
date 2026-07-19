@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 # session-state.sh — Snapshot git state at session start/end.
-# Usage: bash session-state.sh start | end | diff
+# Usage: bash session-state.sh start|end|diff [session-id]
 #   start: capture current state to a checkout-specific temporary file
 #   end: compare against start snapshot, report changes
 #   diff: just show what changed since last start
+# Set CRAFT_SESSION_ID instead of the second argument when convenient. Without
+# either, the caller's process ID keeps repeated calls from one shell together.
 
 set -euo pipefail
 
@@ -12,7 +14,19 @@ TEMP_ROOT="${TMPDIR:-/tmp}"
 CHECKOUT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd -P)
 CHECKOUT_KEY=$(printf '%s' "$CHECKOUT_ROOT" | cksum | awk '{print $1}')
 USER_KEY=$(printf '%s' "${USER:-default}" | tr -c '[:alnum:]_-' '_')
-SNAPSHOT="${TEMP_ROOT%/}/craft-session-start-${USER_KEY}-${CHECKOUT_KEY}.txt"
+SESSION_ID="${2:-${CRAFT_SESSION_ID:-${PPID:-default}}}"
+SESSION_LABEL=$(printf '%s' "$SESSION_ID" | tr -c '[:alnum:]_-' '_' | cut -c1-32)
+SESSION_KEY=$(printf '%s' "$SESSION_ID" | cksum | awk '{print $1}')
+SNAPSHOT="${TEMP_ROOT%/}/craft-session-start-${USER_KEY}-${CHECKOUT_KEY}-${SESSION_LABEL}-${SESSION_KEY}.txt"
+TEMP_FILE=""
+
+cleanup() {
+    if [[ -n "$TEMP_FILE" && -e "$TEMP_FILE" ]]; then
+        rm -f "$TEMP_FILE"
+    fi
+}
+
+trap cleanup EXIT HUP INT TERM
 
 snapshot_time() {
     case "$(uname -s)" in
@@ -50,7 +64,10 @@ snapshot() {
 
 case "$MODE" in
     start)
-        snapshot > "$SNAPSHOT"
+        TEMP_FILE=$(mktemp "${TEMP_ROOT%/}/craft-session-start.XXXXXX")
+        snapshot > "$TEMP_FILE"
+        mv -f "$TEMP_FILE" "$SNAPSHOT"
+        TEMP_FILE=""
         echo "snapshot written to $SNAPSHOT"
         cat "$SNAPSHOT"
         ;;
@@ -62,10 +79,14 @@ case "$MODE" in
         echo "## changes since session start"
         echo "(snapshot at: $(snapshot_time))"
         echo ""
-        diff "$SNAPSHOT" <(snapshot) || true
+        TEMP_FILE=$(mktemp "${TEMP_ROOT%/}/craft-session-now.XXXXXX")
+        snapshot > "$TEMP_FILE"
+        diff "$SNAPSHOT" "$TEMP_FILE" || true
+        rm -f "$TEMP_FILE"
+        TEMP_FILE=""
         ;;
     *)
-        echo "usage: bash session-state.sh start|end|diff" >&2
+        echo "usage: bash session-state.sh start|end|diff [session-id]" >&2
         exit 2
         ;;
 esac
