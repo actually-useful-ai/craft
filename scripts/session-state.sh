@@ -1,18 +1,36 @@
 #!/usr/bin/env bash
 # session-state.sh — Snapshot git state at session start/end.
 # Usage: bash session-state.sh start | end | diff
-#   start: capture current state to /tmp/craft-session-start.txt
+#   start: capture current state to a checkout-specific temporary file
 #   end: compare against start snapshot, report changes
 #   diff: just show what changed since last start
 
 set -euo pipefail
 
 MODE="${1:-start}"
-SNAPSHOT="/tmp/craft-session-start-${USER:-default}.txt"
+TEMP_ROOT="${TMPDIR:-/tmp}"
+CHECKOUT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd -P)
+CHECKOUT_KEY=$(printf '%s' "$CHECKOUT_ROOT" | cksum | awk '{print $1}')
+USER_KEY=$(printf '%s' "${USER:-default}" | tr -c '[:alnum:]_-' '_')
+SNAPSHOT="${TEMP_ROOT%/}/craft-session-start-${USER_KEY}-${CHECKOUT_KEY}.txt"
+
+snapshot_time() {
+    case "$(uname -s)" in
+        Darwin)
+            stat -f "%Sm" -t "%Y-%m-%dT%H:%M:%S%z" "$SNAPSHOT"
+            ;;
+        Linux)
+            stat -c "%y" "$SNAPSHOT"
+            ;;
+        *)
+            echo "unknown"
+            ;;
+    esac
+}
 
 snapshot() {
     {
-        echo "# craft session snapshot — $(date -Iseconds)"
+        echo "# craft session snapshot — $(date '+%Y-%m-%dT%H:%M:%S%z')"
         echo "## working directory"
         pwd
         echo ""
@@ -42,10 +60,9 @@ case "$MODE" in
             exit 1
         fi
         echo "## changes since session start"
-        echo "(snapshot at: $(stat -c %y "$SNAPSHOT" 2>/dev/null || stat -f %Sm "$SNAPSHOT"))"
+        echo "(snapshot at: $(snapshot_time))"
         echo ""
-        snapshot > /tmp/craft-session-now.txt
-        diff "$SNAPSHOT" /tmp/craft-session-now.txt || true
+        diff "$SNAPSHOT" <(snapshot) || true
         ;;
     *)
         echo "usage: bash session-state.sh start|end|diff" >&2
