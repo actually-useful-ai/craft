@@ -8,11 +8,16 @@ allowed-tools: Read, Grep, Glob, Bash, Agent
 
 Routes to the `distill` skill with `--begin` mode. The fast on-ramp for starting a craft session.
 
-See `skills/distill/SKILL.md` for the full procedure. This skill exists for ergonomics — easier to type and tab-complete than `/craft:distill --begin`.
+See `skills/distill/SKILL.md` for the full procedure. This skill exists for ergonomics: it is easier to type and tab-complete than `/craft:distill --begin`.
+
+Resolve `CRAFT_PLUGIN_ROOT` with [the shared script-path rule](../script-paths.md)
+before running a bundled script.
+Use the [helper-profile fallback](../helper-profiles.md) when the host does not
+expose `craft-scout` as a named profile.
 
 ## Procedure
 
-1. Run `bash ${CLAUDE_PLUGIN_ROOT}/scripts/session-state.sh start` to capture git state.
+1. Run `bash "$CRAFT_PLUGIN_ROOT/scripts/session-state.sh" start` to capture git state.
 2. Launch `craft-scout` to recon recent changes and project context.
 3. Read project `CLAUDE.md` if present; flag staleness.
 4. Produce a session briefing: what's open, what's blocked, what to do first.

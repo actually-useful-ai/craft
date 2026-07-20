@@ -84,6 +84,45 @@ class ManifestTests(unittest.TestCase):
         self.assertIn("/plugin install", readme)
         self.assertNotIn("codex plugin", readme.lower())
 
+    def test_bundled_script_paths_are_host_neutral(self) -> None:
+        scripted_skills = ("activate", "board", "context", "distill")
+        for skill_name in scripted_skills:
+            content = (ROOT / "skills" / skill_name / "SKILL.md").read_text(
+                encoding="utf-8"
+            )
+            self.assertNotIn("${CLAUDE_PLUGIN_ROOT}/scripts", content)
+            self.assertIn("CRAFT_PLUGIN_ROOT", content)
+
+        resolver = " ".join(
+            (ROOT / "skills" / "script-paths.md").read_text(encoding="utf-8").split()
+        )
+        self.assertIn("Claude Code", resolver)
+        self.assertIn("Codex", resolver)
+        self.assertIn("loaded `SKILL.md`", resolver)
+        self.assertIn("Do not resolve bundled scripts from the project working directory", resolver)
+
+    def test_validator_profile_has_no_private_host_assumptions(self) -> None:
+        validator = (ROOT / "agents" / "craft-validator.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertNotIn("~/service_manager.py", validator)
+        self.assertNotIn("| API_KEY |", validator)
+        self.assertNotIn("| DB_URL |", validator)
+
+    def test_helper_profiles_have_a_codex_fallback(self) -> None:
+        resolver_path = ROOT / "skills" / "helper-profiles.md"
+        self.assertTrue(resolver_path.is_file(), "missing Codex helper-profile fallback")
+        resolver = " ".join(resolver_path.read_text(encoding="utf-8").split())
+        self.assertIn("Codex", resolver)
+        self.assertIn("general subagent", resolver)
+        self.assertIn("agents/", resolver)
+        self.assertIn("Do not assume", resolver)
+
+        for path in sorted((ROOT / "skills").glob("*/SKILL.md")):
+            content = path.read_text(encoding="utf-8")
+            if "craft-" in content and path.parent.name != "enhance":
+                self.assertIn("../helper-profiles.md", content, path.as_posix())
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -22,25 +22,28 @@ If "is this correct?" → `--validate`. If "should we have done it differently?"
 
 ## Procedure
 
+Use the [helper-profile fallback](../helper-profiles.md) for each named review
+role the host does not expose directly.
+
 ### `--validate` (correctness check)
-1. **Run tests** — if a test runner is configured, execute relevant tests.
-2. **Type-check** — for typed languages, run the type checker.
-3. **Audit** — `craft-validator` reviews for findings-first issues: type errors, broken contracts, missing edge cases, config drift.
-4. **Critic pass** — `craft-critic` looks for UX and architecture issues.
+1. **Run tests**: execute relevant tests when the project configures a test runner.
+2. **Type-check**: run the type checker for typed languages.
+3. **Audit**: `craft-validator` reviews type errors, broken contracts, missing edge cases, and config drift.
+4. **Critic pass**: `craft-critic` looks for UX and architecture issues.
 5. Output findings prioritized by severity (fatal/wounding/uncomfortable/cosmetic).
 
 ### `--rebuild` (first-principles reconsider)
-1. **Discard the frame** — explicitly list assumptions of the current approach.
-2. **Re-derive** — `craft-planner` builds the plan from scratch, ignoring the existing implementation.
-3. **Compare** — diff the rebuilt approach against current. Note where they agree and diverge.
-4. **Recommend** — keep current, partial rewrite, or full rebuild, with reasoning.
+1. **Discard the frame**: list the current approach's assumptions.
+2. **Re-derive**: `craft-planner` builds the plan from scratch without the existing implementation.
+3. **Compare**: diff the rebuilt approach against the current one. Note where they agree and diverge.
+4. **Recommend**: keep the current approach, rewrite part of it, or rebuild it, with reasoning.
 
 ### `--blast` (impact analysis)
-1. **Find the surface** — for the named symbol/file/module, identify all imports, call sites, and references via grep.
-2. **Trace configs** — find environment-variable, config-file, and CLAUDE.md references.
-3. **Map dependents** — list every module that would need to change if this surface changes.
-4. **Score severity** — for each downstream caller, rate the impact of the proposed change.
-5. **Output** — a blast radius report with severity-sorted dependent list.
+1. **Find the surface**: identify all imports, call sites, and references for the named symbol, file, or module.
+2. **Trace configs**: find environment-variable, config-file, and CLAUDE.md references.
+3. **Map dependents**: list every module that would need to change with this surface.
+4. **Score severity**: rate the proposed change's impact on each downstream caller.
+5. **Output**: write a blast-radius report with dependents sorted by severity.
 
 ## Output
 

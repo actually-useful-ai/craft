@@ -25,20 +25,23 @@ If input names a UI/component, `frontend`. If it mentions chart/graph/D3/dashboa
 
 ## Procedure
 
-1. **Plan if needed** — for non-trivial builds, route through `/craft:discuss --plan` first.
-2. **Set up working tree** — confirm git is clean for surgical mode (preflight gate).
-3. **Build** — apply the mode-specific approach:
+Use the [helper-profile fallback](../helper-profiles.md) when the host does not
+expose `craft-design` as a named profile.
+
+1. **Plan if needed**: for non-trivial builds, route through `/craft:discuss --plan` first.
+2. **Set up working tree**: confirm git is clean for surgical mode (preflight gate).
+3. **Build**: apply the mode-specific approach:
    - `viz`/`frontend`/`docs`/`flow`/`game`: launch `craft-design` for layout/structure, then implement.
    - `surgical`: read the full target file, identify the minimum-blast-radius boundary, make the edit, verify with tests if they exist.
-4. **Verify** — run tests, type checks, or smoke checks appropriate to the mode.
-5. **Hand off** — to `/craft:distill` for cleanup, or `/craft:reconsider` to challenge the result.
+4. **Verify**: run tests, type checks, or smoke checks appropriate to the mode.
+5. **Hand off**: use `/craft:distill` for cleanup or `/craft:reconsider` to challenge the result.
 
 ## Surgical mode (formerly /fix)
 
 A protocol, not a vibe:
 
 1. Read the entire target file. No skipping.
-2. Identify the **minimum change boundary** — what's the smallest set of lines that make the bug fix or feature work?
+2. Identify the **minimum change boundary**: what's the smallest set of lines that make the bug fix or feature work?
 3. Edit that boundary, nothing else.
 4. Verify by running affected tests, then by reading the diff back.
 5. If the diff includes anything outside the original boundary, undo and retry.

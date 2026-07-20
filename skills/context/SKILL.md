@@ -19,14 +19,17 @@ Different from `/craft:distill --begin` (which produces a session briefing) and 
 
 ## Procedure
 
+Resolve `CRAFT_PLUGIN_ROOT` with [the shared script-path rule](../script-paths.md)
+before running a bundled script.
+
 1. **Find every CLAUDE.md**:
    ```
    find . -maxdepth 4 -name "CLAUDE.md" -not -path "./.git/*"
    ```
 
-2. **Read them all** — root → subdirectories. Note the hierarchy.
+2. **Read them all**: root → subdirectories. Note the hierarchy.
 
-3. **Validate navigation** via `bash ${CLAUDE_PLUGIN_ROOT}/scripts/validate-nav.sh`:
+3. **Validate navigation** via `bash "$CRAFT_PLUGIN_ROOT/scripts/validate-nav.sh"`:
    - Every CLAUDE.md links to its parent (if any) and major children.
    - Cross-references resolve to existing files.
    - No broken `[link](path)` paths.
@@ -36,9 +39,9 @@ Different from `/craft:distill --begin` (which produces a session briefing) and 
    - Files referenced in CLAUDE.md that no longer exist.
    - Sections describing behavior that has clearly changed (heuristic — flag, don't auto-fix).
 
-5. **Walk public surfaces** — for each entry point (CLI, HTTP, library exports), confirm the CLAUDE.md describes it accurately.
+5. **Walk public surfaces**: for each entry point (CLI, HTTP, library exports), confirm the CLAUDE.md describes it accurately.
 
-6. **Summarize** — produce a concise memory bundle:
+6. **Summarize**: produce a concise memory bundle:
    - Project purpose (one sentence).
    - Architecture (one paragraph).
    - Key files and what they do.

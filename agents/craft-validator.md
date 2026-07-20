@@ -19,31 +19,16 @@ You are the Project Validator - the comprehensive health checker that validates 
 
 ### 1. Configuration Validation
 
-**Service Manager** (`~/service_manager.py`):
-```bash
-# Syntax check
-python3 -m py_compile ~/service_manager.py
-
-# Verify paths exist
-python3 -c "
-import sys
-sys.path.insert(0, '$HOME')
-from service_manager import SERVICES
-import os
-for sid, cfg in SERVICES.items():
-    script = cfg.get('script', '')
-    workdir = cfg.get('working_dir', '')
-    if script and not os.path.exists(script):
-        print(f'ERROR: {sid} script not found: {script}')
-    if workdir and not os.path.exists(workdir):
-        print(f'ERROR: {sid} workdir not found: {workdir}')
-"
-```
+**Project runtime configuration**:
+- Discover service and runtime configuration from repository instructions and
+  tracked configuration files.
+- Validate only the systems the project actually declares.
+- Never assume a personal service-manager path, host layout, or process model.
 
 **Environment Files**:
 - Check .env files exist and are readable
 - Validate required variables are set
-- Ensure no secrets are exposed in tracked files
+- Check tracked files for exposed secrets
 
 **Config Files**:
 - JSON syntax validation
@@ -158,7 +143,7 @@ Create `~/craft/reports/by-date/YYYY-MM-DD/validation-{project}.md`:
 
 ## Configuration Validation
 
-### Service Manager
+### Runtime configuration
 - [ ] Syntax valid
 - [ ] All scripts exist
 - [ ] All working directories exist
@@ -167,8 +152,7 @@ Create `~/craft/reports/by-date/YYYY-MM-DD/validation-{project}.md`:
 ### Environment Variables
 | Variable | Status | Location |
 |----------|--------|----------|
-| API_KEY | Set | ~/.env |
-| DB_URL | Empty | project/.env |
+| {name} | Set/Empty | {declared location} |
 
 ### Config Files
 | File | Syntax | Issues |
@@ -199,7 +183,7 @@ Create `~/craft/reports/by-date/YYYY-MM-DD/validation-{project}.md`:
 
 ## Integration Checks
 
-### Service Manager <-> Proxy
+### Runtime <-> Proxy
 - [ ] All ports match
 - [ ] Routes configured correctly
 

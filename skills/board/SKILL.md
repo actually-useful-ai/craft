@@ -22,9 +22,12 @@ Plain JSON at `~/craft/board.json` with columns: `backlog`, `doing`, `done`. Eac
 
 ## Procedure
 
+Resolve `CRAFT_PLUGIN_ROOT` with [the shared script-path rule](../script-paths.md)
+before running a bundled script.
+
 ### `show`
 1. Read `~/craft/board.json` (create with empty columns if absent).
-2. Run `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/generate-board.py` to render HTML.
+2. Run `python3 "$CRAFT_PLUGIN_ROOT/scripts/generate-board.py"` to render HTML.
 3. Open or report the path: `~/html/craft/board/index.html` (served via Caddy if configured).
 
 ### `add <title>`
