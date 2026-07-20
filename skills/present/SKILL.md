@@ -23,7 +23,7 @@ Ship the work. The phase where things become real (`discuss → compose → dist
 ### `save` (mid-session checkpoint)
 1. **Verify state** — `git log --oneline -3`, `git diff --stat`, `git status`. Surprise commits from parallel agents are a stop condition.
 2. **Stage by name** — never `git add -A` or `git add -u` (the project hook blocks them; use explicit paths).
-3. **Commit** — conventional commit message; never `Co-Authored-By` Claude/AI.
+3. **Commit** — conventional commit message; never add a model as co-author.
 4. **Push** — origin only; never force-push to main.
 5. **Verify** — `git status` clean.
 

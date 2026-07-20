@@ -74,8 +74,8 @@ Board HTML: `~/html/craft/board/index.html` (served via Caddy if configured).
 ## Conventions
 
 - Agent IDs prefixed `craft-` (no collision with team's seats or elegance's agents)
-- No "AI" terminology in any output (the project's humanize gate applies)
-- Credit Luke Steuber, never "Claude" or "AI"
+- Use specific terms such as language model, model, or provider in output.
+- Credit Luke Steuber, never a model or tool.
 - Use "I" not "we" in generated content
 - No `Co-Authored-By` in commits
 - Skills under 2,000 tokens; heavy reference material goes in `references/` subdirectories (none yet)
@@ -99,7 +99,7 @@ Both require `pip install geepers-kernel`. Not required.
 
 - `team`: council-style codebase-to-pitch. Different scope; team is for product/business pitches with adversarial review. Cross-link: `/craft:discuss --debate` is lighter-weight; `/team` is the heavyweight version.
 - `elegance`: code refinement and decision council. `/craft:reconsider --validate` for routine checks; `/elegance` for deep refinement with the 14-agent council.
-- `humanize`: owns `/humanize`. Craft never bundles its own.
+- Prose editing remains outside Craft's scope.
 - `accessibility`: owns `/accessibility`, the dedicated WCAG plugin. `craft-a11y` agent does internal a11y checks during `compose` and `reconsider`; full audits go to `/accessibility`.
 
 ## Development

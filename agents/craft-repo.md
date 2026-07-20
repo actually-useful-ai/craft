@@ -158,13 +158,13 @@ Create `~/craft/reports/by-date/YYYY-MM-DD/repo-{project}.md`:
 
 ## Git Hygiene
 
-### AI Tool Artifact Detection
-Scan .gitignore for coverage of AI coding tool artifacts:
+### Coding-tool artifact detection
+Scan .gitignore for coverage of coding-tool artifacts:
 - `.claude/`, `.cursor/`, `.aider/`, `.continue/`, `.tabnine/`, `.codeium/`, `.windsurf/`, `.bolt/`, `.codex/`, `.serena/`, `.warp/`, `.cody/`, `.tabby/`
 - Generic: `*.ai-generated`, `.ai-cache/`, `.llm-cache/`, `.prompts/`, `.conversations/`
 
 ```bash
-# Check for tracked AI artifacts
+# Check for tracked coding-tool artifacts
 git ls-files | grep -E "\.claude|\.cursor|\.aider|\.continue|\.tabnine|\.codeium"
 
 # Remove from tracking if found
