@@ -20,9 +20,9 @@ write_host() {
 }
 
 matching="$TMP_DIR/matching.tsv"
-write_host "$matching" local 0.2.0 humanize-hash
-write_host "$matching" beast 0.2.0 humanize-hash
-write_host "$matching" drummer 0.2.0 humanize-hash
+write_host "$matching" local 0.3.0 humanize-hash
+write_host "$matching" beast 0.3.0 humanize-hash
+write_host "$matching" drummer 0.3.0 humanize-hash
 
 matching_output="$TMP_DIR/matching.out"
 "$ROOT/scripts/plugin-parity.sh" --fixture "$matching" > "$matching_output"
@@ -30,9 +30,9 @@ grep -q 'beast.*craft.*OK' "$matching_output"
 grep -q 'drummer.*humanize.*OK' "$matching_output"
 
 drift="$TMP_DIR/drift.tsv"
-write_host "$drift" local 0.2.0 humanize-hash
+write_host "$drift" local 0.3.0 humanize-hash
 write_host "$drift" beast 0.1.0 humanize-hash
-write_host "$drift" drummer 0.2.0 missing
+write_host "$drift" drummer 0.3.0 missing
 
 drift_output="$TMP_DIR/drift.out"
 if "$ROOT/scripts/plugin-parity.sh" --fixture "$drift" > "$drift_output"; then

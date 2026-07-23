@@ -53,7 +53,7 @@ The core stays centered on five verbs. Variants such as quick research, planning
 - Pitch a codebase as a product: that's [team](https://github.com/actually-useful-ai/team).
 - Code refinement at depth or council-style debate: that's [elegance](https://github.com/actually-useful-ai/elegance).
 - Strip robot language from prose: that's [humanize](https://github.com/actually-useful-ai/humanize).
-- WCAG audits: that's [accessibility](https://github.com/actually-useful-ai/accessibility).
+- WCAG audits: that's [Accessibility Devkit](https://github.com/actually-useful-ai/accessibility-devkit).
 
 Craft does the workflow, not the specialized analysis.
 
@@ -64,6 +64,10 @@ Several scripts can ask installed command-line tools such as Codex, Gemini, Aide
 For richer multi-provider access, install `geepers-kernel` (`pip install geepers-kernel`): `scripts/llm-query.py` will use the bundled `ProviderFactory` for unified access to 12 LLM providers.
 
 Nothing in Craft depends on these optional integrations. The workflow entry points work on their own.
+
+## Fleet parity
+
+`scripts/plugin-parity.sh` compares the installed Craft, Intentional UX, Accessibility, and Humanize versions on the current Mac, Beast, and Drummer. It hashes skill sources without copying credentials, caches, sessions, or machine settings. See [Plugin parity](docs/plugin-parity.md) for version-pinned installation, verification, and rollback commands.
 
 ## Output
 

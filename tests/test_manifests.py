@@ -9,7 +9,7 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "0.2.0"
+VERSION = "0.3.0"
 PLUGIN_NAME = "craft"
 SKILL_COUNT = 9
 HELPER_COUNT = 14

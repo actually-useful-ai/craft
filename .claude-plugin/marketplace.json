@@ -11,7 +11,7 @@
       "name": "craft",
       "source": "./",
       "description": "Plan, build, refine, validate, and deliver with nine focused entry points and fourteen optional helper profiles.",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "category": "workflow",
       "homepage": "https://github.com/actually-useful-ai/craft"
     }
