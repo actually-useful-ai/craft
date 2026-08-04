@@ -1,6 +1,8 @@
 # craft
 
-A portable workflow for deliberate planning, focused building, careful refinement, validation, and delivery.
+A portable workflow that starts from the goal, selects useful capabilities,
+preserves clear ownership, and carries work through planning, implementation,
+verification, and delivery.
 
 ```
 discuss → compose → distill → reconsider → present
@@ -29,9 +31,12 @@ From a Claude Code session, add the repository as a marketplace and install Craf
 ## Usage
 
 ```bash
+/craft:activate "Add OAuth to the API and choose the right approach"
 /craft:discuss --plan "Add OAuth to the API"          # plan first
 /craft:compose frontend src/components/Login.tsx      # build it
+/craft:compose skill skills/example                    # create or revise a skill
 /craft:distill --audit                                # check quality
+/craft:distill --skills                               # audit skills and installs
 /craft:reconsider --validate                          # verify correctness
 /craft:present pr                                     # open the PR
 ```
@@ -41,8 +46,28 @@ Every command takes a mode flag and a target. Defaults are sensible: `--quick` f
 ## What's included
 
 - 9 workflow entry points (`activate`, `board`, `compose`, `context`, `discuss`, `distill`, `enhance`, `present`, `reconsider`)
+- 4 bundled capabilities (`chefs-choice`, `exemplar`, `skill-auditor`, `skill-creator`)
 - 14 optional helper profiles for deliberation, quality, implementation, delivery, and project maintenance
-- 9 stdlib scripts (multi-LLM query, data fetching, code analysis, kanban board, CLI detection, harvest, session state, nav validation)
+- 14 stdlib scripts, including deterministic skill auditing and packaging tools
+
+## Capability routing
+
+Craft is the front door. State the goal and, when useful, the desired ambition:
+
+```text
+$craft:activate Chef's choice—impress me with this onboarding flow.
+```
+
+Craft selects the smallest useful stack and preserves ownership. Chef's Choice
+selects resources; Exemplar sets the quality bar; the most-specific domain skill
+owns implementation; optional providers such as Intentional UX, Accessibility,
+and Humanize retain authority in their domains. Craft reports a material
+selection in one concise line instead of requiring the person to remember a
+catalog of skill names.
+
+The bundled capability-maintenance paths are `/craft:compose skill` for creating
+or revising skills and `/craft:distill --skills` for read-only package and fleet
+audits.
 
 ## Why modal commands
 
@@ -52,10 +77,11 @@ The core stays centered on five verbs. Variants such as quick research, planning
 
 - Pitch a codebase as a product: that's [team](https://github.com/actually-useful-ai/team).
 - Code refinement at depth or council-style debate: that's [elegance](https://github.com/actually-useful-ai/elegance).
-- Strip robot language from prose: that's [humanize](https://github.com/actually-useful-ai/humanize).
-- WCAG audits: that's [Accessibility Devkit](https://github.com/actually-useful-ai/accessibility-devkit).
+- Rewrite user-facing prose: Craft routes that work to [humanize](https://github.com/actually-useful-ai/humanize) when installed.
+- Perform dedicated accessibility reviews: Craft routes supported web work to [Accessibility Devkit](https://github.com/actually-useful-ai/accessibility-devkit) when installed.
 
-Craft does the workflow, not the specialized analysis.
+Specialist products remain independently versioned. Craft discovers and
+composes them without absorbing their source or weakening their authority.
 
 ## Multi-model second opinions (optional)
 
@@ -89,4 +115,5 @@ Board HTML at `~/html/craft/board/index.html` if you serve it via Caddy.
 
 Luke Steuber · luke@lukesteuber.com · [lukesteuber.com](https://lukesteuber.com)
 
-MIT.
+MIT, with Apache-2.0 terms for the bundled Skill Creator. See
+`skills/skill-creator/LICENSE.txt`.

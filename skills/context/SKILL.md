@@ -1,6 +1,6 @@
 ---
 name: context
-description: "Deep project memory refresh: walk every CLAUDE.md, audit nav, flag staleness, and rebuild a coherent picture of the project before acting."
+description: "Refresh deep project context by walking every CLAUDE.md, auditing navigation, flagging staleness, and rebuilding a coherent project picture. Use before substantial work in an unfamiliar or recently changed repository."
 allowed-tools: Read, Grep, Glob, Bash
 ---
 

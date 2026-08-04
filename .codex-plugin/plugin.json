@@ -1,7 +1,7 @@
 {
   "name": "craft",
-  "version": "0.3.0",
-  "description": "A portable workflow for deliberate planning, focused building, careful refinement, validation, and delivery.",
+  "version": "0.4.0",
+  "description": "A portable workflow that discovers useful capabilities, plans deliberately, builds with clear ownership, verifies evidence, and delivers the result.",
   "author": {
     "name": "Luke Steuber",
     "email": "luke@lukesteuber.com",
@@ -9,19 +9,22 @@
   },
   "homepage": "https://github.com/actually-useful-ai/craft#readme",
   "repository": "https://github.com/actually-useful-ai/craft",
-  "license": "MIT",
+  "license": "MIT AND Apache-2.0",
   "keywords": [
     "workflow",
     "planning",
     "delivery",
     "research",
-    "developer-tools"
+    "developer-tools",
+    "skills",
+    "orchestration",
+    "quality"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Craft",
-    "shortDescription": "Plan, build, refine, validate, and deliver",
-    "longDescription": "A portable work cycle with focused entry points for research, planning, implementation, refinement, validation, and delivery.",
+    "shortDescription": "Route, plan, build, verify, and deliver",
+    "longDescription": "A portable work cycle that routes goals to the right capabilities, preserves domain ownership, and provides focused entry points for planning, implementation, refinement, validation, and delivery.",
     "developerName": "Luke Steuber",
     "category": "Developer Tools",
     "capabilities": [
@@ -31,9 +34,9 @@
     ],
     "websiteURL": "https://github.com/actually-useful-ai/craft#readme",
     "defaultPrompt": [
-      "Plan this change before implementation",
-      "Build this feature and verify the result",
-      "Research prior art before choosing an approach"
+      "Start this task and select the right capabilities",
+      "Chef's choice: build this and verify the result",
+      "Make this flagship work without unnecessary complexity"
     ],
     "brandColor": "#6B4F3A",
     "screenshots": []

@@ -1,6 +1,6 @@
 ---
 name: present
-description: "Save, ship, publish, open a PR, or wrap the session. The shipping phase of craft. Replaces /quicksave, /shipit, /pushit, /wrap."
+description: "Save, ship, publish, open a pull request, or wrap a Craft session. Use when verified work needs a checkpoint, outward delivery, release, or final handoff."
 allowed-tools: Read, Grep, Glob, Bash, Agent
 ---
 
@@ -22,6 +22,9 @@ Ship the work. The phase where things become real (`discuss → compose → dist
 
 Use the [helper-profile fallback](../helper-profiles.md) when the host does not
 expose `craft-canary` as a named profile.
+Use the [capability routing contract](../capability-routing.md) for final
+ownership and authorization checks. Apply Humanize only when it is installed
+and the deliverable includes user-facing prose; never rewrite technical meaning.
 
 ### `save` (mid-session checkpoint)
 1. **Verify state**: `git log --oneline -3`, `git diff --stat`, `git status`. Surprise commits from parallel agents are a stop condition.
@@ -35,7 +38,9 @@ expose `craft-canary` as a named profile.
 2. **Release**: tag, build artifacts, and generate release notes.
 3. **Deploy**: use the environment-specific, idempotent process.
 4. **Postflight**: `craft-canary` rechecks service health, smoke tests, and error monitoring.
-5. **Checkpoint**: record what went out, when, by whom, and where.
+5. **Evidence**: distinguish observed release results from planned or unavailable
+   checks. Never promote a local build into deployment evidence.
+6. **Checkpoint**: record what went out, when, by whom, and where.
 
 ### `publish` (repo/package publish)
 1. **Verify metadata**: confirm the version changed, the README is current, and a license exists.

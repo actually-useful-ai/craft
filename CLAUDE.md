@@ -1,6 +1,8 @@
-# craft v0.2
+# craft v0.4
 
-Portable workflow package for Codex and Claude Code. Five modal commands plus activation, board, context, and prior-art research, organized around the work cycle:
+Portable workflow and capability-routing package for Codex and Claude Code.
+Five modal commands plus activation, board, context, prior-art research, and
+four bundled workflow capabilities are organized around the work cycle:
 
 ```
 discuss → compose → distill → reconsider → present
@@ -12,24 +14,31 @@ discuss → compose → distill → reconsider → present
 | Command | Purpose | Modes |
 |---|---|---|
 | `/craft:discuss` | Deliberate, debate, plan, research | `--quick`, `--debate`, `--plan`, `--research` |
-| `/craft:compose` | Build viz, frontends, docs, flows, games, surgical fixes | `viz`, `frontend`, `docs`, `flow`, `game`, `surgical` |
-| `/craft:distill` | Hygiene: harvest, audit, session begin/end | `--full`, `--audit`, `--begin`, `--conclude` |
+| `/craft:compose` | Build viz, frontends, docs, flows, games, skills, surgical fixes | `viz`, `frontend`, `docs`, `flow`, `game`, `skill`, `surgical` |
+| `/craft:distill` | Hygiene: harvest, code/skill audits, session begin/end | `--full`, `--audit`, `--skills`, `--begin`, `--conclude` |
 | `/craft:reconsider` | Validate, rebuild from first principles, blast-radius analysis | `--validate`, `--rebuild`, `--blast` |
 | `/craft:present` | Save, ship, publish, PR, wrap | `save`, `ship`, `publish`, `pr`, `wrap` |
 | `/craft:board` | Kanban for tracking work | `add`, `done`, `show` |
 | `/craft:context` | Deep CLAUDE.md hierarchy refresh | (none) |
 | `/craft:activate` | Start a focused session with repository context | (none) |
 | `/craft:enhance` | Research local and current prior art before building | (none) |
+| `/craft:chefs-choice` | Select useful capabilities for an ambitious delegated approach | (none) |
+| `/craft:exemplar` | Set an exceptional quality target without performative complexity | (none) |
+| `/craft:skill-auditor` | Audit skills, plugins, and installations without editing them | (none) |
+| `/craft:skill-creator` | Create or revise portable, tested skills and plugins | (none) |
 
 ## Architecture
 
-**Self-contained, pure markdown.** No build step. No Python package. Edit `.md` files directly.
+**Self-contained, no build step.** Skills are Markdown with stdlib helper scripts.
 
-- 9 user-facing skills (entry points in `skills/<name>/SKILL.md`)
+- 9 workflow entry points and 4 bundled capability skills in `skills/<name>/SKILL.md`
 - 14 helper profiles in `agents/`
-- 9 stdlib scripts in `scripts/`
+- 9 root stdlib scripts plus 5 bundled skill-auditing and creation scripts
 
-**No dependency** on any other plugin. Where second-opinion or data-fetching capability matters, scripts try CLI tools (codex, gemini, aider), fall through to MCP servers (`etiquette-providers` if installed), then to direct API calls, then degrade to Claude-only with a graceful note.
+**No hard dependency** on another plugin. Craft discovers optional providers and
+degrades with an explicit limitation. Where second-opinion or data-fetching
+capability matters, scripts try configured CLI tools and provider surfaces, then
+continue with the current runtime when none is available.
 
 ## Helper profiles
 
@@ -78,7 +87,9 @@ Board HTML: `~/html/craft/board/index.html` (served via Caddy if configured).
 - Credit Luke Steuber, never a model or tool.
 - Use "I" not "we" in generated content
 - No `Co-Authored-By` in commits
-- Skills under 2,000 tokens; heavy reference material goes in `references/` subdirectories (none yet)
+- Keep entry skills concise; put detailed criteria and variants in one-level `references/` directories
+- Capability roles are explicit: one executor, justified overlays/governors, and read-only auditors
+- `skills/capability-routing.md` owns shared composition and fallback behavior
 - All scripts try-then-degrade; nothing hard-depends on optional infrastructure
 
 ## Multi-model strategy
@@ -99,8 +110,20 @@ Both require `pip install geepers-kernel`. Not required.
 
 - `team`: council-style codebase-to-pitch. Different scope; team is for product/business pitches with adversarial review. Cross-link: `/craft:discuss --debate` is lighter-weight; `/team` is the heavyweight version.
 - `elegance`: code refinement and decision council. `/craft:reconsider --validate` for routine checks; `/elegance` for deep refinement with the 14-agent council.
-- Prose editing remains outside Craft's scope.
+- `intentional-ux`: independently versioned provider for task paths, interaction cost, recovery, and experience evidence. Craft routes relevant work to it when installed.
+- `humanize`: independently versioned provider for meaning-preserving prose edits. Craft routes publishing prose to it when installed.
 - `accessibility`: owns `/accessibility`, the dedicated WCAG plugin. `craft-a11y` agent does internal a11y checks during `compose` and `reconsider`; full audits go to `/accessibility`.
+
+## Bundled capability ownership
+
+- `chefs-choice`: governor for resource selection and ambition.
+- `exemplar`: overlay for the quality target and anti-performance filter.
+- `skill-auditor`: read-only auditor behind `/craft:distill --skills`.
+- `skill-creator`: executor behind `/craft:compose skill`.
+
+These four skills are canonical in Craft as of 0.4. Do not maintain editable
+copies in another active plugin. Accessibility, Intentional UX, Humanize, Team,
+and platform/domain skills remain independent providers.
 
 ## Development
 

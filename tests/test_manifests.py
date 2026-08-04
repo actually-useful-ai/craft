@@ -9,20 +9,24 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "0.3.0"
+VERSION = "0.4.0"
 PLUGIN_NAME = "craft"
-SKILL_COUNT = 9
+SKILL_COUNT = 13
 HELPER_COUNT = 14
 SKILL_NAMES = {
     "activate",
     "board",
+    "chefs-choice",
     "compose",
     "context",
     "discuss",
     "distill",
     "enhance",
+    "exemplar",
     "present",
     "reconsider",
+    "skill-auditor",
+    "skill-creator",
 }
 
 
@@ -74,8 +78,15 @@ class ManifestTests(unittest.TestCase):
         claude = (ROOT / "CLAUDE.md").read_text(encoding="utf-8")
         self.assertIn("9 workflow entry points", readme)
         self.assertIn("14 optional helper profiles", readme)
-        self.assertIn("9 user-facing skills", claude)
+        self.assertIn("9 workflow entry points and 4 bundled capability skills", claude)
         self.assertIn("14 helper profiles", claude)
+
+    def test_bundled_capability_license_is_declared(self) -> None:
+        codex = load_json(".codex-plugin/plugin.json")
+        claude = load_json(".claude-plugin/plugin.json")
+        self.assertEqual(codex["license"], "MIT AND Apache-2.0")
+        self.assertEqual(claude["license"], "MIT AND Apache-2.0")
+        self.assertTrue((ROOT / "skills/skill-creator/LICENSE.txt").is_file())
 
     def test_public_installation_guidance_is_accurate(self) -> None:
         readme = (ROOT / "README.md").read_text(encoding="utf-8")

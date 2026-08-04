@@ -4,7 +4,7 @@ Keep the same reviewed releases of four plugins on Neo, Beast, and Drummer:
 
 | Plugin | Repository | Release |
 |---|---|---|
-| Craft | [`actually-useful-ai/craft`](https://github.com/actually-useful-ai/craft) | `v0.3.0` |
+| Craft | [`actually-useful-ai/craft`](https://github.com/actually-useful-ai/craft) | `v0.4.0` |
 | Intentional UX | [`actually-useful-ai/intentional-ux`](https://github.com/actually-useful-ai/intentional-ux) | `v0.1.0` |
 | Accessibility | [`actually-useful-ai/accessibility-devkit`](https://github.com/actually-useful-ai/accessibility-devkit) | `v1.0.0` |
 | Humanize | [`actually-useful-ai/humanize`](https://github.com/actually-useful-ai/humanize) | `v1.2.0` |
@@ -42,7 +42,7 @@ install_plugin_release() {
     "https://github.com/$repository.git" "$destination"
 }
 
-install_plugin_release actually-useful-ai/craft v0.3.0 craft
+install_plugin_release actually-useful-ai/craft v0.4.0 craft
 install_plugin_release actually-useful-ai/intentional-ux v0.1.0 intentional-ux
 install_plugin_release actually-useful-ai/accessibility-devkit v1.0.0 accessibility
 install_plugin_release actually-useful-ai/humanize v1.2.0 humanize
@@ -118,6 +118,10 @@ For fixture-based testing, use `scripts/plugin-parity.sh --fixture path/to/matri
 Hashes prove that the reviewed skill sources match. They do not prove that a running Codex session reloaded them. On every machine, open a fresh session and confirm that these entries appear in the skill picker:
 
 - `craft:compose`
+- `craft:chefs-choice`
+- `craft:exemplar`
+- `craft:skill-auditor`
+- `craft:skill-creator`
 - `intentional-ux:intentional-ux`
 - `accessibility:accessibility`
 - `humanize:humanize`

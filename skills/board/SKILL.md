@@ -1,6 +1,6 @@
 ---
 name: board
-description: "Kanban board for tracking craft work. Add cards, mark done, view the board."
+description: "Track Craft work on a lightweight Kanban board. Use when adding persistent cross-session cards, marking work done, or viewing the project board."
 allowed-tools: Read, Grep, Glob, Bash
 ---
 
