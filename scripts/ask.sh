@@ -17,7 +17,13 @@ die() {
 }
 
 file_mode() {
-  stat -f '%Lp' "$1" 2>/dev/null || stat -c '%a' "$1" 2>/dev/null || return 1
+  local mode
+  mode=$(stat -f '%Lp' "$1" 2>/dev/null || true)
+  case "$mode" in
+    ''|*[!0-9]*) mode=$(stat -c '%a' "$1" 2>/dev/null || true) ;;
+  esac
+  case "$mode" in ''|*[!0-9]*) return 1 ;; esac
+  printf '%s\n' "$mode"
 }
 
 require_private_file() {

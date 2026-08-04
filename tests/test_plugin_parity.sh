@@ -6,6 +6,7 @@ TMP_DIR=$(mktemp -d)
 trap 'rm -rf "$TMP_DIR"' EXIT HUP INT TERM
 
 grep -q '"$plugin_root/scripts"' "$ROOT/scripts/plugin-parity.sh"
+grep -q '__pycache__' "$ROOT/scripts/plugin-parity.sh"
 if grep -q -- '-name SKILL.md' "$ROOT/scripts/plugin-parity.sh"; then
   echo "package parity must include non-SKILL files" >&2
   exit 1

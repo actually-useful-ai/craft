@@ -65,9 +65,11 @@ for plugin do
   version=$(sed -n '\''s/^[[:space:]]*"version"[[:space:]]*:[[:space:]]*"\([^"[:space:]]*\)".*/\1/p'\'' "$manifest" | head -n 1)
   content_files=$(
     if [ -d "$plugin_root/scripts" ]; then
-      find "$skills" "$plugin_root/scripts" -type f -print
+      find "$skills" "$plugin_root/scripts" -type f \
+        ! -path '*/__pycache__/*' ! -name '*.pyc' ! -name '.DS_Store' -print
     else
-      find "$skills" -type f -print
+      find "$skills" -type f \
+        ! -path '*/__pycache__/*' ! -name '*.pyc' ! -name '.DS_Store' -print
     fi | LC_ALL=C sort
   )
 

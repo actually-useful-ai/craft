@@ -130,6 +130,19 @@ sys.stdout.write(status)
         )
         fake_curl.chmod(0o755)
 
+        fake_stat = fake_bin / "stat"
+        fake_stat.write_text(
+            """#!/bin/sh
+if [ "$1" = "-f" ]; then
+  printf 'GNU filesystem report\n%s\n' "${CRAFT_ASK_FAKE_MODE:-600}"
+else
+  printf '%s\n' "${CRAFT_ASK_FAKE_MODE:-600}"
+fi
+""",
+            encoding="utf-8",
+        )
+        fake_stat.chmod(0o755)
+
         if configured:
             config = home / ".config" / "craft" / "ask.env"
             config.parent.mkdir(parents=True)
@@ -247,6 +260,7 @@ sys.stdout.write(status)
             env, capture = self.fixture_env(root)
             config = root / "home" / ".config" / "craft" / "ask.env"
             config.chmod(0o644)
+            env["CRAFT_ASK_FAKE_MODE"] = "644"
             result = self.run_ask("--status", env=env)
 
             self.assertEqual(result.returncode, 3)
