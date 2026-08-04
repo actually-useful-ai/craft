@@ -12,14 +12,18 @@ Think before you build. This is the deliberation phase of the craft cycle (`disc
 
 | Mode | When to use |
 |------|-------------|
-| `--quick` (default) | Fast brainstorm. Two-paragraph response with options + a recommendation. |
+| `--quick` (default) | Fast recommendation. Two-paragraph response with options + a main tradeoff. |
 | `--debate` | Adversarial debate with at least one critic agent and one supporter. Preserves dissent. |
 | `--plan` | Structured plan: scope, sequence, acceptance criteria, assumptions, risks. |
 | `--research` | Parallel research fan-out across web/academic/data sources. Aggregates and dedupes. |
 
 ## How it picks
 
-If the input is a question and short, `--quick`. If it contains "should we" or compares options, `--debate`. If it asks "how do we build X" with implementation depth, `--plan`. If it asks "what's known about X" or names a topic to investigate, `--research`.
+If the input asks for open-ended pre-commit ideas or “what am I missing?”, route
+to Horizon. Otherwise, if the input is a short decision question, use `--quick`.
+If it contains “should we” or compares options, use `--debate`. If it asks “how
+do we build X” with implementation depth, use `--plan`. If it asks “what's known
+about X” or names a topic to investigate, use `--research`.
 
 ## Procedure
 

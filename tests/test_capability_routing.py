@@ -20,7 +20,10 @@ class CapabilityRoutingTests(unittest.TestCase):
         contract = (ROOT / "skills/capability-routing.md").read_text(encoding="utf-8")
         for role in ("Executor", "Overlay", "Governor", "Auditor"):
             self.assertIn(f"**{role}:**", contract)
-        for capability in ("ask", "chefs-choice", "exemplar", "skill-auditor", "skill-creator"):
+        for capability in (
+            "ask", "chefs-choice", "exemplar", "horizon", "skill-auditor",
+            "skill-creator", "swarm",
+        ):
             self.assertIn(f"`{capability}`", contract)
         for provider in ("Intentional UX", "Accessibility", "Humanize"):
             self.assertIn(provider, contract)
@@ -59,6 +62,8 @@ class CapabilityRoutingTests(unittest.TestCase):
             "Missing provider",
             "External domain boundary",
             "External consultation boundary",
+            "Horizon boundary",
+            "Swarm boundary",
         ):
             self.assertIn(f"## {heading}", fixture)
         self.assertIn("one primary executor", normalized)
@@ -66,6 +71,8 @@ class CapabilityRoutingTests(unittest.TestCase):
         self.assertIn("Accessibility remains independently versioned", normalized)
         self.assertIn("zero outside-model calls", normalized)
         self.assertIn("one bounded call", normalized)
+        self.assertIn("exactly four Luna calls", normalized)
+        self.assertIn("zero outside calls", normalized)
 
 
 if __name__ == "__main__":

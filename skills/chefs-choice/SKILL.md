@@ -48,6 +48,8 @@ State the selected capability and why it fits in one concise line.
 - Preserve repository and deployment safety rules.
 - Read before editing and inspect source/installed state before creating or replacing resources.
 - Do not expose secrets to delegated tools or external models.
+- Do not launch Ask or Swarm unless the request separately authorizes the
+  corresponding outside call or many-scout spend.
 - Keep dissent when independent reviewers identify different concrete failure modes.
 - Run the relevant tests or acceptance checks before reporting completion.
 

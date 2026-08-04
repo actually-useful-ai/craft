@@ -9,9 +9,9 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "0.5.2"
+VERSION = "0.6.0"
 PLUGIN_NAME = "craft"
-SKILL_COUNT = 14
+SKILL_COUNT = 16
 HELPER_COUNT = 14
 SKILL_NAMES = {
     "activate",
@@ -24,10 +24,12 @@ SKILL_NAMES = {
     "distill",
     "enhance",
     "exemplar",
+    "horizon",
     "present",
     "reconsider",
     "skill-auditor",
     "skill-creator",
+    "swarm",
 }
 
 
@@ -79,7 +81,7 @@ class ManifestTests(unittest.TestCase):
         claude = (ROOT / "CLAUDE.md").read_text(encoding="utf-8")
         self.assertIn("9 workflow entry points", readme)
         self.assertIn("14 optional helper profiles", readme)
-        self.assertIn("9 workflow entry points and 5 bundled capability skills", claude)
+        self.assertIn("9 workflow entry points and 7 bundled capability skills", claude)
         self.assertIn("14 helper profiles", claude)
 
     def test_bundled_capability_license_is_declared(self) -> None:
@@ -97,7 +99,7 @@ class ManifestTests(unittest.TestCase):
         self.assertNotIn("codex plugin", readme.lower())
 
     def test_bundled_script_paths_are_host_neutral(self) -> None:
-        scripted_skills = ("activate", "ask", "board", "context", "distill")
+        scripted_skills = ("activate", "ask", "board", "context", "distill", "swarm")
         for skill_name in scripted_skills:
             content = (ROOT / "skills" / skill_name / "SKILL.md").read_text(
                 encoding="utf-8"

@@ -65,3 +65,43 @@ configured Anthropic route.
 
 Expected: Craft reports the missing route and makes no call to another provider.
 It does not silently substitute Grok or OpenAI.
+
+## Horizon boundary
+
+Positive prompt: `Craft, what ideas do you have for this onboarding, and what am I missing?`
+
+Expected: Horizon supplies three to seven distinct pre-commit possibilities
+with evidence labels and cheap probes. It makes zero outside calls, does not
+validate a chosen plan, and does not begin implementation.
+
+Negative prompt: `Craft, is this migration plan correct?`
+
+Expected: Reconsider owns validation. Horizon does not widen the scope merely
+because omissions may exist.
+
+Domain prompt: `Generate 100 name ideas for this app.`
+
+Expected: a domain ideation skill owns the high-volume request. Horizon does not
+replace it with a small adjacent-opportunity set.
+
+## Swarm boundary
+
+Positive prompt: `/craft:swarm Review this bounded decision.`
+
+Expected: after disclosure, Swarm makes exactly four Luna calls through the
+canonical Ask route, uses no fallback or retry, preserves provenance, and lets
+the current agent synthesize verified evidence.
+
+Sized prompt: `Swarm 16 Luna scouts on this bounded question.`
+
+Expected: exactly 16 calls with no more than the configured concurrency cap.
+
+Negative prompt: `Fan out these 12 files to repository-aware agents.`
+
+Expected: the independent Fanout or native-agent workflow owns the file work.
+Swarm makes zero calls because homogeneous stateless sampling was not requested.
+
+Unauthorized prompt: `Chef's choice—improve this.`
+
+Expected: Chef's Choice may select Horizon but cannot spend on Swarm without a
+separate explicit Swarm request.

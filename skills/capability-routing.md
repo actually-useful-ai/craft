@@ -17,7 +17,9 @@ reasoning, implementation, or verification. Never stack skills ceremonially.
 
 | Capability | Role | Select when |
 | --- | --- | --- |
-| `ask` | Executor or evidence provider | Luke explicitly requests an outside-model answer, names an external provider/model, or authorizes external fan-out. It is the executor only when that answer is the deliverable; otherwise it supplies advisory evidence. |
+| `ask` | Executor or evidence provider | Luke explicitly requests exactly one outside-model answer or names an external provider/model for one answer. It is the executor only when that answer is the deliverable; otherwise it supplies advisory evidence. |
+| `swarm` | Executor or evidence provider | Luke explicitly requests a Swarm, a named Swarm size, or many homogeneous Luna scouts. It is paid, read-only breadth sampling; it does not perform repository-aware work or vote on the verdict. |
+| `horizon` | Deliberative executor or hypothesis provider | Luke asks for consequential pre-commit ideas, adjacent possibilities, or what may be missing. It widens the frame without validating or implementing a chosen plan. |
 | `chefs-choice` | Governor | Luke delegates an ambitious approach with “chef’s choice,” “surprise me,” “go nuts,” or a standalone “hit it,” “do it,” or “get it done.” |
 | `exemplar` | Overlay | The request says “impress me,” “exceptional,” “flagship,” “go beyond adequate,” or explicitly asks for Exemplar. Routine polish and mechanical edits do not qualify. |
 | `skill-auditor` | Auditor | The target is a skill catalog, plugin package, installation fleet, routing contract, or source/install drift. |
@@ -27,10 +29,21 @@ Chef’s Choice selects useful resources. Exemplar sets the quality bar. Neither
 replaces the domain executor, changes permissions, or overrides a safety,
 accessibility, legal, or compliance capability.
 
-Ask has an additional disclosure and spend boundary. Selecting it does not authorize a call:
-the request must explicitly ask for an external consult,
-provider/model, or fan-out. Outside output remains advisory until verified, and
-missing routes never trigger silent provider substitution.
+Ask and Swarm have an additional disclosure and spend boundary. Selecting them
+does not authorize a call: the request must explicitly ask for one external
+consultation or for a many-scout Swarm, respectively. Horizon, Chef's Choice,
+Discuss, Reconsider, “parallelize,” and generic work fan-out do not authorize a
+Swarm. Outside output remains advisory until verified, and missing routes never
+trigger silent provider substitution.
+
+Keep adjacent parallel capabilities distinct:
+
+- Ask: exactly one bounded outside answer.
+- Swarm: many stateless, read-only samples from the canonical Luna route.
+- Fanout: heterogeneous CLI or repository-aware work split by independent item.
+- Team or Consensus: stateful roles or a small diverse-model council.
+- Horizon: internal pre-commit possibilities with no outside call.
+- Reconsider: scrutiny of an existing decision or implementation.
 
 ## Optional providers
 
@@ -70,6 +83,7 @@ assumed evidence to observed or measured.
 
 - `activate` discovers the workspace and active capability surface, then routes.
 - `discuss` selects the stack and acceptance evidence.
+- `horizon` may widen the option space before `discuss` recommends or plans.
 - `compose` executes with one primary owner and the selected overlays.
 - `distill` verifies, audits, simplifies, and exposes unresolved evidence gaps.
 - `reconsider` challenges the stack, assumptions, and fallbacks.

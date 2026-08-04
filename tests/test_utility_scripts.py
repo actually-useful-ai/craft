@@ -10,7 +10,9 @@ import os
 from pathlib import Path
 import re
 import subprocess
+import sys
 import tempfile
+import time
 from typing import Dict, Optional
 import unittest
 
@@ -194,6 +196,7 @@ fi
                 [
                     ("grok", "grok-4.5", None),
                     ("anthropic", "claude-opus-5", "high-default"),
+                    ("luna", "gpt-5.6-luna", "low"),
                     ("openai", "gpt-5.6-sol", "medium"),
                 ],
             )
@@ -225,6 +228,17 @@ fi
             self.assertEqual(request["provider"], "openai")
             self.assertEqual(request["model"], "gpt-5.6-sol")
             self.assertEqual(request["reasoning_effort"], "medium")
+
+    def test_luna_route_is_distinct_and_low_effort(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_dir:
+            env, capture = self.fixture_env(Path(temporary_dir))
+            result = self.run_ask("luna", "question", env=env)
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            request = json.loads(capture.read_text(encoding="utf-8"))["request"]
+            self.assertEqual(request["provider"], "openai")
+            self.assertEqual(request["model"], "gpt-5.6-luna")
+            self.assertEqual(request["reasoning_effort"], "low")
 
     def test_errors_are_classified_without_leaking_provider_body(self) -> None:
         expected = {"401": 3, "404": 4, "429": 5, "500": 6}
@@ -272,6 +286,140 @@ fi
         self.assertIn('with_name("ask.sh")', source)
         for stale_literal in ("grok-4-fast", "gpt-4o-mini", "ProviderFactory"):
             self.assertNotIn(stale_literal, source)
+
+
+class SwarmTests(unittest.TestCase):
+    def run_swarm(
+        self, *args: str, env: Optional[Dict[str, str]] = None
+    ) -> subprocess.CompletedProcess:
+        process_env = os.environ.copy()
+        if env:
+            process_env.update(env)
+        return subprocess.run(
+            [sys.executable, str(SCRIPTS / "swarm.py"), *args],
+            cwd=ROOT,
+            env=process_env,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+
+    def fake_ask(self, root: Path) -> Path:
+        path = root / "ask-fixture.py"
+        path.write_text(
+            """#!/usr/bin/env python3
+import json
+import os
+import re
+import sys
+import time
+
+prompt = sys.stdin.read()
+if "--list" in sys.argv:
+    print(json.dumps({"routes": [{
+        "provider": "luna",
+        "api_provider": "openai",
+        "transport": "fixture",
+        "model": "gpt-5.6-luna",
+        "effort": "low",
+    }]}))
+    raise SystemExit(0)
+match = re.search(r"Luna scout (\\d+)", prompt)
+scout_id = int(match.group(1)) if match else 0
+if os.environ.get("CRAFT_SWARM_FAIL_ID") == str(scout_id):
+    print("ask: provider rate limit reached", file=sys.stderr)
+    raise SystemExit(5)
+if os.environ.get("CRAFT_SWARM_SLEEP"):
+    time.sleep(float(os.environ["CRAFT_SWARM_SLEEP"]))
+print(json.dumps({
+    "provider": "openai",
+    "model": "gpt-5.6-luna",
+    "content": f"fixture scout {scout_id}",
+    "usage": {"total_tokens": 9},
+}))
+""",
+            encoding="utf-8",
+        )
+        path.chmod(0o755)
+        return path
+
+    def test_jillion_dry_run_is_network_free_and_bounded(self) -> None:
+        result = self.run_swarm(
+            "--size", "jillion", "--dry-run", "--json", "--", "question",
+            env={"CRAFT_SWARM_ASK": "/does/not/exist"},
+        )
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        payload = json.loads(result.stdout)
+        self.assertEqual(payload["mode"], "dry-run")
+        self.assertEqual(payload["route"], {"alias": "luna"})
+        self.assertEqual(payload["count"], 32)
+        self.assertEqual(payload["output_token_ceiling"], 32 * 320)
+        self.assertEqual(len(payload["assignments"]), 32)
+
+    def test_run_preserves_provenance_and_assignment_order(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_dir:
+            fake = self.fake_ask(Path(temporary_dir))
+            result = self.run_swarm(
+                "--count", "4", "--concurrency", "2", "--run", "--json", "--", "question",
+                env={"CRAFT_SWARM_ASK": str(fake)},
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            payload = json.loads(result.stdout)
+            self.assertEqual(payload["succeeded"], 4)
+            self.assertEqual([item["id"] for item in payload["results"]], [1, 2, 3, 4])
+            self.assertTrue(all(item["provider"] == "openai" for item in payload["results"]))
+            self.assertTrue(all(item["model"] == "gpt-5.6-luna" for item in payload["results"]))
+
+    def test_partial_failure_is_reported_without_retry(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_dir:
+            fake = self.fake_ask(Path(temporary_dir))
+            result = self.run_swarm(
+                "--count", "4", "--run", "--json", "--", "question",
+                env={"CRAFT_SWARM_ASK": str(fake), "CRAFT_SWARM_FAIL_ID": "2"},
+            )
+
+            self.assertEqual(result.returncode, 8, result.stderr)
+            payload = json.loads(result.stdout)
+            self.assertEqual(payload["state"], "partial")
+            self.assertEqual(payload["succeeded"], 3)
+            self.assertEqual(payload["failed"], 1)
+            failed = [item for item in payload["results"] if not item["ok"]]
+            self.assertEqual([item["id"] for item in failed], [2])
+            self.assertEqual(failed[0]["exit_code"], 5)
+
+    def test_likely_secret_is_rejected_before_transport(self) -> None:
+        result = self.run_swarm(
+            "--run", "--json", "--", "API_KEY=abcdefghijklmnopqrstuvwxyz123456",
+            env={"CRAFT_SWARM_ASK": "/does/not/exist"},
+        )
+
+        self.assertEqual(result.returncode, 3)
+        self.assertIn("appears to contain", result.stderr)
+
+    def test_more_than_sixty_four_scouts_is_rejected(self) -> None:
+        result = self.run_swarm("--count", "65", "--run", "--", "question")
+
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("between 1 and 64", result.stderr)
+
+    def test_global_deadline_cancels_inflight_and_queued_scouts(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_dir:
+            fake = self.fake_ask(Path(temporary_dir))
+            started = time.monotonic()
+            result = self.run_swarm(
+                "--count", "4", "--concurrency", "2", "--deadline", "1",
+                "--run", "--json", "--", "question",
+                env={"CRAFT_SWARM_ASK": str(fake), "CRAFT_SWARM_SLEEP": "10"},
+            )
+
+            self.assertEqual(result.returncode, 130, result.stderr)
+            self.assertLess(time.monotonic() - started, 5)
+            payload = json.loads(result.stdout)
+            self.assertEqual(payload["state"], "cancelled")
+            self.assertFalse(payload["synthesis_allowed"])
+            self.assertEqual(payload["cancelled"], 4)
 
 
 class NavigationTests(unittest.TestCase):

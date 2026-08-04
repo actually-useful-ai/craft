@@ -1,8 +1,8 @@
-# craft v0.5
+# craft v0.6
 
 Portable workflow and capability-routing package for Codex and Claude Code.
 Five modal commands plus activation, board, context, prior-art research, and
-five bundled workflow capabilities are organized around the work cycle:
+seven bundled workflow capabilities are organized around the work cycle:
 
 ```
 discuss → compose → distill → reconsider → present
@@ -25,16 +25,18 @@ discuss → compose → distill → reconsider → present
 | `/craft:ask` | Obtain one explicitly authorized outside-model opinion | (none) |
 | `/craft:chefs-choice` | Select useful capabilities for an ambitious delegated approach | (none) |
 | `/craft:exemplar` | Set an exceptional quality target without performative complexity | (none) |
+| `/craft:horizon` | Surface consequential pre-commit ideas and blind spots | (none) |
 | `/craft:skill-auditor` | Audit skills, plugins, and installations without editing them | (none) |
 | `/craft:skill-creator` | Create or revise portable, tested skills and plugins | (none) |
+| `/craft:swarm` | Run an explicitly authorized bounded Luna scout swarm | (none) |
 
 ## Architecture
 
 **Self-contained, no build step.** Skills are Markdown with stdlib helper scripts.
 
-- 9 workflow entry points and 5 bundled capability skills in `skills/<name>/SKILL.md`
+- 9 workflow entry points and 7 bundled capability skills in `skills/<name>/SKILL.md`
 - 14 helper profiles in `agents/`
-- 12 root stdlib scripts plus 5 bundled skill-auditing and creation scripts
+- 13 root stdlib scripts plus 5 bundled skill-auditing and creation scripts
 
 **No hard dependency** on another plugin. Craft discovers optional providers and
 degrades with an explicit limitation. Where second-opinion or data-fetching
@@ -60,6 +62,7 @@ All in `scripts/`, called from skills after resolving `CRAFT_PLUGIN_ROOT` with
 | Script | Purpose |
 |---|---|
 | `ask.sh` | Canonical outside-model consultation with explicit model provenance |
+| `swarm.py` | Bounded concurrent Luna scout orchestration through `ask.sh` |
 | `llm-query.py` | Compatibility wrapper that delegates to `ask.sh` |
 | `data-fetch.py` | 17 data sources (uses `~/shared/data_fetching` if present) |
 | `analyze.py` | Code complexity, duplication detection (stdlib only) |
@@ -115,11 +118,13 @@ Board HTML: `~/html/craft/board/index.html` (served via Caddy if configured).
 
 - `chefs-choice`: governor for resource selection and ambition.
 - `ask`: executor for an outside-model answer or an advisory evidence provider after explicit authorization.
+- `horizon`: deliberative executor for a compact pre-commit option set or a hypothesis provider to Discuss.
+- `swarm`: executor for an explicitly authorized homogeneous Luna exploration or an advisory evidence provider.
 - `exemplar`: overlay for the quality target and anti-performance filter.
 - `skill-auditor`: read-only auditor behind `/craft:distill --skills`.
 - `skill-creator`: executor behind `/craft:compose skill`.
 
-These five skills are canonical in Craft as of 0.5. Do not maintain editable
+These seven skills are canonical in Craft as of 0.6. Do not maintain editable
 copies in another active plugin. Accessibility, Intentional UX, Humanize, Team,
 and platform/domain skills remain independent providers.
 

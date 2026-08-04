@@ -1,6 +1,6 @@
 ---
 name: ask
-description: "Get one bounded outside-model answer with explicit provider and model provenance. Use when Luke explicitly asks to consult, ask, fan out to, or obtain a second opinion from an external model; also use to configure or verify Craft's portable consultation route."
+description: "Get exactly one bounded outside-model answer with explicit provider and model provenance. Use when Luke explicitly asks to consult, ask, or obtain one second opinion from an external model; also use to configure or verify Craft's portable consultation route. Do not use for a multi-scout Swarm or repository-aware work fan-out."
 allowed-tools: Read, Bash
 ---
 
@@ -18,8 +18,8 @@ another Craft phase.
 ## Authorization boundary
 
 An outside call sends the constructed prompt beyond the current runtime and may
-incur usage charges. Run it only when the request explicitly asks to consult an
-external model, names a provider/model, requests fan-out, or explicitly invokes
+incur usage charges. Run it only when the request explicitly asks to consult one
+external model, names a provider/model for one answer, or explicitly invokes
 Ask. Chef's Choice, Exemplar, activation, discussion, or reconsideration alone
 does not authorize a paid call.
 

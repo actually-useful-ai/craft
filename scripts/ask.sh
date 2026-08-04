@@ -78,11 +78,15 @@ route() {
       PROVIDER=anthropic; MODEL=claude-opus-5; EFFORT_LABEL=high-default
       DIRECT_URL=https://api.anthropic.com/v1/messages; DIRECT_KEY="${ANTHROPIC_API_KEY:-}"
       ;;
+    luna)
+      PROVIDER=openai; MODEL=gpt-5.6-luna; EFFORT=low; EFFORT_LABEL=low
+      DIRECT_URL=https://api.openai.com/v1/chat/completions; DIRECT_KEY="${OPENAI_API_KEY:-}"
+      ;;
     openai|gpt)
       PROVIDER=openai; MODEL=gpt-5.6-sol; EFFORT=medium; EFFORT_LABEL=medium
       DIRECT_URL=https://api.openai.com/v1/chat/completions; DIRECT_KEY="${OPENAI_API_KEY:-}"
       ;;
-    *) die "unknown provider '$1' (supported: grok, anthropic, openai)" ;;
+    *) die "unknown provider '$1' (supported: grok, anthropic, luna, openai)" ;;
   esac
   [ -n "$MODEL_OVERRIDE" ] && MODEL="$MODEL_OVERRIDE"
   if [ -n "$EFFORT_OVERRIDE" ]; then EFFORT="$EFFORT_OVERRIDE"; EFFORT_LABEL="$EFFORT_OVERRIDE"; fi
@@ -100,7 +104,7 @@ transport_for_route() {
 
 emit_routes() {
   local alias transport
-  for alias in grok anthropic openai; do
+  for alias in grok anthropic luna openai; do
     route "$alias"; transport=$(transport_for_route)
     printf '%s\t%s\t%s\t%s\t%s\n' "$alias" "$PROVIDER" "$transport" "$MODEL" "$EFFORT_LABEL"
   done
@@ -129,7 +133,7 @@ status() {
   local alias transport config_state
   config_state=absent; [ -f "$CONFIG_FILE" ] && config_state=loaded
   printf 'config\t%s\n' "$config_state"
-  for alias in grok anthropic openai; do
+  for alias in grok anthropic luna openai; do
     route "$alias"; transport=$(transport_for_route)
     printf '%s\t%s\n' "$alias" "$transport"
   done
@@ -176,9 +180,9 @@ classify_http_error() {
 
 extract_response() {
   local response_file="$1"
-  python3 - "$PROVIDER" "$MODEL" "$OUTPUT_FORMAT" "$response_file" <<'PY'
+  python3 - "$PROVIDER" "$MODEL" "$EFFORT_LABEL" "$OUTPUT_FORMAT" "$response_file" <<'PY'
 import json, sys
-declared_provider, declared_model, output_format, response_file = sys.argv[1:]
+declared_provider, declared_model, effort, output_format, response_file = sys.argv[1:]
 try:
     with open(response_file, encoding="utf-8") as handle:
         data = json.load(handle)
@@ -207,7 +211,9 @@ if actual_model != declared_model:
     raise SystemExit(7)
 usage = data.get("usage", {})
 if output_format == "json":
-    print(json.dumps({"provider": actual_provider, "model": actual_model, "content": content.strip(), "usage": usage}, ensure_ascii=False))
+    print(json.dumps({"provider": actual_provider, "model": actual_model,
+                      "effort": None if effort == "-" else effort,
+                      "content": content.strip(), "usage": usage}, ensure_ascii=False))
 else:
     print(f"ask: {actual_provider}/{actual_model}", file=sys.stderr)
     print(content.strip())
@@ -260,8 +266,8 @@ ask_once() {
 usage() {
   cat <<'EOF'
 Usage:
-  ask.sh [grok|anthropic|openai] QUESTION
-  ask.sh [grok|anthropic|openai] -        # read question from stdin
+  ask.sh [grok|anthropic|luna|openai] QUESTION
+  ask.sh [grok|anthropic|luna|openai] -        # read question from stdin
   ask.sh --provider PROVIDER [--model ID] [--effort LEVEL] QUESTION
   ask.sh --list [--json] | --status | --probe PROVIDER
 
@@ -288,7 +294,7 @@ while [ "$#" -gt 0 ]; do
     -) PROMPT=-; shift; break ;;
     *)
       if [ -z "$PROVIDER_ALIAS" ]; then
-        case "$1" in grok|xai|anthropic|claude|opus|openai|gpt) PROVIDER_ALIAS="$1"; shift; continue ;; esac
+        case "$1" in grok|xai|anthropic|claude|opus|luna|openai|gpt) PROVIDER_ALIAS="$1"; shift; continue ;; esac
       fi
       break
       ;;

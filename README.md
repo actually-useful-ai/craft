@@ -33,6 +33,8 @@ From a Claude Code session, add the repository as a marketplace and install Craf
 ```bash
 /craft:activate "Add OAuth to the API and choose the right approach"
 /craft:ask anthropic "Challenge this migration plan"      # outside opinion
+/craft:horizon "What am I missing in this product direction?" # adjacent options
+/craft:swarm --size jillion "Scout this decision"        # 32 bounded Luna scouts
 /craft:discuss --plan "Add OAuth to the API"          # plan first
 /craft:compose frontend src/components/Login.tsx      # build it
 /craft:compose skill skills/example                    # create or revise a skill
@@ -47,9 +49,9 @@ Every command takes a mode flag and a target. Defaults are sensible: `--quick` f
 ## What's included
 
 - 9 workflow entry points (`activate`, `board`, `compose`, `context`, `discuss`, `distill`, `enhance`, `present`, `reconsider`)
-- 5 bundled capabilities (`ask`, `chefs-choice`, `exemplar`, `skill-auditor`, `skill-creator`)
+- 7 bundled capabilities (`ask`, `chefs-choice`, `exemplar`, `horizon`, `skill-auditor`, `skill-creator`, `swarm`)
 - 14 optional helper profiles for deliberation, quality, implementation, delivery, and project maintenance
-- 17 stdlib scripts, including deterministic consultation, skill auditing, and packaging tools
+- 18 stdlib scripts, including deterministic consultation, bounded Swarm orchestration, skill auditing, and packaging tools
 
 ## Capability routing
 
@@ -65,6 +67,11 @@ owns implementation; optional providers such as Intentional UX, Accessibility,
 and Humanize retain authority in their domains. Craft reports a material
 selection in one concise line instead of requiring the person to remember a
 catalog of skill names.
+
+Horizon opens the option space before a decision; Reconsider challenges a
+direction after it exists. Ask obtains exactly one outside opinion. Swarm runs
+many stateless Luna scouts only after explicit paid-call authorization; generic
+parallel work remains the job of native agents or the independent Fanout skill.
 
 The bundled capability-maintenance paths are `/craft:compose skill` for creating
 or revising skills and `/craft:distill --skills` for read-only package and fleet
@@ -99,6 +106,12 @@ entry point delegates to this one route table.
 
 Nothing in Craft depends on a configured outside provider. The workflow entry
 points work on their own and report a missing route as a limitation.
+
+`/craft:swarm` consumes Ask's canonical `luna` route rather than maintaining a
+second model table. Presets run 4, 8, 16, or 32 scouts; a hard ceiling of 64,
+short per-scout responses, no retries, a global deadline, and explicit partial
+status keep the deliberately extravagant mode bounded. Dry runs make no
+inference calls.
 
 ## Fleet parity
 

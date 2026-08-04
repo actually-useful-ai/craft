@@ -10,8 +10,8 @@
     {
       "name": "craft",
       "source": "./",
-      "description": "Route, plan, build, refine, validate, and deliver with nine workflow entry points, five bundled capabilities, and fourteen optional helper profiles.",
-      "version": "0.5.2",
+      "description": "Route, plan, build, refine, validate, and deliver with nine workflow entry points, seven bundled capabilities, and fourteen optional helper profiles.",
+      "version": "0.6.0",
       "category": "workflow",
       "homepage": "https://github.com/actually-useful-ai/craft"
     }
