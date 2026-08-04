@@ -67,12 +67,14 @@ and one decorative complication, then request “Exemplar critique.”
 
 Expected:
 
-- output contains `Merely competent`, `Exemplar opportunities`, and
-  `Performative sophistication` in that order;
+- output begins exactly with `### Merely competent`, followed by
+  `### Exemplar opportunities` and `### Performative sophistication` at the
+  same heading level and in that order;
+- no preface, disclaimer, evaluator narration, summary, or divider appears;
 - no section contains generic praise or an artifact summary;
 - opportunities are limited to one or two changes and each has an observable
   acceptance condition;
 - the decorative complication is recommended for removal or simplification;
 - no revision occurs without separate authorization;
-- correctness, invalid framing, or dependency impact is handed to the matching
-  Reconsider mode rather than being silently absorbed.
+- correctness, invalid framing, or dependency impact is handed to at most one
+  matching Reconsider mode rather than being silently absorbed.

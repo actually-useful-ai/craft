@@ -83,6 +83,9 @@ class CapabilityRoutingTests(unittest.TestCase):
         self.assertIn("one or two smallest changes", normalized)
         for mode in ("`--validate`", "`--rebuild`", "`--blast`"):
             self.assertIn(mode, exemplar)
+        self.assertIn("begin the response exactly with `### Merely competent`", normalized)
+        self.assertIn("Do not add a preface", exemplar)
+        self.assertIn("append at most one final line", normalized)
         self.assertIn("stop before revision unless revision was also authorized", normalized)
 
     def test_horizon_is_a_ranked_precommit_answer_not_generic_brainstorming(self) -> None:

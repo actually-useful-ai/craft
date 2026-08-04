@@ -110,9 +110,13 @@ revising routing, composition, or fallback behavior.
 
 ## Critique output
 
-When Critique mode is requested, inspect the supplied artifact and return only
-the three sections below. Ground each point in the artifact and selected
-dossier; use `None found` rather than padding an empty section.
+When Critique mode is requested, inspect the supplied artifact and begin the
+response exactly with `### Merely competent`. Return the three headings below,
+at the shown level and in the shown order. Do not add a preface, disclaimer,
+evaluator narration, summary, or divider. Ground each point in the artifact and
+selected dossier; use `None found` rather than padding an empty section. Put a
+material inspection limitation inside `Merely competent` rather than before the
+first heading.
 
 ### Merely competent
 
@@ -131,8 +135,10 @@ clarity, reliability, or fit. Recommend removal or simplification. Do not add
 this category merely to complete the template.
 
 If the critique discovers a correctness, framing, or blast-radius problem,
-state the appropriate Reconsider handoff after the three sections. Do not turn
-the critique itself into a rebuild or validation pass.
+append at most one final line in the form
+`Handoff: /craft:reconsider --mode — reason`, choosing the highest-consequence
+problem. Otherwise end with the last critique item. Do not turn the critique
+itself into a rebuild or validation pass.
 
 ## Output behavior
 
