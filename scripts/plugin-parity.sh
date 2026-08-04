@@ -66,10 +66,10 @@ for plugin do
   content_files=$(
     if [ -d "$plugin_root/scripts" ]; then
       find "$skills" "$plugin_root/scripts" -type f \
-        ! -path '*/__pycache__/*' ! -name '*.pyc' ! -name '.DS_Store' -print
+        ! -path "*/__pycache__/*" ! -name "*.pyc" ! -name ".DS_Store" -print
     else
       find "$skills" -type f \
-        ! -path '*/__pycache__/*' ! -name '*.pyc' ! -name '.DS_Store' -print
+        ! -path "*/__pycache__/*" ! -name "*.pyc" ! -name ".DS_Store" -print
     fi | LC_ALL=C sort
   )
 

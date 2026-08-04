@@ -12,6 +12,27 @@ if grep -q -- '-name SKILL.md' "$ROOT/scripts/plugin-parity.sh"; then
   exit 1
 fi
 
+probe_home="$TMP_DIR/probe-home"
+for plugin in craft intentional-ux accessibility humanize; do
+  mkdir -p "$probe_home/plugins/$plugin/.codex-plugin" \
+    "$probe_home/plugins/$plugin/skills/example" \
+    "$probe_home/plugins/$plugin/scripts/__pycache__"
+  printf '{"version":"1.0.0"}\n' > "$probe_home/plugins/$plugin/.codex-plugin/plugin.json"
+  printf '# fixture\n' > "$probe_home/plugins/$plugin/skills/example/SKILL.md"
+  printf '#!/bin/sh\n' > "$probe_home/plugins/$plugin/scripts/example.sh"
+  printf 'generated\n' > "$probe_home/plugins/$plugin/scripts/__pycache__/example.pyc"
+done
+probe_output="$TMP_DIR/probe.out"
+probe_error="$TMP_DIR/probe.err"
+HOME="$probe_home" SSH_BIN=false "$ROOT/scripts/plugin-parity.sh" \
+  > "$probe_output" 2> "$probe_error" || true
+grep -q 'local.*craft.*REFERENCE' "$probe_output"
+if [ -s "$probe_error" ]; then
+  echo "local package probe emitted an error" >&2
+  cat "$probe_error" >&2
+  exit 1
+fi
+
 write_host() {
   target=$1
   host=$2
