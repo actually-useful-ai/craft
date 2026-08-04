@@ -31,6 +31,8 @@ primary executor and any justified governors, overlays, or auditors.
 1. **Frame**: restate the question in one sentence. Identify the mode (default `--quick` if unclear).
 2. **Route**: select the smallest useful capability stack and define observable
    success evidence. Preserve domain ownership and authorization boundaries.
+   Use `ask` as outside evidence only when the request explicitly authorizes an
+   external model call; `--debate` or `--research` alone does not authorize one.
 3. **Think** based on mode:
    - `--quick`: One pass. Two paragraphs. Recommendation + main tradeoff.
    - `--debate`: Launch `craft-critic` and `craft-scout` in parallel. Optionally `craft-validator`. Each produces a position. Synthesize.

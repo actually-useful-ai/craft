@@ -17,6 +17,7 @@ reasoning, implementation, or verification. Never stack skills ceremonially.
 
 | Capability | Role | Select when |
 | --- | --- | --- |
+| `ask` | Executor or evidence provider | Luke explicitly requests an outside-model answer, names an external provider/model, or authorizes external fan-out. It is the executor only when that answer is the deliverable; otherwise it supplies advisory evidence. |
 | `chefs-choice` | Governor | Luke delegates an ambitious approach with “chef’s choice,” “surprise me,” “go nuts,” or a standalone “hit it,” “do it,” or “get it done.” |
 | `exemplar` | Overlay | The request says “impress me,” “exceptional,” “flagship,” “go beyond adequate,” or explicitly asks for Exemplar. Routine polish and mechanical edits do not qualify. |
 | `skill-auditor` | Auditor | The target is a skill catalog, plugin package, installation fleet, routing contract, or source/install drift. |
@@ -25,6 +26,11 @@ reasoning, implementation, or verification. Never stack skills ceremonially.
 Chef’s Choice selects useful resources. Exemplar sets the quality bar. Neither
 replaces the domain executor, changes permissions, or overrides a safety,
 accessibility, legal, or compliance capability.
+
+Ask has an additional disclosure and spend boundary. Selecting it does not authorize a call:
+the request must explicitly ask for an external consult,
+provider/model, or fan-out. Outside output remains advisory until verified, and
+missing routes never trigger silent provider substitution.
 
 ## Optional providers
 

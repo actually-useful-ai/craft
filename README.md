@@ -32,6 +32,7 @@ From a Claude Code session, add the repository as a marketplace and install Craf
 
 ```bash
 /craft:activate "Add OAuth to the API and choose the right approach"
+/craft:ask anthropic "Challenge this migration plan"      # outside opinion
 /craft:discuss --plan "Add OAuth to the API"          # plan first
 /craft:compose frontend src/components/Login.tsx      # build it
 /craft:compose skill skills/example                    # create or revise a skill
@@ -46,9 +47,9 @@ Every command takes a mode flag and a target. Defaults are sensible: `--quick` f
 ## What's included
 
 - 9 workflow entry points (`activate`, `board`, `compose`, `context`, `discuss`, `distill`, `enhance`, `present`, `reconsider`)
-- 4 bundled capabilities (`chefs-choice`, `exemplar`, `skill-auditor`, `skill-creator`)
+- 5 bundled capabilities (`ask`, `chefs-choice`, `exemplar`, `skill-auditor`, `skill-creator`)
 - 14 optional helper profiles for deliberation, quality, implementation, delivery, and project maintenance
-- 14 stdlib scripts, including deterministic skill auditing and packaging tools
+- 17 stdlib scripts, including deterministic consultation, skill auditing, and packaging tools
 
 ## Capability routing
 
@@ -83,13 +84,21 @@ The core stays centered on five verbs. Variants such as quick research, planning
 Specialist products remain independently versioned. Craft discovers and
 composes them without absorbing their source or weakening their authority.
 
-## Multi-model second opinions (optional)
+## Outside-model consultations (optional)
 
-Several scripts can ask installed command-line tools such as Codex, Gemini, Aider, or Cursor for a second opinion. If none are available, Craft continues with the current model.
+`/craft:ask` is the portable, explicit consultation path. It labels the actual
+provider and model, never silently falls back, and requires authorization before
+sending a bounded brief outside the current runtime. Its `--list` and `--status`
+modes make no inference calls.
 
-For richer multi-provider access, install `geepers-kernel` (`pip install geepers-kernel`): `scripts/llm-query.py` will use the bundled `ProviderFactory` for unified access to 12 LLM providers.
+The versioned route table is exposed by `scripts/ask.sh --list`; documentation
+and command projections do not carry separate model labels. Configure either
+provider credentials or an OpenAI-compatible gateway in
+`${XDG_CONFIG_HOME:-~/.config}/craft/ask.env`. The legacy `scripts/llm-query.py`
+entry point delegates to this one route table.
 
-Nothing in Craft depends on these optional integrations. The workflow entry points work on their own.
+Nothing in Craft depends on a configured outside provider. The workflow entry
+points work on their own and report a missing route as a limitation.
 
 ## Fleet parity
 

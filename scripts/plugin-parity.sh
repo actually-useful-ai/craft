@@ -8,7 +8,7 @@ usage() {
   cat <<'EOF'
 Usage: plugin-parity.sh [--fixture PATH]
 
-Compare Craft, Intentional UX, Accessibility, and Humanize versions and skill
+Compare Craft, Intentional UX, Accessibility, and Humanize versions and package
 hashes across this machine, Beast, and Drummer. Drummer is reached through
 Beast's SSH alias.
 
@@ -63,23 +63,29 @@ for plugin do
   fi
 
   version=$(sed -n '\''s/^[[:space:]]*"version"[[:space:]]*:[[:space:]]*"\([^"[:space:]]*\)".*/\1/p'\'' "$manifest" | head -n 1)
-  skill_files=$(find "$skills" -type f -name SKILL.md -print | LC_ALL=C sort)
+  content_files=$(
+    if [ -d "$plugin_root/scripts" ]; then
+      find "$skills" "$plugin_root/scripts" -type f -print
+    else
+      find "$skills" -type f -print
+    fi | LC_ALL=C sort
+  )
 
-  if [ -z "$version" ] || [ -z "$skill_files" ]; then
+  if [ -z "$version" ] || [ -z "$content_files" ]; then
     printf "%s\tMISSING\t-\n" "$plugin"
     continue
   fi
 
-  skill_hash=$(
-    printf "%s\n" "$skill_files" |
-      while IFS= read -r skill_file; do
-        relative=${skill_file#"$plugin_root"/}
+  package_hash=$(
+    printf "%s\n" "$content_files" |
+      while IFS= read -r content_file; do
+        relative=${content_file#"$plugin_root"/}
         printf "%s\n" "$relative"
-        cat "$skill_file"
+        cat "$content_file"
       done |
       hash_stream
   )
-  printf "%s\t%s\t%s\n" "$plugin" "$version" "$skill_hash"
+  printf "%s\t%s\t%s\n" "$plugin" "$version" "$package_hash"
 done'
 
 evaluate() {
@@ -88,7 +94,7 @@ evaluate() {
       OFS = "\t"
       plugin_count = split(plugins, plugin_list, " ")
       host_count = split(hosts, host_list, " ")
-      print "HOST", "PLUGIN", "VERSION", "SKILL_HASH", "STATUS"
+      print "HOST", "PLUGIN", "VERSION", "PACKAGE_HASH", "STATUS"
     }
     NF >= 4 {
       key = $1 SUBSEP $2

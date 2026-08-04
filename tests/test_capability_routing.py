@@ -20,13 +20,15 @@ class CapabilityRoutingTests(unittest.TestCase):
         contract = (ROOT / "skills/capability-routing.md").read_text(encoding="utf-8")
         for role in ("Executor", "Overlay", "Governor", "Auditor"):
             self.assertIn(f"**{role}:**", contract)
-        for capability in ("chefs-choice", "exemplar", "skill-auditor", "skill-creator"):
+        for capability in ("ask", "chefs-choice", "exemplar", "skill-auditor", "skill-creator"):
             self.assertIn(f"`{capability}`", contract)
         for provider in ("Intentional UX", "Accessibility", "Humanize"):
             self.assertIn(provider, contract)
         self.assertIn("Use one primary executor", contract)
         self.assertIn("Never stack skills ceremonially", contract)
         self.assertIn("independently versioned", contract)
+        self.assertIn("disclosure and spend boundary", contract)
+        self.assertIn("does not authorize a call", contract)
 
     def test_capability_entry_points_are_wired_to_workflow_modes(self) -> None:
         compose = (ROOT / "skills/compose/SKILL.md").read_text(encoding="utf-8")
@@ -56,11 +58,14 @@ class CapabilityRoutingTests(unittest.TestCase):
             "Composition",
             "Missing provider",
             "External domain boundary",
+            "External consultation boundary",
         ):
             self.assertIn(f"## {heading}", fixture)
         self.assertIn("one primary executor", normalized)
         self.assertIn("does not activate Exemplar", normalized)
         self.assertIn("Accessibility remains independently versioned", normalized)
+        self.assertIn("zero outside-model calls", normalized)
+        self.assertIn("one bounded call", normalized)
 
 
 if __name__ == "__main__":

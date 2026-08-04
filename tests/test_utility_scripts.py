@@ -86,6 +86,180 @@ class BoardTests(unittest.TestCase):
         self.assertIn(html.escape(label), rendered)
 
 
+class AskTests(unittest.TestCase):
+    def fixture_env(self, root: Path, *, configured: bool = True) -> tuple[dict, Path]:
+        home = root / "home"
+        fake_bin = root / "bin"
+        home.mkdir()
+        fake_bin.mkdir()
+        capture = root / "capture.json"
+
+        fake_curl = fake_bin / "curl"
+        fake_curl.write_text(
+            """#!/usr/bin/env python3
+import json
+import os
+from pathlib import Path
+import sys
+
+args = sys.argv[1:]
+output = Path(args[args.index("-o") + 1])
+request_arg = args[args.index("--data-binary") + 1]
+request = json.loads(Path(request_arg[1:]).read_text(encoding="utf-8"))
+header_arg = args[args.index("-H") + 1]
+headers = Path(header_arg[1:]).read_text(encoding="utf-8")
+Path(os.environ["CRAFT_ASK_CAPTURE"]).write_text(
+    json.dumps({"argv": args, "headers": headers, "request": request}),
+    encoding="utf-8",
+)
+status = os.environ.get("CRAFT_ASK_FAKE_STATUS", "200")
+if status.startswith("2"):
+    model = os.environ.get("CRAFT_ASK_FAKE_MODEL", request["model"])
+    response = {
+        "provider": request["provider"],
+        "model": model,
+        "content": "fixture answer",
+        "usage": {"total_tokens": 7},
+    }
+else:
+    response = {"error": "fixture failure containing fixture-secret"}
+output.write_text(json.dumps(response), encoding="utf-8")
+sys.stdout.write(status)
+""",
+            encoding="utf-8",
+        )
+        fake_curl.chmod(0o755)
+
+        if configured:
+            config = home / ".config" / "craft" / "ask.env"
+            config.parent.mkdir(parents=True)
+            config.write_text(
+                "ASK_GATEWAY_URL=https://fixture.invalid/v1/llm/chat\n"
+                "ASK_GATEWAY_KEY=fixture-secret\n"
+                "PATH=/should/not/load\n"
+                "PYTHONPATH=/should/not/load\n"
+                "BASH_ENV=/should/not/load\n",
+                encoding="utf-8",
+            )
+            config.chmod(0o600)
+
+        env = {
+            "HOME": str(home),
+            "PATH": str(fake_bin) + os.pathsep + os.environ["PATH"],
+            "CRAFT_ASK_CAPTURE": str(capture),
+            "XAI_API_KEY": "",
+            "OPENAI_API_KEY": "",
+            "ANTHROPIC_API_KEY": "",
+        }
+        return env, capture
+
+    def run_ask(
+        self, *args: str, env: dict, input_text: Optional[str] = None
+    ) -> subprocess.CompletedProcess:
+        process_env = os.environ.copy()
+        process_env.update(env)
+        return subprocess.run(
+            [str(SCRIPTS / "ask.sh"), *args],
+            cwd=ROOT,
+            env=process_env,
+            input=input_text,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+
+    def test_list_is_network_free_and_comes_from_the_route_table(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_dir:
+            env, capture = self.fixture_env(Path(temporary_dir))
+            result = self.run_ask("--list", "--json", env=env)
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertFalse(capture.exists())
+            routes = json.loads(result.stdout)["routes"]
+            self.assertEqual(
+                [(route["provider"], route["model"], route["effort"]) for route in routes],
+                [
+                    ("grok", "grok-4.5", None),
+                    ("anthropic", "claude-opus-5", "high-default"),
+                    ("openai", "gpt-5.6-sol", "medium"),
+                ],
+            )
+
+    def test_prompt_is_encoded_exactly_and_credentials_stay_out_of_argv(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_dir:
+            root = Path(temporary_dir)
+            env, capture = self.fixture_env(root)
+            prompt = 'Quote "line"\nUnicode Ω and $(touch sentinel)'
+            result = self.run_ask("grok", "-", env=env, input_text=prompt)
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(result.stdout.strip(), "fixture answer")
+            self.assertIn("xai/grok-4.5", result.stderr)
+            captured = json.loads(capture.read_text(encoding="utf-8"))
+            self.assertEqual(captured["request"]["messages"][0]["content"], prompt)
+            self.assertEqual(captured["request"]["model"], "grok-4.5")
+            self.assertNotIn("fixture-secret", " ".join(captured["argv"]))
+            self.assertNotIn("fixture-secret", result.stdout + result.stderr)
+            self.assertFalse((ROOT / "sentinel").exists())
+
+    def test_openai_route_pins_sol_and_medium_effort(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_dir:
+            env, capture = self.fixture_env(Path(temporary_dir))
+            result = self.run_ask("openai", "question", env=env)
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            request = json.loads(capture.read_text(encoding="utf-8"))["request"]
+            self.assertEqual(request["provider"], "openai")
+            self.assertEqual(request["model"], "gpt-5.6-sol")
+            self.assertEqual(request["reasoning_effort"], "medium")
+
+    def test_errors_are_classified_without_leaking_provider_body(self) -> None:
+        expected = {"401": 3, "404": 4, "429": 5, "500": 6}
+        for status, exit_code in expected.items():
+            with self.subTest(status=status), tempfile.TemporaryDirectory() as temporary_dir:
+                env, _ = self.fixture_env(Path(temporary_dir))
+                env["CRAFT_ASK_FAKE_STATUS"] = status
+                result = self.run_ask("grok", "question", env=env)
+                self.assertEqual(result.returncode, exit_code)
+                self.assertNotIn("fixture-secret", result.stdout + result.stderr)
+
+    def test_missing_route_makes_no_request_and_does_not_fallback(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_dir:
+            env, capture = self.fixture_env(Path(temporary_dir), configured=False)
+            result = self.run_ask("anthropic", "question", env=env)
+
+            self.assertEqual(result.returncode, 3)
+            self.assertIn("no configured transport for anthropic", result.stderr)
+            self.assertFalse(capture.exists())
+
+    def test_model_mismatch_is_observable(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_dir:
+            env, _ = self.fixture_env(Path(temporary_dir))
+            env["CRAFT_ASK_FAKE_MODEL"] = "unexpected-model"
+            result = self.run_ask("grok", "question", env=env)
+
+            self.assertEqual(result.returncode, 7)
+            self.assertIn("model mismatch", result.stderr)
+
+    def test_insecure_config_is_rejected_before_any_request(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_dir:
+            root = Path(temporary_dir)
+            env, capture = self.fixture_env(root)
+            config = root / "home" / ".config" / "craft" / "ask.env"
+            config.chmod(0o644)
+            result = self.run_ask("--status", env=env)
+
+            self.assertEqual(result.returncode, 3)
+            self.assertIn("refusing insecure credential file", result.stderr)
+            self.assertFalse(capture.exists())
+
+    def test_legacy_query_is_only_a_canonical_ask_delegate(self) -> None:
+        source = (SCRIPTS / "llm-query.py").read_text(encoding="utf-8")
+        self.assertIn('with_name("ask.sh")', source)
+        for stale_literal in ("grok-4-fast", "gpt-4o-mini", "ProviderFactory"):
+            self.assertNotIn(stale_literal, source)
+
+
 class NavigationTests(unittest.TestCase):
     def test_broken_link_is_counted_and_fails(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_dir:

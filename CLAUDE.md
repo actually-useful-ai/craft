@@ -1,8 +1,8 @@
-# craft v0.4
+# craft v0.5
 
 Portable workflow and capability-routing package for Codex and Claude Code.
 Five modal commands plus activation, board, context, prior-art research, and
-four bundled workflow capabilities are organized around the work cycle:
+five bundled workflow capabilities are organized around the work cycle:
 
 ```
 discuss → compose → distill → reconsider → present
@@ -22,6 +22,7 @@ discuss → compose → distill → reconsider → present
 | `/craft:context` | Deep CLAUDE.md hierarchy refresh | (none) |
 | `/craft:activate` | Start a focused session with repository context | (none) |
 | `/craft:enhance` | Research local and current prior art before building | (none) |
+| `/craft:ask` | Obtain one explicitly authorized outside-model opinion | (none) |
 | `/craft:chefs-choice` | Select useful capabilities for an ambitious delegated approach | (none) |
 | `/craft:exemplar` | Set an exceptional quality target without performative complexity | (none) |
 | `/craft:skill-auditor` | Audit skills, plugins, and installations without editing them | (none) |
@@ -31,9 +32,9 @@ discuss → compose → distill → reconsider → present
 
 **Self-contained, no build step.** Skills are Markdown with stdlib helper scripts.
 
-- 9 workflow entry points and 4 bundled capability skills in `skills/<name>/SKILL.md`
+- 9 workflow entry points and 5 bundled capability skills in `skills/<name>/SKILL.md`
 - 14 helper profiles in `agents/`
-- 9 root stdlib scripts plus 5 bundled skill-auditing and creation scripts
+- 12 root stdlib scripts plus 5 bundled skill-auditing and creation scripts
 
 **No hard dependency** on another plugin. Craft discovers optional providers and
 degrades with an explicit limitation. Where second-opinion or data-fetching
@@ -53,11 +54,13 @@ All prefixed `craft-`:
 
 ## Scripts
 
-All in `scripts/`, called from skills via `${CLAUDE_PLUGIN_ROOT}/scripts/`:
+All in `scripts/`, called from skills after resolving `CRAFT_PLUGIN_ROOT` with
+`skills/script-paths.md`:
 
 | Script | Purpose |
 |---|---|
-| `llm-query.py` | Multi-LLM second opinions (uses `~/shared/llm_providers` if present) |
+| `ask.sh` | Canonical outside-model consultation with explicit model provenance |
+| `llm-query.py` | Compatibility wrapper that delegates to `ask.sh` |
 | `data-fetch.py` | 17 data sources (uses `~/shared/data_fetching` if present) |
 | `analyze.py` | Code complexity, duplication detection (stdlib only) |
 | `generate-board.py` | Kanban board HTML generator (stdlib only) |
@@ -97,14 +100,8 @@ Board HTML: `~/html/craft/board/index.html` (served via Caddy if configured).
 | Environment | How second opinions work |
 |---|---|
 | CLI shell with codex/gemini/aider installed | `cli-invoke.sh` |
-| Geepers-kernel installed | `scripts/llm-query.py` via `Bash` |
+| Configured outside provider or gateway | `/craft:ask` through `scripts/ask.sh` |
 | Standalone client | Continue with the current model and note the missing second opinion |
-
-Optional MCP servers (`.mcp.json`, not yet shipped) would expose:
-- `craft-providers`: multi-LLM via `ProviderFactory` from `~/shared/llm_providers`
-- `craft-data`: data fetching via `ClientFactory` from `~/shared/data_fetching`
-
-Both require `pip install geepers-kernel`. Not required.
 
 ## Relationship to other plugins
 
@@ -117,11 +114,12 @@ Both require `pip install geepers-kernel`. Not required.
 ## Bundled capability ownership
 
 - `chefs-choice`: governor for resource selection and ambition.
+- `ask`: executor for an outside-model answer or an advisory evidence provider after explicit authorization.
 - `exemplar`: overlay for the quality target and anti-performance filter.
 - `skill-auditor`: read-only auditor behind `/craft:distill --skills`.
 - `skill-creator`: executor behind `/craft:compose skill`.
 
-These four skills are canonical in Craft as of 0.4. Do not maintain editable
+These five skills are canonical in Craft as of 0.5. Do not maintain editable
 copies in another active plugin. Accessibility, Intentional UX, Humanize, Team,
 and platform/domain skills remain independent providers.
 

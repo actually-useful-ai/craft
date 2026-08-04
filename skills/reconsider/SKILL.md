@@ -34,6 +34,9 @@ whether the selected executor, overlays, and fallbacks still match the goal.
 4. **Critic pass**: `craft-critic` looks for UX and architecture issues.
 5. **Composition check**: verify capability ownership, active source/version,
    authorization boundaries, and missing-provider fallbacks when applicable.
+   An outside `ask` check is permitted only when the request explicitly
+   authorizes an external model call; otherwise use the current runtime's review
+   agents and report that boundary.
 6. Output findings prioritized by severity (fatal/wounding/uncomfortable/cosmetic).
 
 ### `--rebuild` (first-principles reconsider)
