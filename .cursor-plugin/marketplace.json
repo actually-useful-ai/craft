@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "A portable workflow for deliberate planning, implementation, verification, and delivery.",
-    "version": "0.7.1"
+    "version": "0.7.2"
   },
   "plugins": [
     {
       "name": "craft",
       "source": ".",
       "description": "Route goals to the right capabilities and carry evidence through delivery.",
-      "version": "0.7.1"
+      "version": "0.7.2"
     }
   ]
 }

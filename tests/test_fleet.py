@@ -159,7 +159,7 @@ class FleetTests(unittest.TestCase):
         self.assertEqual(
             versions,
             {
-                "craft": "0.7.1",
+                "craft": "0.7.2",
                 "team": "0.1.4",
                 "intentional-ux": "0.2.2",
                 "accessibility": "1.1.2",
@@ -213,6 +213,43 @@ class FleetTests(unittest.TestCase):
         self.assertFalse(inventory["off@example"]["enabled"])
         with self.assertRaises(ValueError):
             fleet.parse_claude_plugins("{}")
+
+    def test_claude_and_grok_allow_conventional_implicit_skills_directory(self) -> None:
+        root = self.base / "implicit-skills"
+        (root / "skills/demo").mkdir(parents=True)
+        manifest = {"name": "demo", "version": "1.0.0"}
+        for runtime, relative in {
+            "claude": ".claude-plugin/plugin.json",
+            "codex": ".codex-plugin/plugin.json",
+            "cursor": ".cursor-plugin/plugin.json",
+            "grok": ".grok-plugin/plugin.json",
+        }.items():
+            path = root / relative
+            path.parent.mkdir(exist_ok=True)
+            path.write_text(json.dumps(manifest), encoding="utf-8")
+
+        package = {
+            "name": "demo",
+            "version": "1.0.0",
+            "runtimes": {
+                "claude": ".claude-plugin/plugin.json",
+                "codex": ".codex-plugin/plugin.json",
+                "cursor": ".cursor-plugin/plugin.json",
+                "grok": ".grok-plugin/plugin.json",
+            },
+        }
+        checks = fleet._runtime_checks(root, package)
+        self.assertEqual(checks["claude"]["manifest"]["status"], fleet.PASS)
+        self.assertEqual(checks["grok"]["manifest"]["status"], fleet.PASS)
+        self.assertEqual(checks["codex"]["manifest"]["status"], fleet.FAIL)
+        self.assertEqual(checks["cursor"]["manifest"]["status"], fleet.FAIL)
+
+        manifest["skills"] = "./not-skills/"
+        (root / ".claude-plugin/plugin.json").write_text(
+            json.dumps(manifest), encoding="utf-8"
+        )
+        checks = fleet._runtime_checks(root, package)
+        self.assertEqual(checks["claude"]["manifest"]["status"], fleet.FAIL)
 
     def test_codex_inventory_parser_ignores_available_plugins(self) -> None:
         inventory = fleet.parse_codex_plugins(

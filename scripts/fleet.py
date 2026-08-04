@@ -738,10 +738,17 @@ def _runtime_checks(root: Path, package: dict[str, Any]) -> dict[str, dict[str, 
         result: dict[str, Any] = {"path": relative}
         try:
             manifest = json.loads(path.read_text(encoding="utf-8"))
+            skills_value = manifest.get("skills") if isinstance(manifest, dict) else None
+            skills_ok = skills_value in ("skills", "./skills/")
+            if skills_value is None and runtime in ("claude", "grok"):
+                # Claude plugins discover a conventional root skills/ directory
+                # without requiring an explicit manifest field. Grok imports that
+                # same Claude package, so the identical convention applies there.
+                skills_ok = (root / "skills").is_dir()
             valid = (
                 isinstance(manifest, dict)
                 and manifest.get("name") == package["name"]
-                and manifest.get("skills") in ("skills", "./skills/")
+                and skills_ok
             )
             result["manifest"] = _status(
                 valid,
