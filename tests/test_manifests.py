@@ -9,7 +9,7 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "0.7.0"
+VERSION = "0.7.1"
 PLUGIN_NAME = "craft"
 SKILL_COUNT = 16
 HELPER_COUNT = 14
@@ -44,6 +44,7 @@ class ManifestTests(unittest.TestCase):
         cursor = load_json(".cursor-plugin/plugin.json")
         claude = load_json(".claude-plugin/plugin.json")
         marketplace = load_json(".claude-plugin/marketplace.json")
+        cursor_marketplace = load_json(".cursor-plugin/marketplace.json")
         listing = marketplace["plugins"][0]
 
         for manifest in (codex, cursor, claude, listing):
@@ -61,6 +62,17 @@ class ManifestTests(unittest.TestCase):
                 "keywords",
             ):
                 self.assertEqual(manifest[field], claude[field])
+
+        self.assertEqual(cursor_marketplace["name"], "lukeslp-craft")
+        self.assertEqual(cursor_marketplace["metadata"]["version"], VERSION)
+        self.assertEqual(cursor_marketplace["plugins"], [
+            {
+                "name": PLUGIN_NAME,
+                "source": ".",
+                "description": "Route goals to the right capabilities and carry evidence through delivery.",
+                "version": VERSION,
+            }
+        ])
 
     def test_codex_manifest_declares_skills_and_interface(self) -> None:
         codex = load_json(".codex-plugin/plugin.json")

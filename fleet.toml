@@ -1,5 +1,5 @@
 schema_version = 1
-fleet_version = "0.7.0"
+fleet_version = "0.7.1"
 
 [defaults]
 checkout_root = "~/plugins"
@@ -15,9 +15,9 @@ grok = ["~/.grok/skills"]
 [[packages]]
 name = "craft"
 directory = "craft"
-version = "0.7.0"
+version = "0.7.1"
 origin = "https://github.com/actually-useful-ai/craft.git"
-ref = "v0.7.0"
+ref = "v0.7.1"
 hash_paths = [
   "fleet.toml",
   "skills",
@@ -27,6 +27,7 @@ hash_paths = [
   ".claude-plugin/marketplace.json",
   ".codex-plugin/plugin.json",
   ".cursor-plugin/plugin.json",
+  ".cursor-plugin/marketplace.json",
 ]
 
 [packages.runtimes]
