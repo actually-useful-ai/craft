@@ -4,8 +4,8 @@ Keep the same reviewed releases of four plugins on Neo, Beast, and Drummer:
 
 | Plugin | Repository | Release |
 |---|---|---|
-| Craft | [`actually-useful-ai/craft`](https://github.com/actually-useful-ai/craft) | `v0.4.0` |
-| Intentional UX | [`actually-useful-ai/intentional-ux`](https://github.com/actually-useful-ai/intentional-ux) | `v0.1.0` |
+| Craft | [`actually-useful-ai/craft`](https://github.com/actually-useful-ai/craft) | `v0.4.1` |
+| Intentional UX | [`actually-useful-ai/intentional-ux`](https://github.com/actually-useful-ai/intentional-ux) | `v0.2.1` |
 | Accessibility | [`actually-useful-ai/accessibility-devkit`](https://github.com/actually-useful-ai/accessibility-devkit) | `v1.0.0` |
 | Humanize | [`actually-useful-ai/humanize`](https://github.com/actually-useful-ai/humanize) | `v1.2.0` |
 
@@ -42,8 +42,8 @@ install_plugin_release() {
     "https://github.com/$repository.git" "$destination"
 }
 
-install_plugin_release actually-useful-ai/craft v0.4.0 craft
-install_plugin_release actually-useful-ai/intentional-ux v0.1.0 intentional-ux
+install_plugin_release actually-useful-ai/craft v0.4.1 craft
+install_plugin_release actually-useful-ai/intentional-ux v0.2.1 intentional-ux
 install_plugin_release actually-useful-ai/accessibility-devkit v1.0.0 accessibility
 install_plugin_release actually-useful-ai/humanize v1.2.0 humanize
 ```
