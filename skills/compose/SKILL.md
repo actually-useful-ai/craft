@@ -1,6 +1,6 @@
 ---
 name: compose
-description: "Build the thing: viz, frontend, docs, flow, game, or surgical fix. The execution phase of craft."
+description: "Build the thing: visualization, frontend, documentation, workflow, game, skill/plugin, or surgical fix. Use for Craft's execution phase after the approach is clear."
 allowed-tools: Read, Grep, Glob, Bash, Edit, Write, Agent
 ---
 
@@ -17,24 +17,35 @@ Build the thing. This is the execution phase (`discuss → compose → distill �
 | `docs` | Generate or upgrade documentation. README, guides, reference. |
 | `flow` | Workflow scaffolding, state machines, orchestration. |
 | `game` | Game logic, prototypes, interactive demos. |
+| `skill` | Create or revise a skill or skill-bearing plugin with tested routing and cross-runtime packaging. Routes through bundled `skill-creator`. |
 | `surgical` | Pinpoint edit on an existing file. Read full file → identify minimal change boundary → edit → verify. |
 
 ## How it picks
 
-If input names a UI/component, `frontend`. If it mentions chart/graph/D3/dashboard, `viz`. If it asks for a README or guide, `docs`. If it's "fix this specific thing", `surgical`. If unclear, ask.
+If input names a UI/component, `frontend`. If it mentions chart/graph/D3/dashboard, `viz`. If it asks for a README or guide, `docs`. If it creates or revises a skill, plugin, routing contract, or skill package, `skill`. If it is "fix this specific thing", `surgical`. If unclear, ask.
 
 ## Procedure
 
 Use the [helper-profile fallback](../helper-profiles.md) when the host does not
 expose `craft-design` as a named profile.
+Use the [capability routing contract](../capability-routing.md). One
+most-specific executor owns implementation; governors and overlays cannot
+expand scope or replace it.
 
 1. **Plan if needed**: for non-trivial builds, route through `/craft:discuss --plan` first.
-2. **Set up working tree**: confirm git is clean for surgical mode (preflight gate).
-3. **Build**: apply the mode-specific approach:
+2. **Resolve capabilities**: confirm the selected executor and optional providers
+   are active at the intended source/version. State a fallback for any missing
+   provider.
+3. **Set up working tree**: confirm git is clean for surgical mode (preflight gate).
+4. **Build**: apply the mode-specific approach:
    - `viz`/`frontend`/`docs`/`flow`/`game`: launch `craft-design` for layout/structure, then implement.
+   - `skill`: apply bundled `skill-creator`; define source ownership, runtime
+     profile, role, authorization, positive and negative triggers, composition,
+     fallback, and observable success evidence before packaging.
    - `surgical`: read the full target file, identify the minimum-blast-radius boundary, make the edit, verify with tests if they exist.
-4. **Verify**: run tests, type checks, or smoke checks appropriate to the mode.
-5. **Hand off**: use `/craft:distill` for cleanup or `/craft:reconsider` to challenge the result.
+5. **Verify**: run tests, type checks, or smoke checks appropriate to the mode.
+   Record completed checks separately from unverified or planned evidence.
+6. **Hand off**: use `/craft:distill` for cleanup or `/craft:reconsider` to challenge the result.
 
 ## Surgical mode (formerly /fix)
 

@@ -25,14 +25,18 @@ If the input is a question and short, `--quick`. If it contains "should we" or c
 
 Use the [helper-profile fallback](../helper-profiles.md) for each named debate,
 planning, or research role the host does not expose directly.
+Use the [capability routing contract](../capability-routing.md) to assign one
+primary executor and any justified governors, overlays, or auditors.
 
 1. **Frame**: restate the question in one sentence. Identify the mode (default `--quick` if unclear).
-2. **Think** based on mode:
+2. **Route**: select the smallest useful capability stack and define observable
+   success evidence. Preserve domain ownership and authorization boundaries.
+3. **Think** based on mode:
    - `--quick`: One pass. Two paragraphs. Recommendation + main tradeoff.
    - `--debate`: Launch `craft-critic` and `craft-scout` in parallel. Optionally `craft-validator`. Each produces a position. Synthesize.
    - `--plan`: Launch `craft-planner` to produce a structured plan. Validate against codebase patterns via `craft-scout`.
    - `--research`: Launch `craft-searcher` and `craft-fetcher` in parallel. Each fans out to multiple sources. Aggregate, dedupe, rank by relevance.
-3. **Output** to stdout. For `--plan` and `--research`, also archive to `~/craft/reports/by-date/YYYY-MM-DD/discuss-<topic>.md`.
+4. **Output** to stdout. For `--plan` and `--research`, also archive to `~/craft/reports/by-date/YYYY-MM-DD/discuss-<topic>.md`.
 
 ## Output format
 

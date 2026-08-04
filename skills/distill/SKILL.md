@@ -1,6 +1,6 @@
 ---
 name: distill
-description: "Refine code, audit quality, capture reusable patterns. Hygiene phase of craft. Replaces /harvest, /janitor, plus session begin/end."
+description: "Refine code, audit quality or skill fleets, capture reusable patterns, and manage session hygiene. Use for cleanup, read-only audits, capability drift, or session begin/end."
 allowed-tools: Read, Grep, Glob, Bash, Edit, Agent
 ---
 
@@ -14,6 +14,7 @@ Refine and clean. This is the hygiene phase (`discuss → compose → distill �
 |------|-------------|
 | `--full` (default) | Full hygiene pass: harvest reusable patterns, clean cruft, audit code, organize. |
 | `--audit` | Quality audit only — identify issues, don't fix them. |
+| `--skills` | Read-only audit of skills, plugins, active versions, routing, and source/install drift. |
 | `--begin` | Session start: git state, recon, CLAUDE.md audit, briefing. |
 | `--conclude` | Session end: commit, harvest, document next steps, final report. |
 
@@ -23,6 +24,8 @@ Resolve `CRAFT_PLUGIN_ROOT` with [the shared script-path rule](../script-paths.m
 before running a bundled script.
 Use the [helper-profile fallback](../helper-profiles.md) for each named review
 role the host does not expose directly.
+Use the [capability routing contract](../capability-routing.md) when the audit
+involves installed capabilities or composition behavior.
 
 ### `--begin` (session start)
 1. Run `bash "$CRAFT_PLUGIN_ROOT/scripts/session-state.sh" start` to capture git state.
@@ -38,6 +41,15 @@ role the host does not expose directly.
 
 ### `--audit` (read-only)
 Skip steps 1 and 4. Findings only.
+
+### `--skills` (read-only capability audit)
+1. Route to the bundled `skill-auditor` skill.
+2. Map canonical repositories, active installations, caches, projections,
+   symlinks, versions, and hashes before interpreting drift.
+3. Audit manifests, references, trigger collisions, role ownership, fallbacks,
+   and source/install parity without editing any target.
+4. Report the smallest source-level remediation plan. Do not edit caches,
+   installations, or source while the auditor is active.
 
 ### `--conclude` (session end)
 1. Verify state: run `bash "$CRAFT_PLUGIN_ROOT/scripts/session-state.sh" end`.
@@ -55,7 +67,8 @@ Skip steps 1 and 4. Findings only.
 
 ## Handoffs
 
-`/craft:reconsider` to challenge findings. `/craft:present` after `--conclude`.
+`/craft:reconsider` to challenge findings. `/craft:compose skill` to act on an
+approved skill remediation plan. `/craft:present` after `--conclude`.
 
 ## Anti-patterns
 
