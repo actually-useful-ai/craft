@@ -4,7 +4,7 @@
 
 | Package | Origin | Ref | Version |
 |---|---|---|---|
-| Craft | `actually-useful-ai/craft` | `v0.7.2` | `0.7.2` |
+| Craft | `actually-useful-ai/craft` | `v0.7.3` | `0.7.3` |
 | Team | `actually-useful-ai/team` | `v0.1.4` | `0.1.4` |
 | Intentional UX | `actually-useful-ai/intentional-ux` | `v0.2.2` | `0.2.2` |
 | Accessibility | `actually-useful-ai/accessibility-devkit` | `v1.1.2` | `1.1.2` |

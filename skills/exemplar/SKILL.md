@@ -1,6 +1,6 @@
 ---
 name: exemplar
-description: Elevate substantive work beyond adequacy by selecting the right expert evaluator, applying domain-specific quality criteria, and removing performative complexity. Use for “impress me,” “make this exceptional,” “flagship,” “go beyond adequate,” or explicit exemplar requests; do not trigger for routine polish or mechanical edits.
+description: Elevate or critique substantive work beyond adequacy by selecting the right expert evaluator, applying domain-specific quality criteria, and removing performative complexity. Use for “impress me,” “make this exceptional,” “flagship,” “go beyond adequate,” “exemplar critique,” or explicit exemplar requests; do not trigger for routine polish or mechanical edits.
 license: MIT
 ---
 
@@ -9,6 +9,20 @@ license: MIT
 Raise the quality target without expanding authorization or manufacturing sophistication.
 
 Exemplar is an overlay. The task’s domain skill still governs method, evidence, safety, and deliverables. Exemplar governs what unusually good judgment looks like.
+
+## Modes
+
+- **Overlay** (default): raise the quality target while the governing skill
+  plans, builds, edits, or reviews the work.
+- **Critique** (`critique` or `--critique`): diagnose why an existing artifact
+  is adequate-but-ordinary, identify the smallest exemplar-quality changes,
+  and name sophistication that should be removed. Do not apply the changes
+  unless the user also authorizes revision.
+
+Critique stays local to quality and restraint. Route factual correctness or
+contract validation to Reconsider `--validate`, invalid framing or structural
+replacement to Reconsider `--rebuild`, and dependency impact to Reconsider
+`--blast`.
 
 ## Composition contract
 
@@ -94,9 +108,39 @@ Revise once when a material issue is found. If evidence remains missing, disclos
 Use [references/acceptance-tests.md](references/acceptance-tests.md) when
 revising routing, composition, or fallback behavior.
 
+## Critique output
+
+When Critique mode is requested, inspect the supplied artifact and return only
+the three sections below. Ground each point in the artifact and selected
+dossier; use `None found` rather than padding an empty section.
+
+### Merely competent
+
+Name the one to three choices that make the work adequate but ordinary. Do not
+summarize the whole artifact or treat personal taste as evidence.
+
+### Exemplar opportunities
+
+Rank the one or two smallest changes with the highest practical effect. State
+the evaluator-visible benefit and a verifiable acceptance condition.
+
+### Performative sophistication
+
+Name any element that looks ambitious while reducing usefulness, rigor,
+clarity, reliability, or fit. Recommend removal or simplification. Do not add
+this category merely to complete the template.
+
+If the critique discovers a correctness, framing, or blast-radius problem,
+state the appropriate Reconsider handoff after the three sections. Do not turn
+the critique itself into a rebuild or validation pass.
+
 ## Output behavior
 
-Deliver the improved result directly. Do not add an “exemplar score,” narrate the hidden checklist, or congratulate the result for being impressive. Explain an unrequested improvement only when it materially affects scope, tradeoffs, or verification.
+In Overlay mode, deliver the improved result directly. Do not add an “exemplar
+score,” narrate the hidden checklist, or congratulate the result for being
+impressive. Explain an unrequested improvement only when it materially affects
+scope, tradeoffs, or verification. In Critique mode, use the explicit critique
+output above and stop before revision unless revision was also authorized.
 
 ## Boundaries
 

@@ -50,6 +50,7 @@ plugin directory. Its skills are then available in Desktop chat.
 /craft:activate "Add OAuth to the API and choose the right approach"
 /craft:ask anthropic "Challenge this migration plan"      # outside opinion
 /craft:horizon "What am I missing in this product direction?" # adjacent options
+/craft:exemplar critique path/to/artifact                  # quality diagnosis
 /craft:swarm --size jillion "Scout this decision"        # 32 bounded Luna scouts
 /craft:discuss --plan "Add OAuth to the API"          # plan first
 /craft:compose frontend src/components/Login.tsx      # build it
@@ -85,10 +86,13 @@ and Humanize retain authority in their domains. Craft reports a material
 selection in one concise line instead of requiring the person to remember a
 catalog of skill names.
 
-Horizon opens the option space before a decision; Reconsider challenges a
-direction after it exists. Ask obtains exactly one outside opinion. Swarm runs
-many stateless Luna scouts only after explicit paid-call authorization; generic
-parallel work remains the job of native agents or the independent Fanout skill.
+Horizon opens the option space before a decision. Exemplar can also critique an
+existing artifact under `Merely competent`, `Exemplar opportunities`, and
+`Performative sophistication` without revising it. Reconsider owns correctness,
+first-principles rebuilds, and blast radius. Ask obtains exactly one outside
+opinion. Swarm runs many stateless Luna scouts only after explicit paid-call
+authorization; generic parallel work remains the job of native agents or the
+independent Fanout skill.
 
 The bundled capability-maintenance paths are `/craft:compose skill` for creating
 or revising skills and `/craft:distill --skills` for read-only package and fleet

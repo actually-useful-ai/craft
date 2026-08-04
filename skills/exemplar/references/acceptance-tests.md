@@ -59,3 +59,20 @@ For each supported runtime and host, record:
 
 Semantic fixture predictions remain **Assumed** until a runtime invocation
 confirms them. Paths, versions, hashes, and captured results can be **Measured**.
+
+## Critique mode
+
+Fixture: provide an adequate artifact containing one dossier-relevant omission
+and one decorative complication, then request “Exemplar critique.”
+
+Expected:
+
+- output contains `Merely competent`, `Exemplar opportunities`, and
+  `Performative sophistication` in that order;
+- no section contains generic praise or an artifact summary;
+- opportunities are limited to one or two changes and each has an observable
+  acceptance condition;
+- the decorative complication is recommended for removal or simplification;
+- no revision occurs without separate authorization;
+- correctness, invalid framing, or dependency impact is handed to the matching
+  Reconsider mode rather than being silently absorbed.

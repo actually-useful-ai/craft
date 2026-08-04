@@ -69,6 +69,22 @@ class CapabilityRoutingTests(unittest.TestCase):
         self.assertIn("Intentional UX owns", exemplar)
         self.assertIn("Humanize owns", exemplar)
 
+    def test_exemplar_critique_is_bounded_and_routes_structural_review(self) -> None:
+        exemplar = (ROOT / "skills/exemplar/SKILL.md").read_text(encoding="utf-8")
+        normalized = " ".join(exemplar.split())
+
+        for heading in (
+            "### Merely competent",
+            "### Exemplar opportunities",
+            "### Performative sophistication",
+        ):
+            self.assertIn(heading, exemplar)
+        self.assertIn("Do not apply the changes", exemplar)
+        self.assertIn("one or two smallest changes", normalized)
+        for mode in ("`--validate`", "`--rebuild`", "`--blast`"):
+            self.assertIn(mode, exemplar)
+        self.assertIn("stop before revision unless revision was also authorized", normalized)
+
     def test_horizon_is_a_ranked_precommit_answer_not_generic_brainstorming(self) -> None:
         horizon = (ROOT / "skills/horizon/SKILL.md").read_text(encoding="utf-8")
         normalized = " ".join(horizon.split())
