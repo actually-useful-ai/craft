@@ -16,6 +16,8 @@ Use the [helper-profile fallback](../helper-profiles.md) when the host does not
 expose `craft-scout` as a named profile.
 Follow the [capability routing contract](../capability-routing.md) when selecting
 bundled skills or optional providers.
+Start and carry the shared [evidence envelope](../evidence-envelope.md) across
+the selected phases.
 
 ## Procedure
 
@@ -29,9 +31,9 @@ bundled skills or optional providers.
 6. Select one primary executor plus only the governors, overlays, auditors, and
    verification providers that materially change the task.
 7. State the selected stack and its purpose in one concise line.
-8. Produce a session briefing: what is open, what is blocked, and which Craft
-   phase should run first. Continue into that phase unless the request asks only
-   for a briefing.
+8. Produce the evidence-envelope phase handoff: `Done`, `Evidence`, `Open`, and
+   `Next`, including which Craft phase should run first. Continue into that
+   phase unless the request asks only for a briefing.
 
 ## Handoffs
 

@@ -15,6 +15,25 @@ class CapabilityRoutingTests(unittest.TestCase):
         for name in ("activate", "discuss", "compose", "distill", "reconsider", "present"):
             content = (ROOT / "skills" / name / "SKILL.md").read_text(encoding="utf-8")
             self.assertIn("../capability-routing.md", content, name)
+            self.assertIn("../evidence-envelope.md", content, name)
+
+    def test_evidence_envelope_preserves_evidence_strength(self) -> None:
+        envelope = (ROOT / "skills/evidence-envelope.md").read_text(
+            encoding="utf-8"
+        )
+        for label in (
+            "`Measured`",
+            "`Observed`",
+            "`Inferred`",
+            "`Planned`",
+            "`Unavailable`",
+        ):
+            self.assertIn(label, envelope)
+        for status in ("`Done`", "`Partial`", "`Blocked`"):
+            self.assertIn(status, envelope)
+        self.assertIn("Never promote one class into another", envelope)
+        for handoff in ("`Done`", "`Evidence`", "`Open`", "`Next`"):
+            self.assertIn(handoff, envelope)
 
     def test_contract_preserves_role_ownership_and_provider_boundaries(self) -> None:
         contract = (ROOT / "skills/capability-routing.md").read_text(encoding="utf-8")
@@ -49,6 +68,21 @@ class CapabilityRoutingTests(unittest.TestCase):
         self.assertIn("Chef’s Choice selects useful capabilities", exemplar)
         self.assertIn("Intentional UX owns", exemplar)
         self.assertIn("Humanize owns", exemplar)
+
+    def test_horizon_is_a_ranked_precommit_answer_not_generic_brainstorming(self) -> None:
+        horizon = (ROOT / "skills/horizon/SKILL.md").read_text(encoding="utf-8")
+        normalized = " ".join(horizon.split())
+
+        self.assertIn("three to five possibilities", normalized)
+        self.assertIn("at least one **Opportunity** and one **Blind spot**", normalized)
+        self.assertIn("`Observed`", horizon)
+        self.assertIn("`Inferred`", horizon)
+        self.assertNotIn("`Speculative`", horizon)
+        self.assertIn("Start with the ranked set", horizon)
+        self.assertIn("End with exactly one experiment and one state-appropriate handoff", normalized)
+        for handoff in ("/craft:discuss", "/craft:compose", "/craft:reconsider"):
+            self.assertIn(handoff, horizon)
+        self.assertIn("do not preface it with a generic restatement", normalized)
 
     def test_scenario_fixture_covers_activation_composition_and_fallback(self) -> None:
         fixture = (ROOT / "tests/capability-routing-scenarios.md").read_text(

@@ -70,9 +70,11 @@ It does not silently substitute Grok or OpenAI.
 
 Positive prompt: `Craft, what ideas do you have for this onboarding, and what am I missing?`
 
-Expected: Horizon supplies three to seven distinct pre-commit possibilities
-with evidence labels and cheap probes. It makes zero outside calls, does not
-validate a chosen plan, and does not begin implementation.
+Expected: Horizon directly supplies three to five ranked pre-commit
+opportunities and blind spots, labels each `Observed` or `Inferred`, and ends
+with one discriminating next experiment plus one appropriate Discuss, Compose,
+or Reconsider handoff. It makes zero outside calls, does not validate a chosen
+plan, and does not begin implementation.
 
 Negative prompt: `Craft, is this migration plan correct?`
 

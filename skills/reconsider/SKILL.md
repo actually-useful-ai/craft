@@ -26,6 +26,8 @@ Use the [helper-profile fallback](../helper-profiles.md) for each named review
 role the host does not expose directly.
 Use the [capability routing contract](../capability-routing.md) to challenge
 whether the selected executor, overlays, and fallbacks still match the goal.
+Audit the shared [evidence envelope](../evidence-envelope.md), especially any
+claim whose label is stronger than the check that produced it.
 
 ### `--validate` (correctness check)
 1. **Run tests**: execute relevant tests when the project configures a test runner.
@@ -37,7 +39,8 @@ whether the selected executor, overlays, and fallbacks still match the goal.
    An outside `ask` check is permitted only when the request explicitly
    authorizes an external model call; otherwise use the current runtime's review
    agents and report that boundary.
-6. Output findings prioritized by severity (fatal/wounding/uncomfortable/cosmetic).
+6. Output findings prioritized by severity (fatal/wounding/uncomfortable/cosmetic),
+   then update `Done`, `Evidence`, `Open`, and `Next`.
 
 ### `--rebuild` (first-principles reconsider)
 1. **Discard the frame**: list the current approach's assumptions.

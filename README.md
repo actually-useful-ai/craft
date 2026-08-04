@@ -28,6 +28,22 @@ From a Claude Code session, add the repository as a marketplace and install Craf
 /plugin install craft@lukeslp-craft
 ```
 
+## Install in Cursor
+
+```sh
+cursor-agent plugin marketplace add https://github.com/actually-useful-ai/craft
+cursor-agent
+```
+
+In the interactive agent, open `/plugin` and install Craft at user scope. That
+account-scoped installation is available to both the IDE and CLI.
+
+## Install in Claude Desktop
+
+Download the release source archive. In Claude Desktop, open **Customize →
+Plugins**, choose the custom-plugin upload option, and select the zipped Craft
+plugin directory. Its skills are then available in Desktop chat.
+
 ## Usage
 
 ```bash
@@ -51,7 +67,8 @@ Every command takes a mode flag and a target. Defaults are sensible: `--quick` f
 - 9 workflow entry points (`activate`, `board`, `compose`, `context`, `discuss`, `distill`, `enhance`, `present`, `reconsider`)
 - 7 bundled capabilities (`ask`, `chefs-choice`, `exemplar`, `horizon`, `skill-auditor`, `skill-creator`, `swarm`)
 - 14 optional helper profiles for deliberation, quality, implementation, delivery, and project maintenance
-- 18 stdlib scripts, including deterministic consultation, bounded Swarm orchestration, skill auditing, and packaging tools
+- 19 stdlib scripts, including deterministic consultation, durable bounded
+  Swarm orchestration, fleet verification, skill auditing, and packaging tools
 
 ## Capability routing
 
@@ -76,6 +93,10 @@ parallel work remains the job of native agents or the independent Fanout skill.
 The bundled capability-maintenance paths are `/craft:compose skill` for creating
 or revising skills and `/craft:distill --skills` for read-only package and fleet
 audits.
+
+The six workflow phases carry one evidence envelope. Measured, observed,
+inferred, planned, and unavailable claims stay distinct through the final
+`Done`, `Partial`, or `Blocked` handoff.
 
 ## Why modal commands
 
@@ -111,11 +132,19 @@ points work on their own and report a missing route as a limitation.
 second model table. Presets run 4, 8, 16, or 32 scouts; a hard ceiling of 64,
 short per-scout responses, no retries, a global deadline, and explicit partial
 status keep the deliberately extravagant mode bounded. Dry runs make no
-inference calls.
+inference calls. Paid runs persist private atomic result envelopes under
+`~/craft/logs/swarm/`, so lost terminal output cannot turn an incomplete run
+into an inferred result or an accidental retry.
 
 ## Fleet parity
 
-`scripts/plugin-parity.sh` compares the installed Craft, Intentional UX, Accessibility, and Humanize versions on the current Mac, Beast, and Drummer. It hashes skill sources without copying credentials, caches, sessions, or machine settings. See [Plugin parity](docs/plugin-parity.md) for version-pinned installation, verification, and rollback commands.
+`fleet.toml` is the public bill of materials for Craft, Team, Intentional UX,
+Accessibility, and Humanize. `scripts/fleet.py` checks immutable checkout refs,
+manifest versions, logical content hashes, expected runtime activation, and
+broken top-level skill links across locally configured hosts. Machine topology
+stays in `~/.config/craft/fleet-hosts.toml`; declared legacy links can be
+quarantined only through an explicit apply step. See [Plugin fleet
+control](docs/plugin-parity.md).
 
 ## Output
 

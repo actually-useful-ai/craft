@@ -26,6 +26,8 @@ Use the [helper-profile fallback](../helper-profiles.md) for each named review
 role the host does not expose directly.
 Use the [capability routing contract](../capability-routing.md) when the audit
 involves installed capabilities or composition behavior.
+Carry the shared [evidence envelope](../evidence-envelope.md); preserve source,
+install, and runtime evidence as separate claims.
 
 ### `--begin` (session start)
 1. Run `bash "$CRAFT_PLUGIN_ROOT/scripts/session-state.sh" start` to capture git state.
@@ -57,6 +59,8 @@ Skip steps 1 and 4. Findings only.
 3. Document next steps to `~/craft/status/<project>-next-YYYY-MM-DD.md`.
 4. Update accumulated recommendations at `~/craft/recommendations/by-project/<project>.md` (append, never delete).
 5. If you have uncommitted changes, verify the state and then commit under the git safety protocol.
+6. Close with the evidence-envelope handoff (`Done`, `Evidence`, `Open`,
+   `Next`) and a truthful `Done`, `Partial`, or `Blocked` status.
 
 ## Output paths
 

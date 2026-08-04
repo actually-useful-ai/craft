@@ -1,0 +1,213 @@
+schema_version = 1
+fleet_version = "0.7.0"
+
+[defaults]
+checkout_root = "~/plugins"
+cursor_installed_roots = ["~/.cursor/plugins/cache"]
+backup_root = "~/.local/state/craft/fleet-backups"
+
+[runtime_roots]
+claude = ["~/.claude/skills"]
+codex = ["~/.agents/skills", "~/.codex/skills"]
+cursor = ["~/.cursor/skills"]
+grok = ["~/.grok/skills"]
+
+[[packages]]
+name = "craft"
+directory = "craft"
+version = "0.7.0"
+origin = "https://github.com/actually-useful-ai/craft.git"
+ref = "v0.7.0"
+hash_paths = [
+  "fleet.toml",
+  "skills",
+  "agents",
+  "scripts",
+  ".claude-plugin/plugin.json",
+  ".claude-plugin/marketplace.json",
+  ".codex-plugin/plugin.json",
+  ".cursor-plugin/plugin.json",
+]
+
+[packages.runtimes]
+claude = ".claude-plugin/plugin.json"
+codex = ".codex-plugin/plugin.json"
+cursor = ".cursor-plugin/plugin.json"
+grok = ".claude-plugin/plugin.json"
+
+[packages.install_ids]
+claude = "craft@lukeslp-craft"
+codex = "craft@lukeslp-craft"
+cursor = "craft@lukeslp-craft"
+grok = "craft"
+
+[[packages]]
+name = "team"
+directory = "team"
+version = "0.1.4"
+origin = "https://github.com/actually-useful-ai/team.git"
+ref = "v0.1.4"
+hash_paths = [
+  "skills",
+  "agents",
+  "scripts",
+  ".claude-plugin/plugin.json",
+  ".claude-plugin/marketplace.json",
+  ".codex-plugin/plugin.json",
+  ".cursor-plugin/plugin.json",
+]
+
+[packages.runtimes]
+claude = ".claude-plugin/plugin.json"
+codex = ".codex-plugin/plugin.json"
+cursor = ".cursor-plugin/plugin.json"
+grok = ".claude-plugin/plugin.json"
+
+[packages.install_ids]
+claude = "team@lukeslp-team"
+codex = "team@lukeslp-team"
+cursor = "team@lukeslp-team"
+grok = "team"
+
+[[packages]]
+name = "intentional-ux"
+directory = "intentional-ux"
+version = "0.2.2"
+origin = "https://github.com/actually-useful-ai/intentional-ux.git"
+ref = "v0.2.2"
+hash_paths = [
+  "skills",
+  ".claude-plugin/plugin.json",
+  ".claude-plugin/marketplace.json",
+  ".codex-plugin/plugin.json",
+  ".cursor-plugin/plugin.json",
+]
+
+[packages.runtimes]
+claude = ".claude-plugin/plugin.json"
+codex = ".codex-plugin/plugin.json"
+cursor = ".cursor-plugin/plugin.json"
+grok = ".claude-plugin/plugin.json"
+
+[packages.install_ids]
+claude = "intentional-ux@intentional-ux"
+codex = "intentional-ux@intentional-ux"
+cursor = "intentional-ux@intentional-ux"
+grok = "intentional-ux"
+
+[[packages]]
+name = "accessibility"
+directory = "accessibility"
+version = "1.1.2"
+origin = "https://github.com/actually-useful-ai/accessibility-devkit.git"
+ref = "v1.1.2"
+hash_paths = [
+  "skills",
+  "scripts",
+  ".claude-plugin/plugin.json",
+  ".claude-plugin/marketplace.json",
+  ".codex-plugin/plugin.json",
+  ".cursor-plugin/plugin.json",
+]
+
+[packages.runtimes]
+claude = ".claude-plugin/plugin.json"
+codex = ".codex-plugin/plugin.json"
+cursor = ".cursor-plugin/plugin.json"
+grok = ".claude-plugin/plugin.json"
+
+[packages.install_ids]
+claude = "accessibility@accessibility-devkit"
+codex = "accessibility@accessibility-devkit"
+cursor = "accessibility@accessibility-devkit"
+grok = "accessibility"
+
+[[packages]]
+name = "humanize"
+directory = "humanize"
+version = "1.2.1"
+origin = "https://github.com/actually-useful-ai/humanize.git"
+ref = "v1.2.1"
+hash_paths = [
+  "skills",
+  "commands",
+  ".claude-plugin/plugin.json",
+  ".claude-plugin/marketplace.json",
+  ".codex-plugin/plugin.json",
+  ".cursor-plugin/plugin.json",
+]
+
+[packages.runtimes]
+claude = ".claude-plugin/plugin.json"
+codex = ".codex-plugin/plugin.json"
+cursor = ".cursor-plugin/plugin.json"
+grok = ".claude-plugin/plugin.json"
+
+[packages.install_ids]
+claude = "humanize@actually-useful-ai-humanize"
+codex = "humanize@actually-useful-ai-humanize"
+cursor = "humanize@actually-useful-ai-humanize"
+grok = "humanize"
+
+# Retirement is limited to these exact, top-level legacy skill links. Existing
+# symlinks move into the central backup root; missing links are already retired.
+# Files and directories are never moved or replaced.
+[[legacy_links]]
+root = "agents"
+runtime = "codex"
+path = "~/.agents/skills/chefs-choice"
+
+[[legacy_links]]
+root = "codex"
+runtime = "codex"
+path = "~/.codex/skills/chefs-choice"
+
+[[legacy_links]]
+root = "claude"
+runtime = "claude"
+path = "~/.claude/skills/chefs-choice"
+
+[[legacy_links]]
+root = "agents"
+runtime = "codex"
+path = "~/.agents/skills/exemplar"
+
+[[legacy_links]]
+root = "codex"
+runtime = "codex"
+path = "~/.codex/skills/exemplar"
+
+[[legacy_links]]
+root = "claude"
+runtime = "claude"
+path = "~/.claude/skills/exemplar"
+
+[[legacy_links]]
+root = "agents"
+runtime = "codex"
+path = "~/.agents/skills/intentional-ux"
+
+[[legacy_links]]
+root = "codex"
+runtime = "codex"
+path = "~/.codex/skills/intentional-ux"
+
+[[legacy_links]]
+root = "claude"
+runtime = "claude"
+path = "~/.claude/skills/intentional-ux"
+
+[[legacy_links]]
+root = "agents"
+runtime = "codex"
+path = "~/.agents/skills/humanize"
+
+[[legacy_links]]
+root = "codex"
+runtime = "codex"
+path = "~/.codex/skills/humanize"
+
+[[legacy_links]]
+root = "claude"
+runtime = "claude"
+path = "~/.claude/skills/humanize"

@@ -363,10 +363,15 @@ print(json.dumps({
 
     def test_run_preserves_provenance_and_assignment_order(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_dir:
-            fake = self.fake_ask(Path(temporary_dir))
+            root = Path(temporary_dir)
+            fake = self.fake_ask(root)
+            result_dir = root / "results"
             result = self.run_swarm(
                 "--count", "4", "--concurrency", "2", "--run", "--json", "--", "question",
-                env={"CRAFT_SWARM_ASK": str(fake)},
+                env={
+                    "CRAFT_SWARM_ASK": str(fake),
+                    "CRAFT_SWARM_RESULT_DIR": str(result_dir),
+                },
             )
 
             self.assertEqual(result.returncode, 0, result.stderr)
@@ -375,13 +380,36 @@ print(json.dumps({
             self.assertEqual([item["id"] for item in payload["results"]], [1, 2, 3, 4])
             self.assertTrue(all(item["provider"] == "openai" for item in payload["results"]))
             self.assertTrue(all(item["model"] == "gpt-5.6-luna" for item in payload["results"]))
+            envelope_path = Path(payload["result_file"])
+            self.assertEqual(envelope_path.parent, result_dir)
+            self.assertEqual(envelope_path.stat().st_mode & 0o777, 0o600)
+            self.assertEqual(
+                json.loads(envelope_path.read_text(encoding="utf-8")), payload
+            )
+
+            second = self.run_swarm(
+                "--count", "1", "--run", "--json", "--", "question",
+                env={
+                    "CRAFT_SWARM_ASK": str(fake),
+                    "CRAFT_SWARM_RESULT_DIR": str(result_dir),
+                },
+            )
+            self.assertEqual(second.returncode, 0, second.stderr)
+            self.assertNotEqual(
+                Path(json.loads(second.stdout)["result_file"]), envelope_path
+            )
 
     def test_partial_failure_is_reported_without_retry(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_dir:
-            fake = self.fake_ask(Path(temporary_dir))
+            root = Path(temporary_dir)
+            fake = self.fake_ask(root)
             result = self.run_swarm(
                 "--count", "4", "--run", "--json", "--", "question",
-                env={"CRAFT_SWARM_ASK": str(fake), "CRAFT_SWARM_FAIL_ID": "2"},
+                env={
+                    "CRAFT_SWARM_ASK": str(fake),
+                    "CRAFT_SWARM_FAIL_ID": "2",
+                    "CRAFT_SWARM_RESULT_DIR": str(root / "results"),
+                },
             )
 
             self.assertEqual(result.returncode, 8, result.stderr)
@@ -392,6 +420,10 @@ print(json.dumps({
             failed = [item for item in payload["results"] if not item["ok"]]
             self.assertEqual([item["id"] for item in failed], [2])
             self.assertEqual(failed[0]["exit_code"], 5)
+            self.assertEqual(
+                json.loads(Path(payload["result_file"]).read_text(encoding="utf-8")),
+                payload,
+            )
 
     def test_likely_secret_is_rejected_before_transport(self) -> None:
         result = self.run_swarm(
@@ -410,12 +442,17 @@ print(json.dumps({
 
     def test_global_deadline_cancels_inflight_and_queued_scouts(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_dir:
-            fake = self.fake_ask(Path(temporary_dir))
+            root = Path(temporary_dir)
+            fake = self.fake_ask(root)
             started = time.monotonic()
             result = self.run_swarm(
                 "--count", "4", "--concurrency", "2", "--deadline", "1",
                 "--run", "--json", "--", "question",
-                env={"CRAFT_SWARM_ASK": str(fake), "CRAFT_SWARM_SLEEP": "10"},
+                env={
+                    "CRAFT_SWARM_ASK": str(fake),
+                    "CRAFT_SWARM_SLEEP": "10",
+                    "CRAFT_SWARM_RESULT_DIR": str(root / "results"),
+                },
             )
 
             self.assertEqual(result.returncode, 130, result.stderr)
@@ -424,6 +461,10 @@ print(json.dumps({
             self.assertEqual(payload["state"], "cancelled")
             self.assertFalse(payload["synthesis_allowed"])
             self.assertEqual(payload["cancelled"], 4)
+            self.assertEqual(
+                json.loads(Path(payload["result_file"]).read_text(encoding="utf-8")),
+                payload,
+            )
 
 
 class NavigationTests(unittest.TestCase):

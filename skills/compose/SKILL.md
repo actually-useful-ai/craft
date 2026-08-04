@@ -31,6 +31,8 @@ expose `craft-design` as a named profile.
 Use the [capability routing contract](../capability-routing.md). One
 most-specific executor owns implementation; governors and overlays cannot
 expand scope or replace it.
+Carry the shared [evidence envelope](../evidence-envelope.md) and update it as
+planned work becomes measured or observed work.
 
 1. **Plan if needed**: for non-trivial builds, route through `/craft:discuss --plan` first.
 2. **Resolve capabilities**: confirm the selected executor and optional providers
@@ -45,7 +47,8 @@ expand scope or replace it.
    - `surgical`: read the full target file, identify the minimum-blast-radius boundary, make the edit, verify with tests if they exist.
 5. **Verify**: run tests, type checks, or smoke checks appropriate to the mode.
    Record completed checks separately from unverified or planned evidence.
-6. **Hand off**: use `/craft:distill` for cleanup or `/craft:reconsider` to challenge the result.
+6. **Hand off**: report `Done`, `Evidence`, `Open`, and `Next`; then use
+   `/craft:distill` for cleanup or `/craft:reconsider` to challenge the result.
 
 ## Surgical mode (formerly /fix)
 

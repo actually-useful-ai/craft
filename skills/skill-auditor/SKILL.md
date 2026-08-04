@@ -47,7 +47,8 @@ Detect `.codex-plugin`, `.claude-plugin`, and `.agents/plugins` metadata. When t
 Use the bundled script:
 
 ```sh
-python3 scripts/audit_skills.py <root> [<root> ...] --profile auto --format markdown
+python3 "$CRAFT_PLUGIN_ROOT/skills/skill-auditor/scripts/audit_skills.py" \
+  <root> [<root> ...] --profile auto --format markdown
 ```
 
 The script is read-only. It checks parsed Markdown links rather than treating every bare `*.md` token as a reference.

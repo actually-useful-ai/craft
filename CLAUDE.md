@@ -1,4 +1,4 @@
-# craft v0.6
+# craft v0.7
 
 Portable workflow and capability-routing package for Codex and Claude Code.
 Five modal commands plus activation, board, context, prior-art research, and
@@ -36,7 +36,7 @@ discuss → compose → distill → reconsider → present
 
 - 9 workflow entry points and 7 bundled capability skills in `skills/<name>/SKILL.md`
 - 14 helper profiles in `agents/`
-- 13 root stdlib scripts plus 5 bundled skill-auditing and creation scripts
+- 14 root stdlib scripts plus 5 bundled skill-auditing and creation scripts
 
 **No hard dependency** on another plugin. Craft discovers optional providers and
 degrades with an explicit limitation. Where second-opinion or data-fetching
@@ -63,6 +63,7 @@ All in `scripts/`, called from skills after resolving `CRAFT_PLUGIN_ROOT` with
 |---|---|
 | `ask.sh` | Canonical outside-model consultation with explicit model provenance |
 | `swarm.py` | Bounded concurrent Luna scout orchestration through `ask.sh` |
+| `fleet.py` | Manifest-driven cross-host package, runtime, hash, and legacy-link verification |
 | `llm-query.py` | Compatibility wrapper that delegates to `ask.sh` |
 | `data-fetch.py` | 17 data sources (uses `~/shared/data_fetching` if present) |
 | `analyze.py` | Code complexity, duplication detection (stdlib only) |
@@ -124,7 +125,7 @@ Board HTML: `~/html/craft/board/index.html` (served via Caddy if configured).
 - `skill-auditor`: read-only auditor behind `/craft:distill --skills`.
 - `skill-creator`: executor behind `/craft:compose skill`.
 
-These seven skills are canonical in Craft as of 0.6. Do not maintain editable
+These seven skills are canonical in Craft as of 0.7. Do not maintain editable
 copies in another active plugin. Accessibility, Intentional UX, Humanize, Team,
 and platform/domain skills remain independent providers.
 

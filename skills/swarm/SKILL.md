@@ -62,7 +62,9 @@ copies of the same prompt.
    ```
 
    Use `--size jillion` only when Luke asks for the jillion. Use stdin for a
-   multiline brief by passing `-` as the question.
+   multiline brief by passing `-` as the question. Every paid run writes a
+   private, atomic JSON result envelope under `~/craft/logs/swarm/` before it
+   reports success; `--result-file` selects another path.
 5. Preserve each result's provider, model, lens, and failure state. A model
    mismatch is a failed scout; never substitute another model.
 6. Synthesize by clustering agreements, contradictions, unique findings, and
@@ -73,6 +75,9 @@ copies of the same prompt.
 7. Report partial failures and the successful scout count. Do not relaunch
    failures automatically. When fewer than 75% of requested scouts succeed,
    report the run as incomplete and do not synthesize it.
+8. If terminal output is lost, recover only from the named result envelope. A
+   missing or unreadable envelope, or one whose state remains `running`, is an
+   incomplete run—not permission to infer or relaunch the missing results.
 
 ## Composition
 

@@ -5,12 +5,17 @@ from __future__ import annotations
 
 import argparse
 from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeout, as_completed
+from datetime import datetime, timezone
+import hashlib
 import json
 import os
 from pathlib import Path
 import re
+import secrets
+import signal
 import subprocess
 import sys
+import tempfile
 import threading
 import time
 from typing import Any
@@ -99,6 +104,11 @@ def parse_args() -> argparse.Namespace:
         default=180,
         help="global run deadline in seconds",
     )
+    parser.add_argument(
+        "--result-file",
+        type=Path,
+        help="durable paid-run envelope path (defaults under ~/craft/logs/swarm)",
+    )
     action = parser.add_mutually_exclusive_group()
     action.add_argument("--run", action="store_true", help="make paid outside calls")
     action.add_argument("--dry-run", action="store_true", help="show the plan only")
@@ -120,6 +130,55 @@ def likely_contains_secret(text: str) -> bool:
         r"(?i)\b(?:api[_-]?key|token|password|secret)\b\s*[:=]\s*[\"']?[A-Za-z0-9_./+=-]{16,}",
     )
     return any(re.search(pattern, text) for pattern in patterns)
+
+
+def utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def result_path(question: str, requested: Path | None) -> Path:
+    if requested is not None:
+        return requested.expanduser().absolute()
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    brief_id = hashlib.sha256(question.encode("utf-8")).hexdigest()[:12]
+    root = Path(
+        os.environ.get(
+            "CRAFT_SWARM_RESULT_DIR",
+            Path.home() / "craft" / "logs" / "swarm",
+        )
+    ).expanduser()
+    run_id = secrets.token_hex(4)
+    return root / f"swarm-{stamp}-{brief_id}-{run_id}.json"
+
+
+def write_envelope(path: Path, payload: dict[str, Any], *, first: bool = False) -> None:
+    """Persist one private, atomic progress envelope before reporting success."""
+
+    if path.is_symlink():
+        raise OSError(f"result file is a symlink: {path}")
+    path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+    if path.parent.is_symlink() or not path.parent.is_dir():
+        raise OSError(f"result directory is unsafe: {path.parent}")
+    if first and path.exists():
+        raise FileExistsError(f"result file already exists: {path}")
+
+    descriptor, temporary_name = tempfile.mkstemp(
+        dir=path.parent,
+        prefix=f".{path.name}.",
+        suffix=".tmp",
+    )
+    temporary = Path(temporary_name)
+    try:
+        os.fchmod(descriptor, 0o600)
+        with os.fdopen(descriptor, "w", encoding="utf-8") as stream:
+            json.dump(payload, stream, ensure_ascii=False, indent=2)
+            stream.write("\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, path)
+        path.chmod(0o600)
+    finally:
+        temporary.unlink(missing_ok=True)
 
 
 def assignments(count: int) -> list[dict[str, Any]]:
@@ -289,6 +348,7 @@ def main() -> int:
         "max_tokens_per_scout": args.max_tokens,
         "output_token_ceiling": count * args.max_tokens,
         "brief_bytes": len(question.encode("utf-8")),
+        "brief_sha256": hashlib.sha256(question.encode("utf-8")).hexdigest(),
         "global_deadline_seconds": args.deadline,
         "assignments": work,
     }
@@ -317,14 +377,63 @@ def main() -> int:
         print(f"swarm: {error}", file=sys.stderr)
         return 3
 
+    envelope_path = result_path(question, args.result_file)
+    payload.update(
+        {
+            "state": "running",
+            "requested": count,
+            "succeeded": 0,
+            "failed": 0,
+            "cancelled": 0,
+            "synthesis_allowed": False,
+            "started_at": utc_now(),
+            "updated_at": utc_now(),
+            "result_file": str(envelope_path),
+            "results": [],
+        }
+    )
+    try:
+        write_envelope(envelope_path, payload, first=True)
+    except OSError as error:
+        print(f"swarm: cannot create durable result envelope: {error}", file=sys.stderr)
+        return 3
+
     print(
         f"swarm: launching {count} Luna scouts with concurrency {concurrency}; "
-        f"output ceiling {count * args.max_tokens} tokens",
+        f"output ceiling {count * args.max_tokens} tokens; results {envelope_path}",
         file=sys.stderr,
     )
     results: list[dict[str, Any]] = []
     executor = ThreadPoolExecutor(max_workers=concurrency)
     cancelled = False
+    persistence_failed = False
+
+    def persist_progress() -> None:
+        ordered = sorted(results, key=lambda item: item["id"])
+        payload.update(
+            {
+                "results": ordered,
+                "succeeded": sum(1 for item in ordered if item["ok"]),
+                "failed": sum(1 for item in ordered if item["state"] == "failed"),
+                "cancelled": sum(
+                    1 for item in ordered if item["state"] == "cancelled"
+                ),
+                "updated_at": utc_now(),
+            }
+        )
+        write_envelope(envelope_path, payload)
+
+    prior_handlers: dict[int, Any] = {}
+
+    def request_stop(signum: int, _frame: Any) -> None:
+        nonlocal cancelled
+        cancelled = True
+        STOP_REQUESTED.set()
+        terminate_active()
+
+    for signum in (signal.SIGINT, signal.SIGTERM):
+        prior_handlers[signum] = signal.getsignal(signum)
+        signal.signal(signum, request_stop)
     try:
         futures = {
             executor.submit(run_scout, ask_script, question, item, args.max_tokens): item
@@ -338,6 +447,18 @@ def main() -> int:
                 results.append(
                     {**item, "state": "failed", "ok": False, "exit_code": 7, "error": type(error).__name__}
                 )
+            try:
+                persist_progress()
+            except OSError as error:
+                persistence_failed = True
+                cancelled = True
+                STOP_REQUESTED.set()
+                terminate_active()
+                print(
+                    f"swarm: durable result update failed; cancelling run: {error}",
+                    file=sys.stderr,
+                )
+                break
     except (FuturesTimeout, KeyboardInterrupt):
         cancelled = True
         STOP_REQUESTED.set()
@@ -346,6 +467,8 @@ def main() -> int:
         terminate_active()
     finally:
         executor.shutdown(wait=True, cancel_futures=True)
+        for signum, handler in prior_handlers.items():
+            signal.signal(signum, handler)
 
     completed_ids = {item["id"] for item in results}
     for item in work:
@@ -358,7 +481,9 @@ def main() -> int:
     succeeded = sum(1 for item in results if item["ok"])
     failed = sum(1 for item in results if item["state"] == "failed")
     cancelled_count = sum(1 for item in results if item["state"] == "cancelled")
-    if cancelled or cancelled_count:
+    if persistence_failed:
+        overall_state = "failed"
+    elif cancelled or cancelled_count:
         overall_state = "cancelled"
     elif succeeded == count:
         overall_state = "complete"
@@ -375,8 +500,15 @@ def main() -> int:
             "failed": failed,
             "cancelled": cancelled_count,
             "synthesis_allowed": overall_state in ("complete", "partial"),
+            "completed_at": utc_now(),
+            "updated_at": utc_now(),
         }
     )
+    try:
+        write_envelope(envelope_path, payload)
+    except OSError as error:
+        print(f"swarm: final durable result update failed: {error}", file=sys.stderr)
+        return 6
     emit(payload, as_json=args.json)
     if overall_state == "complete":
         return 0

@@ -25,6 +25,8 @@ expose `craft-canary` as a named profile.
 Use the [capability routing contract](../capability-routing.md) for final
 ownership and authorization checks. Apply Humanize only when it is installed
 and the deliverable includes user-facing prose; never rewrite technical meaning.
+Close the shared [evidence envelope](../evidence-envelope.md); outward claims
+must remain at the evidence level actually reached.
 
 ### `save` (mid-session checkpoint)
 1. **Verify state**: `git log --oneline -3`, `git diff --stat`, `git status`. Surprise commits from parallel agents are a stop condition.
@@ -41,6 +43,8 @@ and the deliverable includes user-facing prose; never rewrite technical meaning.
 5. **Evidence**: distinguish observed release results from planned or unavailable
    checks. Never promote a local build into deployment evidence.
 6. **Checkpoint**: record what went out, when, by whom, and where.
+7. **Handoff**: report `Done`, `Evidence`, `Open`, and `Next`, with a final
+   `Done`, `Partial`, or `Blocked` status.
 
 ### `publish` (repo/package publish)
 1. **Verify metadata**: confirm the version changed, the README is current, and a license exists.
