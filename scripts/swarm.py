@@ -43,6 +43,12 @@ LENSES = (
     ("reuse", "Find reusable primitives, automation, or compounding infrastructure."),
     ("wildcard", "Explore one high-value angle the other assigned lenses are likely to miss."),
 )
+PASS_DIRECTIONS = (
+    "Use the most direct high-value interpretation.",
+    "Start from an unconventional but plausible assumption and avoid the obvious version of this lens.",
+    "Concentrate on edge conditions, neglected contexts, and second-order consequences.",
+    "Seek one exception or counterexample that could overturn an otherwise reasonable synthesis.",
+)
 
 
 def bounded_int(value: str, *, minimum: int, maximum: int, label: str) -> int:
@@ -126,7 +132,7 @@ def assignments(count: int) -> list[dict[str, Any]]:
                 "id": offset + 1,
                 "lens": name,
                 "pass": pass_number,
-                "direction": direction,
+                "direction": f"{direction} {PASS_DIRECTIONS[pass_number - 1]}",
             }
         )
     return result

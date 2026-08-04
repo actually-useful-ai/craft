@@ -356,6 +356,10 @@ print(json.dumps({
         self.assertEqual(payload["count"], 32)
         self.assertEqual(payload["output_token_ceiling"], 32 * 320)
         self.assertEqual(len(payload["assignments"]), 32)
+        first_pass = payload["assignments"][:16]
+        second_pass = payload["assignments"][16:]
+        self.assertTrue(all("direct high-value" in item["direction"] for item in first_pass))
+        self.assertTrue(all("unconventional" in item["direction"] for item in second_pass))
 
     def test_run_preserves_provenance_and_assignment_order(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_dir:
