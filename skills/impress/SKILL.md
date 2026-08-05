@@ -1,14 +1,14 @@
 ---
-name: exemplar
-description: Elevate or critique substantive work beyond adequacy by selecting the right expert evaluator, applying domain-specific quality criteria, and removing performative complexity. Use for “impress me,” “make this exceptional,” “flagship,” “go beyond adequate,” “exemplar critique,” or explicit exemplar requests; do not trigger for routine polish or mechanical edits.
+name: impress
+description: Elevate or critique substantive work beyond adequacy by selecting the right expert evaluator, applying domain-specific quality criteria, and removing performative complexity. Use for “impress me,” “make this exceptional,” “flagship,” “go beyond adequate,” “exemplar critique,” or explicit Impress requests; do not trigger for routine polish or mechanical edits.
 license: MIT
 ---
 
-# Exemplar
+# Impress
 
 Raise the quality target without expanding authorization or manufacturing sophistication.
 
-Exemplar is an overlay. The task’s domain skill still governs method, evidence, safety, and deliverables. Exemplar governs what unusually good judgment looks like.
+Impress is an overlay. The task’s domain skill still governs method, evidence, safety, and deliverables. Impress governs what unusually good judgment looks like.
 
 ## Modes
 
@@ -34,11 +34,11 @@ replacement to Reconsider `--rebuild`, and dependency impact to Reconsider
 - Do not claim to remember or have inspected a precedent unless it was actually inspected.
 - Do not imitate protected expression from a specific work.
 
-When Chef’s Choice is also active, Chef’s Choice selects useful capabilities and Exemplar sets the quality bar. When Humanize is active, Humanize owns meaning-preserving prose edits. Accessibility and other safety/compliance skills remain authoritative in their domains.
+When Chef’s Choice is also active, Chef’s Choice selects useful capabilities and Impress sets the quality bar. When Humanize is active, Humanize owns meaning-preserving prose edits. Accessibility and other safety/compliance skills remain authoritative in their domains.
 
 When Intentional UX is active, Intentional UX owns the person-to-outcome task
 tuple, state graph, evidence levels, interaction costs, recovery paths, and
-experience acceptance checks. Exemplar uses that evidence to set the quality
+experience acceptance checks. Impress uses that evidence to set the quality
 target and select one or two high-value improvements; it does not replace the
 task graph or promote Assumed evidence to Observed or Measured.
 
@@ -150,4 +150,4 @@ output above and stop before revision unless revision was also authorized.
 
 ## Boundaries
 
-Exemplar never authorizes deployment, deletion, publication, credential use, external messages, purchases, or broader data access. It does not turn “production-ready,” “best practices,” “polish,” or “improve” into automatic triggers; those phrases should route to the relevant execution skill unless the user explicitly asks for an exemplar-quality pass.
+Impress never authorizes deployment, deletion, publication, credential use, external messages, purchases, or broader data access. It does not turn “production-ready,” “best practices,” “polish,” or “improve” into automatic triggers; those phrases should route to the relevant execution skill unless the user explicitly asks for an exemplar-quality pass.

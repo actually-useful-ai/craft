@@ -40,7 +40,7 @@ class CapabilityRoutingTests(unittest.TestCase):
         for role in ("Executor", "Overlay", "Governor", "Auditor"):
             self.assertIn(f"**{role}:**", contract)
         for capability in (
-            "ask", "chefs-choice", "exemplar", "horizon", "skill-auditor",
+            "ask", "chefs-choice", "impress", "horizon", "skill-auditor",
             "skill-creator", "swarm",
         ):
             self.assertIn(f"`{capability}`", contract)
@@ -61,30 +61,30 @@ class CapabilityRoutingTests(unittest.TestCase):
         self.assertIn("bundled `skill-auditor`", distill)
         self.assertIn("Do not edit caches", distill)
 
-    def test_exemplar_trigger_boundaries_survive_the_move(self) -> None:
-        exemplar = (ROOT / "skills/exemplar/SKILL.md").read_text(encoding="utf-8")
-        self.assertIn("impress me", exemplar.lower())
-        self.assertIn("do not trigger for routine polish or mechanical edits", exemplar)
-        self.assertIn("Chef’s Choice selects useful capabilities", exemplar)
-        self.assertIn("Intentional UX owns", exemplar)
-        self.assertIn("Humanize owns", exemplar)
+    def test_impress_trigger_boundaries_survive_the_move(self) -> None:
+        impress = (ROOT / "skills/impress/SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("impress me", impress.lower())
+        self.assertIn("do not trigger for routine polish or mechanical edits", impress)
+        self.assertIn("Chef’s Choice selects useful capabilities", impress)
+        self.assertIn("Intentional UX owns", impress)
+        self.assertIn("Humanize owns", impress)
 
-    def test_exemplar_critique_is_bounded_and_routes_structural_review(self) -> None:
-        exemplar = (ROOT / "skills/exemplar/SKILL.md").read_text(encoding="utf-8")
-        normalized = " ".join(exemplar.split())
+    def test_impress_critique_is_bounded_and_routes_structural_review(self) -> None:
+        impress = (ROOT / "skills/impress/SKILL.md").read_text(encoding="utf-8")
+        normalized = " ".join(impress.split())
 
         for heading in (
             "### Merely competent",
             "### Exemplar opportunities",
             "### Performative sophistication",
         ):
-            self.assertIn(heading, exemplar)
-        self.assertIn("Do not apply the changes", exemplar)
+            self.assertIn(heading, impress)
+        self.assertIn("Do not apply the changes", impress)
         self.assertIn("one or two smallest changes", normalized)
         for mode in ("`--validate`", "`--rebuild`", "`--blast`"):
-            self.assertIn(mode, exemplar)
+            self.assertIn(mode, impress)
         self.assertIn("begin the response exactly with `### Merely competent`", normalized)
-        self.assertIn("Do not add a preface", exemplar)
+        self.assertIn("Do not add a preface", impress)
         self.assertIn("append at most one final line", normalized)
         self.assertIn("stop before revision unless revision was also authorized", normalized)
 

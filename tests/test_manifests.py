@@ -23,7 +23,7 @@ SKILL_NAMES = {
     "discuss",
     "distill",
     "enhance",
-    "exemplar",
+    "impress",
     "horizon",
     "present",
     "reconsider",

@@ -50,7 +50,7 @@ plugin directory. Its skills are then available in Desktop chat.
 /craft:activate "Add OAuth to the API and choose the right approach"
 /craft:ask anthropic "Challenge this migration plan"      # outside opinion
 /craft:horizon "What am I missing in this product direction?" # adjacent options
-/craft:exemplar critique path/to/artifact                  # quality diagnosis
+/craft:impress critique path/to/artifact                  # quality diagnosis
 /craft:swarm --size jillion "Scout this decision"        # 32 bounded Luna scouts
 /craft:discuss --plan "Add OAuth to the API"          # plan first
 /craft:compose frontend src/components/Login.tsx      # build it
@@ -66,7 +66,7 @@ Every command takes a mode flag and a target. Defaults are sensible: `--quick` f
 ## What's included
 
 - 9 workflow entry points (`activate`, `board`, `compose`, `context`, `discuss`, `distill`, `enhance`, `present`, `reconsider`)
-- 7 bundled capabilities (`ask`, `chefs-choice`, `exemplar`, `horizon`, `skill-auditor`, `skill-creator`, `swarm`)
+- 7 bundled capabilities (`ask`, `chefs-choice`, `horizon`, `impress`, `skill-auditor`, `skill-creator`, `swarm`)
 - 14 optional helper profiles for deliberation, quality, implementation, delivery, and project maintenance
 - 19 stdlib scripts, including deterministic consultation, durable bounded
   Swarm orchestration, fleet verification, skill auditing, and packaging tools
@@ -80,13 +80,13 @@ $craft:activate Chef's choice—impress me with this onboarding flow.
 ```
 
 Craft selects the smallest useful stack and preserves ownership. Chef's Choice
-selects resources; Exemplar sets the quality bar; the most-specific domain skill
+selects resources; Impress sets the quality bar; the most-specific domain skill
 owns implementation; optional providers such as Intentional UX, Accessibility,
 and Humanize retain authority in their domains. Craft reports a material
 selection in one concise line instead of requiring the person to remember a
 catalog of skill names.
 
-Horizon opens the option space before a decision. Exemplar can also critique an
+Horizon opens the option space before a decision. Impress can also critique an
 existing artifact under `Merely competent`, `Exemplar opportunities`, and
 `Performative sophistication` without revising it. Reconsider owns correctness,
 first-principles rebuilds, and blast radius. Ask obtains exactly one outside

@@ -21,11 +21,11 @@ reasoning, implementation, or verification. Never stack skills ceremonially.
 | `swarm` | Executor or evidence provider | Luke explicitly requests a Swarm, a named Swarm size, or many homogeneous Luna scouts. It is paid, read-only breadth sampling; it does not perform repository-aware work or vote on the verdict. |
 | `horizon` | Deliberative executor or hypothesis provider | Luke asks for consequential pre-commit ideas, adjacent possibilities, or what may be missing. It widens the frame without validating or implementing a chosen plan. |
 | `chefs-choice` | Governor | Luke delegates an ambitious approach with “chef’s choice,” “surprise me,” “go nuts,” or a standalone “hit it,” “do it,” or “get it done.” |
-| `exemplar` | Overlay | The request says “impress me,” “exceptional,” “flagship,” “go beyond adequate,” or explicitly asks for Exemplar. Routine polish and mechanical edits do not qualify. |
+| `impress` | Overlay | The request says “impress me,” “exceptional,” “flagship,” “go beyond adequate,” or explicitly asks for Impress. Routine polish and mechanical edits do not qualify. |
 | `skill-auditor` | Auditor | The target is a skill catalog, plugin package, installation fleet, routing contract, or source/install drift. |
 | `skill-creator` | Executor | The task creates, restructures, packages, or modernizes a skill or skill-bearing plugin. |
 
-Chef’s Choice selects useful resources. Exemplar sets the quality bar. Neither
+Chef’s Choice selects useful resources. Impress sets the quality bar. Neither
 replaces the domain executor, changes permissions, or overrides a safety,
 accessibility, legal, or compliance capability.
 
@@ -76,7 +76,7 @@ task because a brand-name provider is absent.
 
 During completion, preserve ownership: domain evidence remains authoritative;
 Intentional UX owns task-path evidence; Accessibility owns access evidence;
-Humanize owns prose edits; Exemplar may request one revision but cannot promote
+Humanize owns prose edits; Impress may request one revision but cannot promote
 assumed evidence to observed or measured.
 
 ## Phase behavior

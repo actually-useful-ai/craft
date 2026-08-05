@@ -171,17 +171,17 @@ path = "~/.claude/skills/chefs-choice"
 [[legacy_links]]
 root = "agents"
 runtime = "codex"
-path = "~/.agents/skills/exemplar"
+path = "~/.agents/skills/impress"
 
 [[legacy_links]]
 root = "codex"
 runtime = "codex"
-path = "~/.codex/skills/exemplar"
+path = "~/.codex/skills/impress"
 
 [[legacy_links]]
 root = "claude"
 runtime = "claude"
-path = "~/.claude/skills/exemplar"
+path = "~/.claude/skills/impress"
 
 [[legacy_links]]
 root = "agents"

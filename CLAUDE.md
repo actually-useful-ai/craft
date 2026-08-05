@@ -24,7 +24,7 @@ discuss → compose → distill → reconsider → present
 | `/craft:enhance` | Research local and current prior art before building | (none) |
 | `/craft:ask` | Obtain one explicitly authorized outside-model opinion | (none) |
 | `/craft:chefs-choice` | Select useful capabilities for an ambitious delegated approach | (none) |
-| `/craft:exemplar` | Set an exceptional quality target without performative complexity | (none) |
+| `/craft:impress` | Set an exceptional quality target without performative complexity | (none) |
 | `/craft:horizon` | Surface consequential pre-commit ideas and blind spots | (none) |
 | `/craft:skill-auditor` | Audit skills, plugins, and installations without editing them | (none) |
 | `/craft:skill-creator` | Create or revise portable, tested skills and plugins | (none) |
@@ -121,7 +121,7 @@ Board HTML: `~/html/craft/board/index.html` (served via Caddy if configured).
 - `ask`: executor for an outside-model answer or an advisory evidence provider after explicit authorization.
 - `horizon`: deliberative executor for a compact pre-commit option set or a hypothesis provider to Discuss.
 - `swarm`: executor for an explicitly authorized homogeneous Luna exploration or an advisory evidence provider.
-- `exemplar`: overlay for the quality target and anti-performance filter.
+- `impress`: overlay for the quality target and anti-performance filter.
 - `skill-auditor`: read-only auditor behind `/craft:distill --skills`.
 - `skill-creator`: executor behind `/craft:compose skill`.
 
