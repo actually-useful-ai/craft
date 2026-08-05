@@ -1,6 +1,6 @@
 {
   "name": "craft",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "A portable workflow that discovers useful capabilities, plans deliberately, builds with clear ownership, verifies evidence, and delivers the result.",
   "author": {
     "name": "Luke Steuber",
