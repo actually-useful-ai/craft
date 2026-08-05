@@ -159,7 +159,7 @@ class FleetTests(unittest.TestCase):
         self.assertEqual(
             versions,
             {
-                "craft": "0.7.4",
+                "craft": "0.8.0",
                 "team": "0.1.4",
                 "intentional-ux": "0.2.2",
                 "accessibility": "1.1.2",
