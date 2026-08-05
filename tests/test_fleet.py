@@ -182,7 +182,7 @@ class FleetTests(unittest.TestCase):
         expected_paths = {
             f"~/.{root}/skills/{name}"
             for root in ("agents", "codex", "claude")
-            for name in ("chefs-choice", "exemplar", "intentional-ux", "humanize")
+            for name in ("chefs-choice", "impress", "intentional-ux", "humanize")
         }
         self.assertEqual(
             {link["path"] for link in bom["legacy_links"]}, expected_paths
