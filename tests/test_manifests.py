@@ -163,5 +163,43 @@ class ManifestTests(unittest.TestCase):
                 self.assertIn("../helper-profiles.md", content, path.as_posix())
 
 
+class ManusEntrypointTests(unittest.TestCase):
+    """The root SKILL.md is Manus's import target and restates the skill table
+    by hand, so it can drift silently when a capability is added or renamed."""
+
+    def setUp(self) -> None:
+        self.text = (ROOT / "SKILL.md").read_text(encoding="utf-8")
+
+    def _table_names(self) -> set[str]:
+        names = set()
+        for line in self.text.splitlines():
+            if not line.startswith("| "):
+                continue
+            first = line.split("|")[1].strip()
+            if first and first not in {"Skill", "-------"} and not set(first) <= {"-"}:
+                names.add(first)
+        return names
+
+    def test_table_lists_exactly_the_shipped_skills(self) -> None:
+        listed = self._table_names()
+        self.assertEqual(
+            listed,
+            SKILL_NAMES,
+            "Root SKILL.md skill table drifted from skills/. "
+            f"Only in table: {sorted(listed - SKILL_NAMES)}. "
+            f"Missing from table: {sorted(SKILL_NAMES - listed)}.",
+        )
+
+    def test_declared_skill_count_matches(self) -> None:
+        self.assertIn(f"{SKILL_COUNT} skills", self.text)
+
+    def test_every_listed_skill_has_a_directory(self) -> None:
+        for name in self._table_names():
+            self.assertTrue(
+                (ROOT / "skills" / name / "SKILL.md").is_file(),
+                f"Root SKILL.md lists '{name}', which has no skills/{name}/SKILL.md",
+            )
+
+
 if __name__ == "__main__":
     unittest.main()
