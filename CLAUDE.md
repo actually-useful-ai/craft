@@ -1,4 +1,4 @@
-# craft v0.8.1
+# craft v0.9.0
 
 Portable workflow and capability-routing package for Codex and Claude Code.
 Five modal commands plus activation, board, context, prior-art research, and
@@ -32,11 +32,13 @@ discuss → compose → distill → reconsider → present
 
 ## Architecture
 
-**Self-contained, no build step.** Skills are Markdown with stdlib helper scripts.
+**Self-contained, no build step.** Skills are Markdown. Helper scripts need no
+third-party packages on Python 3.11+; `fleet.py` also accepts `tomli` on older
+controller interpreters.
 
 - 9 workflow entry points and 7 bundled capability skills in `skills/<name>/SKILL.md`
 - 14 helper profiles in `agents/`
-- 14 root stdlib scripts plus 5 bundled skill-auditing and creation scripts
+- 14 root scripts plus 5 bundled skill-auditing and creation scripts
 - Agent Plugins 1.0 portable metadata in root `plugin.json`, alongside the
   existing Claude, Codex, and Cursor projections
 
@@ -137,7 +139,7 @@ shared contract and should not duplicate it.
 - `skill-auditor`: read-only auditor behind `/craft:distill --skills`.
 - `skill-creator`: executor behind `/craft:compose skill`.
 
-These seven skills are canonical in Craft as of 0.7. Do not maintain editable
+These seven skills are canonical in Craft as of 0.9.0. Do not maintain editable
 copies in another active plugin. Accessibility, Intentional UX, Humanize, Team,
 and platform/domain skills remain independent providers.
 

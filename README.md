@@ -17,7 +17,28 @@ Open the Codex app's **Plugin Directory**, choose the option to import a plugin,
 https://github.com/actually-useful-ai/craft
 ```
 
-The repository includes the Codex manifest and discovers all nine workflow entry points from `skills/`.
+The repository includes the Codex manifest and discovers all 16 skills from
+`skills/`.
+
+The equivalent CLI flow is:
+
+```sh
+codex plugin marketplace add actually-useful-ai/craft
+codex plugin add craft@lukeslp-craft
+codex plugin list --json
+```
+
+For local development, point the marketplace at an absolute checkout path:
+
+```sh
+codex plugin marketplace add /absolute/path/to/craft
+codex plugin add craft@lukeslp-craft
+```
+
+Open a fresh Codex thread after installation so skill discovery reloads. Once
+the plugin is active, back up and retire old top-level symlinks that point
+directly into `craft/skills/`; leaving both discovery paths active can make the
+selected source ambiguous.
 
 ## Portable package format
 
@@ -75,8 +96,10 @@ Every command takes a mode flag and a target. Defaults are sensible: `--quick` f
 - 9 workflow entry points (`activate`, `board`, `compose`, `context`, `discuss`, `distill`, `enhance`, `present`, `reconsider`)
 - 7 bundled capabilities (`ask`, `chefs-choice`, `horizon`, `impress`, `skill-auditor`, `skill-creator`, `swarm`)
 - 14 optional helper profiles for deliberation, quality, implementation, delivery, and project maintenance
-- 19 stdlib scripts, including deterministic consultation, durable bounded
-  Swarm orchestration, fleet verification, skill auditing, and packaging tools
+- 19 scripts, including deterministic consultation, durable bounded Swarm
+  orchestration, fleet verification, skill auditing, and packaging tools. They
+  need no third-party packages on Python 3.11+; `fleet.py` accepts `tomli` on
+  older controller interpreters.
 
 ## Capability routing
 
@@ -123,7 +146,7 @@ The bundled capability-maintenance paths are `/craft:compose skill` for creating
 or revising skills and `/craft:distill --skills` for read-only package and fleet
 audits.
 
-The six workflow phases carry one evidence envelope. Measured, observed,
+The five core workflow phases carry one evidence envelope. Measured, observed,
 inferred, planned, and unavailable claims stay distinct through the final
 `Done`, `Partial`, or `Blocked` handoff.
 
@@ -171,9 +194,9 @@ into an inferred result or an accidental retry.
 Accessibility, and Humanize. `scripts/fleet.py` checks immutable checkout refs,
 manifest versions, logical content hashes, expected runtime activation, and
 broken top-level skill links across locally configured hosts. Machine topology
-stays in `~/.config/craft/fleet-hosts.toml`; declared legacy links can be
-quarantined only through an explicit apply step. See [Plugin fleet
-control](docs/plugin-parity.md).
+stays in `~/.config/craft/fleet-hosts.toml`. The public BOM declares no
+legacy-link retirement targets because replacement activation and link
+ownership are host-local facts. See [Plugin fleet control](docs/plugin-parity.md).
 
 The fleet records Chaos, Platforms, Mobile, and Pi as release blockers until
 their canonical repositories publish immutable version tags. Craft does not

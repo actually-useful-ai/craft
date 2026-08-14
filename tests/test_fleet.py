@@ -153,7 +153,7 @@ class FleetTests(unittest.TestCase):
             "backup_root": str(self.base / "backups"),
         }
 
-    def test_public_bom_pins_releases_install_ids_and_retirements(self) -> None:
+    def test_public_bom_pins_releases_install_ids_and_safe_defaults(self) -> None:
         bom = fleet.load_bom(ROOT / "fleet.toml")
         versions = {package["name"]: package["version"] for package in bom["packages"]}
         self.assertEqual(
@@ -178,19 +178,9 @@ class FleetTests(unittest.TestCase):
             package for package in bom["packages"] if package["name"] == "craft"
         )
         self.assertIn("fleet.toml", craft["hash_paths"])
-        self.assertIn("plugin.json", craft["hash_paths"])
+        self.assertNotIn("plugin.json", craft["hash_paths"])
 
-        expected_paths = {
-            f"~/.{root}/skills/{name}"
-            for root in ("agents", "codex", "claude")
-            for name in ("chefs-choice", "impress", "intentional-ux", "humanize")
-        }
-        self.assertEqual(
-            {link["path"] for link in bom["legacy_links"]}, expected_paths
-        )
-        self.assertTrue(
-            all("target" not in link and "package" not in link for link in bom["legacy_links"])
-        )
+        self.assertEqual(bom["legacy_links"], [])
 
         parity = (ROOT / "docs/plugin-parity.md").read_text(encoding="utf-8")
         normalized = " ".join(parity.split())

@@ -14,7 +14,6 @@ import re
 import shutil
 import subprocess
 import sys
-import tomllib
 from typing import Any, Iterable
 from urllib.parse import urlsplit, urlunsplit
 
@@ -37,6 +36,15 @@ class ConfigurationError(ValueError):
 
 
 def _read_toml(path: Path) -> dict[str, Any]:
+    try:
+        import tomllib
+    except ModuleNotFoundError:
+        try:
+            import tomli as tomllib
+        except ModuleNotFoundError as error:
+            raise ConfigurationError(
+                "reading TOML requires Python 3.11+ or the tomli package"
+            ) from error
     try:
         with path.open("rb") as handle:
             return tomllib.load(handle)
@@ -209,8 +217,11 @@ def load_bom(path: Path) -> dict[str, Any]:
         for runtime in RUNTIMES
     }
 
+    legacy_links = data.get("legacy_links", [])
+    if not isinstance(legacy_links, list):
+        raise ConfigurationError("legacy_links must be an array of tables")
     seen_links: set[str] = set()
-    for link in data.get("legacy_links", []):
+    for link in legacy_links:
         if not isinstance(link, dict):
             raise ConfigurationError("every legacy link must be a table")
         unknown_link = set(link) - {"root", "runtime", "path"}
@@ -230,6 +241,7 @@ def load_bom(path: Path) -> dict[str, Any]:
         if not isinstance(link["path"], str) or link["path"] in seen_links:
             raise ConfigurationError(f"legacy link paths must be unique strings: {link['path']!r}")
         seen_links.add(link["path"])
+    data["legacy_links"] = legacy_links
     return data
 
 

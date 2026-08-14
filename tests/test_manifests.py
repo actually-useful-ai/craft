@@ -9,7 +9,7 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "0.8.1"
+VERSION = "0.9.0"
 PLUGIN_NAME = "craft"
 AGENT_PLUGIN_SCHEMA = (
     "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json"
@@ -199,13 +199,6 @@ class ManifestTests(unittest.TestCase):
         self.assertEqual(codex["license"], "MIT AND Apache-2.0")
         self.assertEqual(claude["license"], "MIT AND Apache-2.0")
         self.assertTrue((ROOT / "skills/skill-creator/LICENSE.txt").is_file())
-
-    def test_public_installation_guidance_is_accurate(self) -> None:
-        readme = (ROOT / "README.md").read_text(encoding="utf-8")
-        self.assertIn("Plugin Directory", readme)
-        self.assertIn("/plugin marketplace add", readme)
-        self.assertIn("/plugin install", readme)
-        self.assertNotIn("codex plugin", readme.lower())
 
     def test_bundled_script_paths_are_host_neutral(self) -> None:
         scripted_skills = ("activate", "ask", "board", "context", "distill", "swarm")

@@ -11,9 +11,13 @@
 | Humanize | `actually-useful-ai/humanize` | `v1.2.1` | `1.2.1` |
 
 The BOM also declares each package's logical content, supported runtime
-manifests, runtime-specific installation IDs, runtime skill roots, and the exact
-legacy links eligible for retirement. Keep hostnames, SSH routing, and
+manifests, runtime-specific installation IDs, runtime skill roots, and any
+reviewed legacy links eligible for retirement. Keep hostnames, SSH routing, and
 machine-specific checkout paths out of this file.
+
+This table is the last reviewed release snapshot, not the current development
+manifest. A working branch may declare a newer package version; advance the
+Craft row only when its matching immutable tag exists.
 
 Keep three claims distinct:
 
@@ -55,6 +59,9 @@ scripts/fleet.py audit
 scripts/fleet.py audit --json
 ```
 
+The controller needs Python 3.11+ or `tomli` on an older interpreter. Streamed
+remote probes do not parse TOML and remain compatible with Python 3.9.
+
 The controller checks each package for:
 
 - the declared Git origin;
@@ -81,6 +88,32 @@ always `FAIL`. Any failure returns a nonzero status.
 
 `scripts/plugin-parity.sh` remains as a compatibility wrapper around
 `scripts/fleet.py audit`.
+
+## Codex installation smoke test
+
+Install a released Craft package through the configured marketplace and verify
+the registry separately from the cached payload:
+
+```sh
+codex plugin marketplace add actually-useful-ai/craft
+codex plugin add craft@lukeslp-craft
+codex plugin list --json
+```
+
+For an unpublished branch, use the checkout's absolute path as the marketplace
+source. A successful registry entry is runtime-activation evidence; confirm the
+cache contains all 16 `skills/*/SKILL.md` files before treating package content
+as verified.
+
+A local marketplace installation copies the declared version into Codex's
+plugin cache. If source changes without a version change, remove and reinstall
+the local plugin before claiming cache parity. Start a fresh thread after any
+install or repair so discovery reloads.
+
+Do not leave direct top-level skill links active beside the installed plugin.
+Before retiring one, resolve its target and confirm it points into the intended
+Craft checkout. Move the link itself to a dated backup; do not delete the skill
+directory it references.
 
 ## Personal host configuration
 
@@ -140,6 +173,11 @@ scripts/fleet.py audit --host workstation --host build-host
 ```
 
 ## Declared legacy-link retirement
+
+The public BOM declares no default retirement targets. A link is safe to retire
+only after the replacement plugin is observed as active and the link target is
+confirmed to belong to the superseded checkout. Add targets only to a reviewed
+BOM copy for that migration.
 
 Repair is a dry-run unless `--apply` is explicit:
 

@@ -23,7 +23,6 @@ hash_paths = [
   "skills",
   "agents",
   "scripts",
-  "plugin.json",
   ".claude-plugin/plugin.json",
   ".claude-plugin/marketplace.json",
   ".codex-plugin/plugin.json",
@@ -177,65 +176,6 @@ version = "1.0.0"
 origin = "https://github.com/actually-useful-ai/pi.git"
 status = "missing-immutable-release"
 
-# Retirement is limited to these exact, top-level legacy skill links. Existing
-# symlinks move into the central backup root; missing links are already retired.
-# Files and directories are never moved or replaced.
-[[legacy_links]]
-root = "agents"
-runtime = "codex"
-path = "~/.agents/skills/chefs-choice"
-
-[[legacy_links]]
-root = "codex"
-runtime = "codex"
-path = "~/.codex/skills/chefs-choice"
-
-[[legacy_links]]
-root = "claude"
-runtime = "claude"
-path = "~/.claude/skills/chefs-choice"
-
-[[legacy_links]]
-root = "agents"
-runtime = "codex"
-path = "~/.agents/skills/impress"
-
-[[legacy_links]]
-root = "codex"
-runtime = "codex"
-path = "~/.codex/skills/impress"
-
-[[legacy_links]]
-root = "claude"
-runtime = "claude"
-path = "~/.claude/skills/impress"
-
-[[legacy_links]]
-root = "agents"
-runtime = "codex"
-path = "~/.agents/skills/intentional-ux"
-
-[[legacy_links]]
-root = "codex"
-runtime = "codex"
-path = "~/.codex/skills/intentional-ux"
-
-[[legacy_links]]
-root = "claude"
-runtime = "claude"
-path = "~/.claude/skills/intentional-ux"
-
-[[legacy_links]]
-root = "agents"
-runtime = "codex"
-path = "~/.agents/skills/humanize"
-
-[[legacy_links]]
-root = "codex"
-runtime = "codex"
-path = "~/.codex/skills/humanize"
-
-[[legacy_links]]
-root = "claude"
-runtime = "claude"
-path = "~/.claude/skills/humanize"
+# The public BOM declares no retirement targets. Replacement activation and
+# symlink ownership are host-local facts; verify both before adding a target to
+# a reviewed BOM copy.
