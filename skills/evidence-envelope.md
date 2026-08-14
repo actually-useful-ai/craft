@@ -24,3 +24,9 @@ Keep secrets, credentials, raw private prompts, and unrelated machine state out
 of the envelope. Preserve dissent and partial failures instead of averaging
 them away. At a phase boundary, summarize only `Done`, `Evidence`, `Open`, and
 `Next` so the receiving phase can continue without reconstructing the task.
+
+When evidence crosses at least two of task path, accessibility, mobile
+implementation, and documentation, use the shared [Experience Review
+contract](experience-review.md). Preserve a provider's `Assumed` provenance in
+that record; map it to Craft's `Inferred` label only in the outer evidence
+envelope, never to `Observed` or `Measured`.

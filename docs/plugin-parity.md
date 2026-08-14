@@ -15,6 +15,36 @@ manifests, runtime-specific installation IDs, runtime skill roots, and the exact
 legacy links eligible for retirement. Keep hostnames, SSH routing, and
 machine-specific checkout paths out of this file.
 
+Keep three claims distinct:
+
+- **Portable package support:** the repository has a conforming Agent Plugins
+  root `plugin.json`, immediate `skills/` children, and root `mcp.json` when it
+  owns MCP servers.
+- **Vendor manifest support:** the repository ships the declared Claude, Codex,
+  Cursor, or Grok-compatible manifest.
+- **Runtime activation:** a host inventory observes that exact package version
+  as installed and enabled.
+
+The first two are package structure. The third is host evidence. None implies
+another.
+
+## Release blockers
+
+Routed providers without immutable reviewed releases remain outside active
+`[[packages]]` entries:
+
+| Provider | Intended version | Blocker |
+|---|---:|---|
+| Chaos | `1.0.0` | Missing immutable release |
+| Platforms | `0.3.0` | Missing immutable release |
+| Mobile | `1.0.0` | Missing immutable release |
+| Pi | `1.0.0` | Missing immutable release |
+
+`[[blocked_packages]]` exposes these gaps in human and JSON audit output but
+does not audit checkout, manifest, or activation state. Move a provider into
+the active BOM only after its canonical `v<version>` tag exists and the package
+declares its actual runtime subset.
+
 ## Audit
 
 With no personal host configuration, the controller audits only the local
@@ -25,7 +55,7 @@ scripts/fleet.py audit
 scripts/fleet.py audit --json
 ```
 
-Each package is checked for:
+The controller checks each package for:
 
 - the declared Git origin;
 - `HEAD` at the declared immutable ref;

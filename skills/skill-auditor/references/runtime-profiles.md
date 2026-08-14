@@ -14,6 +14,18 @@ Treat `scripts/`, `references/`, and `assets/` as conventional optional resource
 
 Do not universally require `allowed-tools`, a body activation heading, an H1/name slug match, emoji examples, or one particular output template.
 
+## Agent Plugins 1.0 profile
+
+- Validate root `plugin.json` against its canonical Agent Plugins 1.0 schema.
+- Discover skills only from immediate children of `skills/` and require each
+  exact `SKILL.md` filename and directory-matching name.
+- Validate root `mcp.json` when present; do not treat `.mcp.json` or an inline
+  server declaration as the portable configuration.
+- Treat skills and MCP as the portable core. Report agents, commands, hooks,
+  rules, and interface metadata as client-specific rather than invalid.
+- Flag unknown top-level portable-manifest fields, escaping paths, and version
+  drift without rejecting unrelated valid skills.
+
 ## Codex profile
 
 - Apply the universal core.

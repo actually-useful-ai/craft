@@ -2,6 +2,18 @@
 
 Start with the universal Agent Skills core: one package directory, `SKILL.md`, leading YAML frontmatter, a lowercase kebab-case `name`, a description that covers capability and trigger context, and a Markdown body. Use `scripts/`, `references/`, and `assets/` for progressive disclosure.
 
+## Agent Plugins 1.0
+
+- Add a root `plugin.json` with the canonical Agent Plugins 1.0 schema.
+- Keep portable skills as immediate children of `skills/`, each with an exact
+  `SKILL.md` filename and a declared name matching its directory.
+- Add root `mcp.json` only when the package owns a portable MCP server.
+- Keep the portable manifest closed to the standard fields. Skills and MCP are
+  the portable core; agents, commands, hooks, rules, and interface metadata are
+  client-specific.
+- Add this format alongside working client manifests. Remove a projection only
+  after the corresponding client has been tested.
+
 ## Codex
 
 - Keep `name` and `description` as the discovery contract.

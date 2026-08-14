@@ -36,6 +36,21 @@ score or conformance claim.
 Integrate the packages as first-class optional providers rather than vendoring
 their skills or implementation code into Craft.
 
+### Portfolio portability amendment
+
+Agent Plugins 1.0 is the additive portable package layer across the portfolio.
+Craft ships a conforming root `plugin.json` while retaining its Claude, Codex,
+and Cursor manifests. The portable standard covers skills and MCP only; it does
+not replace client-specific agents, commands, hooks, presentation metadata, or
+marketplace catalogs.
+
+Each specialist repository remains its own source of truth. A later public
+portfolio catalog will reference immutable package releases; Craft's
+`fleet.toml` consumes a reviewed deployment subset and does not become that
+marketplace. Providers without immutable tags appear as release blockers rather
+than active fleet entries. The organization-wide catalog, Geepers MCP
+consolidation, and cross-repository manifest rollout remain separate workstreams.
+
 | Provider | Craft role | Specialist authority |
 | --- | --- | --- |
 | Chaos | Explicit creative overlay or executor | One bounded creative constraint or remix; its deck remains external and cannot be modified or pushed without separate authorization. |
@@ -212,6 +227,7 @@ clients; structural tests cannot promote them to `Observed` or `Measured`.
 - `skills/present/SKILL.md`
 - `skills/experience-review.md` as a shared reference, not a discoverable skill
 - `fleet.toml`
+- `plugin.json`
 - `README.md`
 - `CLAUDE.md`
 - `docs/plugin-parity.md`

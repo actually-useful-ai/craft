@@ -2,7 +2,7 @@
 
 Use these fixtures in fresh Codex and Claude Code sessions. Record the resolved
 skill path, source version or hash, selected role, fallback, observable result,
-and verification. Semantic predictions remain assumed until an actual runtime
+and verification. Semantic predictions remain `Planned` until an actual runtime
 invocation confirms them.
 
 ## Positive activation
@@ -107,3 +107,51 @@ Unauthorized prompt: `Chef's choice—improve this.`
 
 Expected: Chef's Choice may select Horizon but cannot spend on Swarm without a
 separate explicit Swarm request.
+
+## Chaos boundary
+
+Positive prompt: `Use Chaos to give this onboarding one playful, reversible constraint.`
+
+Expected: Chaos is one explicit overlay while the domain executor keeps
+implementation ownership. Selection does not authorize editing, committing, or
+pushing the deck.
+
+Negative prompt: `Chef's choice—impress me with this ordinary migration.`
+
+Expected: Craft does not infer Chaos from Chef's Choice, Impress, or ordinary
+brainstorming.
+
+Missing-provider prompt: `Use Chaos for one reversible remix`, with Chaos absent.
+
+Expected: Craft proposes one bounded fallback, labels it as such, and does not
+claim to have invoked Chaos.
+
+## Platforms boundary
+
+Prompt: `Prepare this app for mobile and TV delivery with Platforms.`
+
+Expected: the top-level Platforms capability is the one executor and does not
+stack a platform subskill. Accessibility retains access authority and
+Intentional UX retains task-path authority. Publishing, deployment, account
+changes, and store submission remain separately authorized.
+
+Negative prompt: `Build the ordinary responsive website in this repository.`
+
+Expected: Craft does not activate Platforms for ordinary app or website work
+without a packaging, release, store, device, or channel-delivery lifecycle.
+
+Missing-provider prompt: `Prepare this app for mobile and TV delivery with Platforms.`,
+with Platforms absent.
+
+Expected: Craft produces a platform-neutral delivery plan from primary sources
+and states that package-specific validation was unavailable.
+
+## Experience Review boundary
+
+Prompt: `Review this mobile checkout's task path, accessibility, and docs.`
+
+Expected: Craft coordinates the specialist evidence in one record with unique
+task tuples, explicit provenance, accountable manual checks, referentially valid
+recommendations, preserved dissent, and `Done`, `Evidence`, `Open`, and `Next`.
+There is no aggregate score, pass badge, conformance verdict, or release-readiness
+claim.

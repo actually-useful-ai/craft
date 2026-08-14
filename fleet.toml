@@ -23,6 +23,7 @@ hash_paths = [
   "skills",
   "agents",
   "scripts",
+  "plugin.json",
   ".claude-plugin/plugin.json",
   ".claude-plugin/marketplace.json",
   ".codex-plugin/plugin.json",
@@ -149,6 +150,32 @@ claude = "humanize@actually-useful-ai-humanize"
 codex = "humanize@actually-useful-ai-humanize"
 cursor = "humanize@actually-useful-ai-humanize"
 grok = "humanize"
+
+# These providers are routed by Craft but stay outside the audited release BOM
+# until their canonical repositories publish immutable tags.
+[[blocked_packages]]
+name = "chaos"
+version = "1.0.0"
+origin = "https://github.com/actually-useful-ai/chaos.git"
+status = "missing-immutable-release"
+
+[[blocked_packages]]
+name = "platforms"
+version = "0.3.0"
+origin = "https://github.com/actually-useful-ai/platforms.git"
+status = "missing-immutable-release"
+
+[[blocked_packages]]
+name = "mobile"
+version = "1.0.0"
+origin = "https://github.com/actually-useful-ai/mobile.git"
+status = "missing-immutable-release"
+
+[[blocked_packages]]
+name = "pi"
+version = "1.0.0"
+origin = "https://github.com/actually-useful-ai/pi.git"
+status = "missing-immutable-release"
 
 # Retirement is limited to these exact, top-level legacy skill links. Existing
 # symlinks move into the central backup root; missing links are already retired.

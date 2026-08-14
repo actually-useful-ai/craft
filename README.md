@@ -19,6 +19,13 @@ https://github.com/actually-useful-ai/craft
 
 The repository includes the Codex manifest and discovers all nine workflow entry points from `skills/`.
 
+## Portable package format
+
+Craft also ships a root `plugin.json` for Agent Plugins 1.0. The portable core
+is the immediate `skills/` tree; Craft has no MCP server, so it does not ship an
+empty `mcp.json`. The existing Claude, Codex, and Cursor manifests remain in
+place for client-specific installation and presentation.
+
 ## Install in Claude Code
 
 From a Claude Code session, add the repository as a marketplace and install Craft:
@@ -81,10 +88,28 @@ $craft:activate Chef's choice—impress me with this onboarding flow.
 
 Craft selects the smallest useful stack and preserves ownership. Chef's Choice
 selects resources; Impress sets the quality bar; the most-specific domain skill
-owns implementation; optional providers such as Intentional UX, Accessibility,
-and Humanize retain authority in their domains. Craft reports a material
+owns implementation; optional providers retain authority in their domains.
+Craft reports a material
 selection in one concise line instead of requiring the person to remember a
 catalog of skill names.
+
+| Optional provider | Craft uses it for |
+|---|---|
+| Chaos | An explicitly requested playful constraint or remix, never generic ambition |
+| Platforms | Platform delivery through one top-level executor and its own sub-routing |
+| Intentional UX | Task paths, state transitions, recovery, and outcome evidence |
+| Accessibility | Semantics, keyboard and assistive-technology behavior, and access verification |
+| Mobile | Viewport, touch, motion, responsive layout, and measured performance evidence |
+| Humanize | Meaning-preserving review of user-facing prose |
+
+Each provider is independently installed and versioned. Installing Craft does
+not install them. When a provider is absent, Craft names the evidence limitation
+and uses a bounded fallback instead of impersonating that provider.
+
+Reviews that cross at least two of task path, accessibility, mobile
+implementation, and documentation use one Experience Review record. Specialist
+provenance, manual-check ownership, unresolved dissent, and evidence strength
+remain intact; Craft produces no aggregate score or conformance claim.
 
 Horizon opens the option space before a decision. Impress can also critique an
 existing artifact under `Merely competent`, `Exemplar opportunities`, and
@@ -149,6 +174,10 @@ broken top-level skill links across locally configured hosts. Machine topology
 stays in `~/.config/craft/fleet-hosts.toml`; declared legacy links can be
 quarantined only through an explicit apply step. See [Plugin fleet
 control](docs/plugin-parity.md).
+
+The fleet records Chaos, Platforms, Mobile, and Pi as release blockers until
+their canonical repositories publish immutable version tags. Craft does not
+present them as audited fleet packages before that evidence exists.
 
 ## Output
 

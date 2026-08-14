@@ -1,4 +1,4 @@
-# craft v0.7
+# craft v0.8.1
 
 Portable workflow and capability-routing package for Codex and Claude Code.
 Five modal commands plus activation, board, context, prior-art research, and
@@ -37,6 +37,8 @@ discuss → compose → distill → reconsider → present
 - 9 workflow entry points and 7 bundled capability skills in `skills/<name>/SKILL.md`
 - 14 helper profiles in `agents/`
 - 14 root stdlib scripts plus 5 bundled skill-auditing and creation scripts
+- Agent Plugins 1.0 portable metadata in root `plugin.json`, alongside the
+  existing Claude, Codex, and Cursor projections
 
 **No hard dependency** on another plugin. Craft discovers optional providers and
 degrades with an explicit limitation. Where second-opinion or data-fetching
@@ -114,6 +116,16 @@ Board HTML: `~/html/craft/board/index.html` (served via Caddy if configured).
 - `intentional-ux`: independently versioned provider for task paths, interaction cost, recovery, and experience evidence. Craft routes relevant work to it when installed.
 - `humanize`: independently versioned provider for meaning-preserving prose edits. Craft routes publishing prose to it when installed.
 - `accessibility`: owns `/accessibility`, the dedicated WCAG plugin. `craft-a11y` agent does internal a11y checks during `compose` and `reconsider`; full audits go to `/accessibility`.
+- `chaos`: optional explicit creative constraint or remix provider; selecting it
+  never authorizes changes to its external deck.
+- `platforms`: optional top-level platform-delivery executor that owns its own
+  intake and sub-routing.
+- `mobile`: independently versioned source of viewport, touch, motion, layout,
+  and measured performance evidence.
+
+Cross-domain reviews use `skills/experience-review.md`. Keep detailed provider
+rules in `skills/capability-routing.md`; the phase skills already load that
+shared contract and should not duplicate it.
 
 ## Bundled capability ownership
 

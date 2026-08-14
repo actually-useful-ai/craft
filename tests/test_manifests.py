@@ -11,6 +11,21 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 VERSION = "0.8.1"
 PLUGIN_NAME = "craft"
+AGENT_PLUGIN_SCHEMA = (
+    "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json"
+)
+AGENT_PLUGIN_FIELDS = {
+    "$schema",
+    "name",
+    "version",
+    "description",
+    "author",
+    "homepage",
+    "repository",
+    "license",
+    "keywords",
+    "extensions",
+}
 SKILL_COUNT = 16
 HELPER_COUNT = 14
 SKILL_NAMES = {
@@ -39,6 +54,75 @@ def load_json(relative_path: str) -> dict:
 
 
 class ManifestTests(unittest.TestCase):
+    def test_agent_plugins_manifest_is_portable_and_matches_package_identity(self) -> None:
+        portable = load_json("plugin.json")
+        claude = load_json(".claude-plugin/plugin.json")
+
+        self.assertEqual(portable["$schema"], AGENT_PLUGIN_SCHEMA)
+        self.assertTrue(set(portable).issubset(AGENT_PLUGIN_FIELDS))
+        self.assertTrue({"$schema", "name", "version"}.issubset(portable))
+        for field in (
+            "name",
+            "version",
+            "description",
+            "author",
+            "homepage",
+            "repository",
+            "license",
+            "keywords",
+        ):
+            self.assertEqual(portable[field], claude[field], field)
+        self.assertNotIn("skills", portable)
+        self.assertNotIn("interface", portable)
+
+    def test_authoring_and_auditing_profiles_cover_agent_plugins_additively(self) -> None:
+        creator = (ROOT / "skills/skill-creator/references/runtime-profiles.md").read_text(
+            encoding="utf-8"
+        )
+        auditor = (ROOT / "skills/skill-auditor/references/runtime-profiles.md").read_text(
+            encoding="utf-8"
+        )
+        for profile in (creator, auditor):
+            normalized = " ".join(profile.split())
+            self.assertIn("Agent Plugins 1.0", profile)
+            self.assertIn("root `plugin.json`", normalized)
+            self.assertIn("immediate children", normalized)
+            self.assertIn("root `mcp.json`", normalized)
+            self.assertIn("skills and mcp", normalized.lower())
+            self.assertIn("client-specific", normalized)
+
+    def test_public_docs_describe_portable_core_and_external_providers(self) -> None:
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        normalized = " ".join(readme.split())
+        for provider in (
+            "Chaos",
+            "Platforms",
+            "Intentional UX",
+            "Accessibility",
+            "Mobile",
+            "Humanize",
+        ):
+            self.assertIn(provider, readme)
+        self.assertIn("Agent Plugins 1.0", readme)
+        self.assertIn("does not install them", normalized)
+        self.assertIn("root `plugin.json`", normalized)
+        self.assertIn("existing Claude, Codex, and Cursor manifests", normalized)
+
+    def test_agent_plugins_skill_names_match_immediate_directories(self) -> None:
+        portable = load_json("plugin.json")
+        self.assertEqual(portable["name"], PLUGIN_NAME)
+
+        discovered = sorted((ROOT / "skills").glob("*/SKILL.md"))
+        self.assertEqual(len(discovered), SKILL_COUNT)
+        for skill_path in discovered:
+            frontmatter = skill_path.read_text(encoding="utf-8").split("---", 2)[1]
+            declared = next(
+                line.split(":", 1)[1].strip()
+                for line in frontmatter.splitlines()
+                if line.startswith("name:")
+            )
+            self.assertEqual(declared, skill_path.parent.name)
+
     def test_plugin_identity_and_version_agree(self) -> None:
         codex = load_json(".codex-plugin/plugin.json")
         cursor = load_json(".cursor-plugin/plugin.json")

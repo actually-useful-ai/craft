@@ -38,7 +38,11 @@ planned work becomes measured or observed work.
 2. **Resolve capabilities**: confirm the selected executor and optional providers
    are active at the intended source/version. State a fallback for any missing
    provider.
-3. **Set up working tree**: confirm git is clean for surgical mode (preflight gate).
+3. **Set up working tree**: confirm git is clean for surgical mode (preflight
+   gate). Put concurrent writers in isolated worktrees or equivalent isolated
+   checkouts by default. A same-checkout workflow is a low-blast-radius
+   exception only when file ownership is disjoint and the shared state is
+   intentionally coordinated.
 4. **Build**: apply the mode-specific approach:
    - `viz`/`frontend`/`docs`/`flow`/`game`: launch `craft-design` for layout/structure, then implement.
    - `skill`: apply bundled `skill-creator`; define source ownership, runtime
@@ -46,6 +50,11 @@ planned work becomes measured or observed work.
      fallback, and observable success evidence before packaging.
    - `surgical`: read the full target file, identify the minimum-blast-radius boundary, make the edit, verify with tests if they exist.
 5. **Verify**: run tests, type checks, or smoke checks appropriate to the mode.
+   For `viz`, `frontend`, and other user-visible interactive work, render or run
+   the user-visible result when tooling permits. Inspect a representative
+   viewport and input state, capture a screenshot or equivalent observable
+   output, and iterate from what was observed. When the runtime cannot provide
+   that loop, label visual verification `Unavailable` instead of claiming it.
    Record completed checks separately from unverified or planned evidence.
 6. **Hand off**: report `Done`, `Evidence`, `Open`, and `Next`; then use
    `/craft:distill` for cleanup or `/craft:reconsider` to challenge the result.

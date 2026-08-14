@@ -51,18 +51,45 @@ Discover optional providers from the active runtime catalog before promising or
 invoking them. Treat source checkouts, installed packages, caches, projections,
 and symlinks as different states; prefer the active canonical installation.
 
+- **Chaos:** use as an executor or overlay only when it is explicitly requested
+  or the work clearly asks for a deliberately playful constraint or remix. Do
+  not infer it from "chef's choice," "impress me," ordinary brainstorming, or a
+  request that merely contains the word “chaos.” If unavailable, propose one
+  bounded, reversible creative constraint and label it as a fallback; must not
+  claim to have invoked Chaos.
+- **Platforms:** select the top-level Platforms capability as the single domain
+  executor for platform-delivery work. It owns intake and internal sub-routing;
+  Craft does not stack a Platforms subskill beside it. Accessibility remains
+  authoritative for access claims, and Intentional UX remains authoritative for
+  task-path evidence. Do not activate Platforms for ordinary app or website work
+  without a packaging, release, store, device, or channel-delivery lifecycle.
+  If unavailable, create a platform-neutral delivery plan from the target's
+  primary documentation and state that package-specific validation was
+  unavailable.
 - **Intentional UX:** owns person-to-outcome task paths, state transitions,
   interaction cost, recovery, and experience evidence.
 - **Accessibility:** owns semantics, keyboard operation, assistive-technology
   exposure, perception, and accessibility verification. Keep public
   Accessibility Dev Kit independently versioned and apply it only to supported
   platforms.
+- **Mobile:** owns viewport, touch, motion, responsive-layout, and measured
+  Web Vitals implementation evidence.
 - **Humanize:** owns meaning-preserving edits to user-facing prose.
 - **Domain and platform skills:** own their implementation method.
 
 If a provider is unavailable, use the nearest supported evidence standard and
 state the limitation. Do not invent a capability or fail an otherwise feasible
 task because a brand-name provider is absent.
+
+Provider selection does not authorize an outside call, commit, or push. Craft
+cannot edit, commit, or push the Chaos deck without separate authorization.
+Selecting Platforms does not authorize publishing, deployment, account changes,
+or store submission.
+
+When a review crosses at least two evidence domains among task path,
+accessibility, mobile implementation, and documentation, coordinate an
+[Experience Review](experience-review.md). Keep a single-domain review with its
+specialist.
 
 ## Selection sequence
 

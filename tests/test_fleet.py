@@ -178,6 +178,7 @@ class FleetTests(unittest.TestCase):
             package for package in bom["packages"] if package["name"] == "craft"
         )
         self.assertIn("fleet.toml", craft["hash_paths"])
+        self.assertIn("plugin.json", craft["hash_paths"])
 
         expected_paths = {
             f"~/.{root}/skills/{name}"
@@ -190,6 +191,82 @@ class FleetTests(unittest.TestCase):
         self.assertTrue(
             all("target" not in link and "package" not in link for link in bom["legacy_links"])
         )
+
+        parity = (ROOT / "docs/plugin-parity.md").read_text(encoding="utf-8")
+        normalized = " ".join(parity.split())
+        self.assertIn("Portable package support", parity)
+        self.assertIn("Vendor manifest support", parity)
+        self.assertIn("Runtime activation", parity)
+        for name in ("Chaos", "Platforms", "Mobile", "Pi"):
+            self.assertIn(name, parity)
+        self.assertIn("missing immutable release", normalized.lower())
+
+        blocked = {package["name"]: package for package in bom["blocked_packages"]}
+        self.assertEqual(set(blocked), {"chaos", "platforms", "mobile", "pi"})
+        for name, package in blocked.items():
+            self.assertEqual(package["status"], "missing-immutable-release")
+            self.assertEqual(package["version"], "1.0.0" if name != "platforms" else "0.3.0")
+            self.assertTrue(package["origin"].startswith("https://github.com/actually-useful-ai/"))
+            self.assertNotIn("ref", package)
+
+    def test_blocked_packages_require_honest_release_metadata(self) -> None:
+        valid = self.write_bom().read_text(encoding="utf-8")
+        cases = {
+            "unknown field": 'name = "blocked"\nversion = "1.0.0"\norigin = "https://github.com/example/blocked.git"\nstatus = "missing-immutable-release"\nwat = true',
+            "invalid status": 'name = "blocked"\nversion = "1.0.0"\norigin = "https://github.com/example/blocked.git"\nstatus = "maybe"',
+            "duplicate active name": 'name = "demo"\nversion = "1.0.0"\norigin = "https://github.com/example/demo.git"\nstatus = "missing-immutable-release"',
+        }
+        for label, declaration in cases.items():
+            with self.subTest(label=label):
+                path = self.base / f"blocked-{label.replace(' ', '-')}.toml"
+                path.write_text(
+                    valid + "\n[[blocked_packages]]\n" + declaration + "\n",
+                    encoding="utf-8",
+                )
+                with self.assertRaises(fleet.ConfigurationError):
+                    fleet.load_bom(path)
+
+    def test_active_packages_require_versioned_immutable_refs(self) -> None:
+        path = self.write_bom()
+        path.write_text(
+            path.read_text(encoding="utf-8").replace(
+                'ref = "v1.0.0"', 'ref = "main"'
+            ),
+            encoding="utf-8",
+        )
+        with self.assertRaises(fleet.ConfigurationError):
+            fleet.load_bom(path)
+
+    def test_audit_report_exposes_release_blockers_without_auditing_them(self) -> None:
+        path = self.write_bom()
+        path.write_text(
+            path.read_text(encoding="utf-8")
+            + textwrap.dedent(
+                """
+
+                [[blocked_packages]]
+                name = "blocked"
+                version = "1.0.0"
+                origin = "https://github.com/example/blocked.git"
+                status = "missing-immutable-release"
+                """
+            ),
+            encoding="utf-8",
+        )
+        self.make_checkout(self.base)
+        bom = fleet.load_bom(path)
+        report = fleet.audit_fleet(
+            bom,
+            [self.local_host(self.base)],
+            {"ssh_bin": "ssh", "connect_timeout": 1, "ssh_args": []},
+        )
+        self.assertEqual(report["blocked_packages"], bom["blocked_packages"])
+        self.assertEqual([item["name"] for item in report["hosts"][0]["packages"]], ["demo"])
+
+        output = io.StringIO()
+        with redirect_stdout(output):
+            fleet.print_audit(report)
+        self.assertIn("Release blockers: blocked 1.0.0 (missing-immutable-release)", output.getvalue())
 
     def test_claude_inventory_parser(self) -> None:
         inventory = fleet.parse_claude_plugins(

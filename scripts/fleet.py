@@ -78,6 +78,7 @@ def load_bom(path: Path) -> dict[str, Any]:
         "defaults",
         "runtime_roots",
         "packages",
+        "blocked_packages",
         "legacy_links",
     }
     if unknown_top:
@@ -143,6 +144,10 @@ def load_bom(path: Path) -> dict[str, Any]:
             if not isinstance(package[field], str):
                 raise ConfigurationError(f"package.{field} must be a string")
         name = package["name"]
+        if package["ref"] != f"v{package['version']}":
+            raise ConfigurationError(
+                f"{name}.ref must be the reviewed version tag v{package['version']}"
+            )
         if name in seen:
             raise ConfigurationError(f"duplicate package name: {name}")
         seen.add(name)
@@ -166,6 +171,37 @@ def load_bom(path: Path) -> dict[str, Any]:
         if any(not isinstance(install_id, str) or not install_id for install_id in install_ids.values()):
             raise ConfigurationError(f"{name}.install_ids values must be non-empty strings")
         package["install_ids"] = dict(install_ids)
+
+    blocked = data.get("blocked_packages", [])
+    if not isinstance(blocked, list):
+        raise ConfigurationError("blocked_packages must be an array of tables")
+    blocked_seen: set[str] = set()
+    for package in blocked:
+        if not isinstance(package, dict):
+            raise ConfigurationError("every blocked package must be a table")
+        unknown_package = set(package) - {"name", "version", "origin", "status"}
+        if unknown_package:
+            raise ConfigurationError(
+                f"blocked package has unknown fields: {sorted(unknown_package)}"
+            )
+        missing = [
+            field for field in ("name", "version", "origin", "status")
+            if not package.get(field)
+        ]
+        if missing:
+            raise ConfigurationError(
+                f"blocked package is missing required fields {', '.join(missing)}"
+            )
+        if any(not isinstance(package[field], str) for field in package):
+            raise ConfigurationError("blocked package fields must be strings")
+        if package["status"] != "missing-immutable-release":
+            raise ConfigurationError(
+                "blocked package status must be missing-immutable-release"
+            )
+        name = package["name"]
+        if name in seen or name in blocked_seen:
+            raise ConfigurationError(f"duplicate package name: {name}")
+        blocked_seen.add(name)
 
     roots = _runtime_mapping(data.get("runtime_roots", {}), "runtime_roots")
     data["runtime_roots"] = {
@@ -1045,6 +1081,7 @@ def audit_fleet(
         "schema_version": 1,
         "fleet_version": bom["fleet_version"],
         "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(),
+        "blocked_packages": bom.get("blocked_packages", []),
         "hosts": results,
         "summary": {"hosts": len(results), "failed_hosts": failures, "status": FAIL if failures else PASS},
     }
@@ -1180,6 +1217,13 @@ def print_audit(report: dict[str, Any]) -> None:
             print(f"  active:  {activation_text}")
         for link in host.get("broken_links", []):
             print(f"  broken {link['runtime']} link: {link['path']} -> {link['target']}")
+    blocked = report.get("blocked_packages", [])
+    if blocked:
+        detail = ", ".join(
+            f"{package['name']} {package['version']} ({package['status']})"
+            for package in blocked
+        )
+        print(f"Release blockers: {detail}")
     print(
         f"Summary: {report['summary']['hosts']} host(s), "
         f"{report['summary']['failed_hosts']} failed"
