@@ -41,6 +41,7 @@ Keep adjacent parallel capabilities distinct:
 - Ask: exactly one bounded outside answer.
 - Swarm: many stateless, read-only samples from the canonical Luna route.
 - Fanout: heterogeneous CLI or repository-aware work split by independent item.
+- Dreamer (gateway skill/MCP, when installed): a gateway second opinion, vision, screenshot, or dataset lookup inside any of the above; it does not by itself authorize an Ask or a Swarm.
 - Team or Consensus: stateful roles or a small diverse-model council.
 - Horizon: internal pre-commit possibilities with no outside call.
 - Reconsider: scrutiny of an existing decision or implementation.
