@@ -1,4 +1,4 @@
-# craft v0.10.0
+# craft v0.10.1
 
 Portable workflow and capability-routing package for Codex and Claude Code.
 Five modal commands plus activation, board, context, prior-art research, and
@@ -140,7 +140,7 @@ shared contract and should not duplicate it.
 - `skill-auditor`: read-only auditor behind `/craft:distill --skills`.
 - `skill-creator`: executor behind `/craft:compose skill`.
 
-These seven skills are canonical in Craft as of 0.10.0. Do not maintain editable
+These seven skills are canonical in Craft as of 0.10.1. Do not maintain editable
 copies in another active plugin. Accessibility, Intentional UX, Humanize, Team,
 and platform/domain skills remain independent providers.
 

@@ -173,7 +173,7 @@ modes make no inference calls.
 
 The versioned route table is exposed by `scripts/ask.sh --list`; documentation
 and command projections do not carry separate model labels. The four routes
-use native Claude Code, Grok, Ollama, and Claude Code configured separately for
+use native Claude Code, Grok, Ollama Cloud through its CLI, and Claude Code configured separately for
 Z.ai. No route falls back to an API or gateway. Configure executable paths and
 model choices in the private `${XDG_CONFIG_HOME:-~/.config}/craft/ask.env`.
 See [CLI setup](skills/ask/references/cli-routes.md) for credentials, model

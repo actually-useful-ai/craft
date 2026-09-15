@@ -1,7 +1,7 @@
 # Native CLI setup and evidence
 
-Ask invokes installed executables. It does not install software, log in, pull
-models, or switch to a gateway. Python 3.11+, a POSIX host, and the selected CLI
+Ask invokes installed executables. It does not install software, log in,
+download local model weights, or switch to a gateway. Python 3.11+, a POSIX host, and the selected CLI
 are required. `--list` / `--status` inspect executable presence only; authentication
 remains unchecked until an authorized call succeeds.
 
@@ -19,12 +19,12 @@ Environment values take precedence. Supported options:
 | `ASK_CLAUDE_MODEL`, `ASK_GROK_MODEL`, `ASK_ZAI_MODEL`, `ASK_OLLAMA_MODEL` | Requested model or CLI alias |
 | `ZAI_API_KEY_FILE` | Private key file; defaults to `~/.config/craft/zai.key` |
 | `ZAI_API_KEY` | Alternative secret environment/config value |
-| `OLLAMA_HOST` | Selected local or remote Ollama server |
+| `OLLAMA_HOST` | Native Ollama daemon that forwards the cloud request |
 
 `--model` overrides a route's configured model for one call. Claude defaults to
 its `opus` alias; Grok uses the CLI default; Z.ai requests `glm-5.3`. Ollama
-requires an explicit model already installed on the selected server. No models
-are downloaded by Ask. Claude API keys and OAuth tokens already in the process
+requires an explicit `<model>:cloud` name from the current Ollama cloud
+catalog. Local and unqualified model names are rejected. Claude API keys and OAuth tokens already in the process
 environment remain usable only for the Anthropic route; native subscription
 login remains the ordinary default. Login using each CLI's own supported flow.
 
@@ -52,9 +52,30 @@ for Grok `--tools` means default tools, so the adapter instead selects a tool
 name that matches none. This distinction is covered by a regression fixture.
 See [Grok settings](https://docs.x.ai/build/settings/reference) and the
 [upstream CLI parser](https://github.com/xai-org/grok-build/blob/main/crates/codegen/xai-grok-pager/src/headless/cli.rs). Both run in a new private scratch
-directory. Ollama's native `list` inventory must contain the exact configured tag before
-`run` can execute; this prevents its automatic download behavior. `run` consumes
-stdin without an agent/tool loop.
+directory. Ollama uses native `run <model>:cloud` with stdin and no agent/tool
+loop. It requires client and daemon version 0.18.0 or newer, where explicit
+`:cloud` tags connect directly to cloud inference without requiring local
+model registration. The native CLI may cache a small cloud reference; it does
+not download the local model weights for this route.
+
+## Ollama Cloud setup
+
+Sign in through `ollama signin` on the selected daemon, then configure
+`ASK_OLLAMA_MODEL` to a confirmed available `<model>:cloud` name. Consult the
+[current cloud catalog](https://ollama.com/search?c=cloud); account access is
+verified only by an authorized successful call. Ask does not choose a local
+model when cloud login, quota, or the selected model is unavailable. It does
+not use a direct HTTP client or API-key gateway for this route. The prompt is
+sent to Ollama Cloud; an on-host executable does not imply on-host inference.
+
+The [Ollama 0.18.0 release](https://github.com/ollama/ollama/releases/tag/v0.18.0)
+introduced direct `:cloud` routing without `pull`. The
+[native CLI implementation](https://github.com/ollama/ollama/blob/main/cmd/cmd.go)
+excludes explicit cloud references from the local model download fallback.
+The [authentication guide](https://docs.ollama.com/api/authentication) describes
+native sign-in. Selecting another GLM model through Ollama does not add a new
+model family alongside the Z.ai route.
+
 Timeout kills the process group; failures do not retry or fall back. Error bodies
 are classified without being echoed, since a CLI may include secrets in errors.
 A CLI may maintain its own account/session logs; Ask's scratch cleanup does not

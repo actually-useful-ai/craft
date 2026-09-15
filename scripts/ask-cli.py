@@ -52,7 +52,8 @@ def routes(env):
              'transport': 'cli' if executable(route, env) else 'unavailable',
              'executable': executable(route, env),
              'model': env.get(f'ASK_{route.upper()}_MODEL') or DEFAULTS[route] or None,
-             'effort': None, 'authentication': 'unchecked'} for route, provider in PROVIDERS.items()]
+             'effort': None, 'authentication': 'unchecked',
+             'inference_location': 'cloud' if route == 'ollama' else None} for route, provider in PROVIDERS.items()]
 
 
 def classify(text):
@@ -68,6 +69,10 @@ def classify(text):
 
 def decode(route, output, requested):
     if route == 'ollama':
+        plain = re.sub(r'\x1b\[[0-?]*[ -/]*[@-~]', '', output).lstrip()
+        # Native Ollama prints its cloud sign-in prompt and exits zero.
+        if plain.startswith('You need to be signed in to Ollama'):
+            raise Failure('Ollama Cloud authentication required; run ollama signin', 3)
         if not output.strip():
             raise Failure('CLI returned empty content')
         return output.strip(), None, {}, 'requested-only'
@@ -169,8 +174,8 @@ def consult(route, prompt, env, model_override=None, effort=None):
             raise ValueError()
     except ValueError:
         raise Failure('ASK_TIMEOUT must be between 0 and 3600 seconds', 2)
-    if route == 'ollama' and not model:
-        raise Failure('set ASK_OLLAMA_MODEL to an installed model; no model is pulled automatically', 4)
+    if route == 'ollama' and not re.fullmatch(r'[a-z0-9][a-z0-9._-]*:cloud', model):
+        raise Failure('Ollama route requires ASK_OLLAMA_MODEL=<model>:cloud; local models are not supported', 4)
     child_env = env.copy()
     # Never pass unrelated provider/gateway credentials into another CLI.
     for key in list(child_env):
@@ -217,18 +222,18 @@ def consult(route, prompt, env, model_override=None, effort=None):
             if effort:
                 args += ['--reasoning-effort', effort]
         else:
-            # `ollama run` pulls absent models. Refuse before run, using only
-            # the native installed-model inventory from the selected server.
+            # Since 0.18.0, explicit :cloud tags route directly to Ollama Cloud.
+            # A local list entry is neither necessary nor evidence of cloud use.
             try:
-                listing = subprocess.run([binary, 'list'], cwd=work, env=child_env,
+                version = subprocess.run([binary, '--version'], cwd=work, env=child_env,
                                          text=True, capture_output=True, timeout=min(timeout, 10))
             except subprocess.TimeoutExpired:
-                raise Failure('Ollama installed-model inventory timed out', 6)
-            if listing.returncode:
-                raise classify(listing.stderr)
-            installed = {line.split()[0] for line in listing.stdout.splitlines()[1:] if line.split()}
-            if model not in installed:
-                raise Failure('requested Ollama model is not installed; refusing automatic pull', 4)
+                raise Failure('Ollama version inspection timed out', 6)
+            if version.returncode:
+                raise classify(version.stderr)
+            versions = [tuple(map(int, found)) for found in re.findall(r'(\d+)\.(\d+)\.(\d+)', version.stdout + version.stderr)]
+            if not versions or any(found < (0, 18, 0) for found in versions):
+                raise Failure('Ollama Cloud CLI route requires client and server version 0.18.0 or newer', 4)
             child_env['OLLAMA_NOHISTORY'] = '1'
             args = [binary, 'run', model, '--nowordwrap', '--hidethinking']
             if effort:
@@ -249,7 +254,8 @@ def consult(route, prompt, env, model_override=None, effort=None):
         return {'provider': PROVIDERS[route], 'route': route, 'transport': 'cli',
                 'model': actual, 'requested_model': model or None,
                 'provenance': provenance, 'provider_provenance': 'configured-cli-route',
-                'effort': effort, 'content': content, 'usage': usage}
+                'effort': effort, 'content': content, 'usage': usage,
+                'inference_location': 'cloud' if route == 'ollama' else None}
 
 
 def main():

@@ -37,9 +37,9 @@ silently substitute another model.
   route, never permission to substitute an API, gateway, or different provider.
 - The `zai` route uses Claude Code with isolated Z.ai credentials and configuration;
   its underlying model family is GLM, not Anthropic.
-- Ollama uses an explicitly configured installed model. Check its model family
-  before selecting diverse voices. A cloud-tagged model or remote OLLAMA_HOST
-  can send context off-host; local CLI does not itself prove local inference.
+- The Ollama route uses Ollama Cloud through the native CLI, with an explicit
+  `<model>:cloud` selection. Local inference is not a fallback. The brief leaves
+  the host. Check the selected model family before choosing diverse voices.
 
 See [CLI setup and evidence](references/cli-routes.md) for configuration and
 provenance limits. Ask rejects Luna/OpenAI routes. Swarm uses its separate

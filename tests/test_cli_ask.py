@@ -20,8 +20,8 @@ from pathlib import Path
 args=sys.argv[1:]
 if args == ['inspect','--json']:
  print(json.dumps({'skills':[], 'plugins':[]}));sys.exit(0)
-if args == ['list']:
- print('NAME ID SIZE MODIFIED\\nfixture:local abc 1GB now');sys.exit(0)
+if args == ['--version']:
+ print('ollama version is '+os.environ.get('OLLAMA_VERSION','0.32.14'));sys.exit(0)
 prompt=sys.stdin.read()
 Path(os.environ['CAPTURE']).write_text(json.dumps({'args':args,'prompt':prompt,'cwd':os.getcwd(),
  'grok_config':Path(os.environ['GROK_HOME'],'config.toml').read_text() if os.environ.get('GROK_HOME') else None,
@@ -29,7 +29,7 @@ Path(os.environ['CAPTURE']).write_text(json.dumps({'args':args,'prompt':prompt,'
 if os.environ.get('SLEEP'): time.sleep(10)
 if os.environ.get('FAIL'):
  print(os.environ['FAIL'],file=sys.stderr);sys.exit(1)
-if args[0]=='run': print('fixture answer');sys.exit(0)
+if args[0]=='run': print(os.environ.get('OLLAMA_OUTPUT','fixture answer'));sys.exit(0)
 print(os.environ.get('RESPONSE',json.dumps({'result':'fixture answer','modelUsage':{'claude-opus-example':{'inputTokens':1}},'usage':{'input_tokens':1}})))
 '''
 
@@ -120,12 +120,13 @@ class NativeAskTests(unittest.TestCase):
         result=self.run_ask('ollama','-')
         self.assertEqual(result.returncode,4,result.stderr)
         self.assertFalse(self.capture.exists())
-        self.env['ASK_OLLAMA_MODEL']='fixture:local'
+        self.env['ASK_OLLAMA_MODEL']='fixture:cloud'
         result=self.run_ask('--json','ollama','-')
         self.assertEqual(result.returncode,0,result.stderr)
         data=json.loads(result.stdout)
         self.assertIsNone(data['model'])
-        self.assertEqual(data['requested_model'],'fixture:local')
+        self.assertEqual(data['requested_model'],'fixture:cloud')
+        self.assertEqual(data['inference_location'],'cloud')
         self.assertEqual(data['provenance'],'requested-only')
         self.assertEqual(json.loads(self.capture.read_text())['args'][0],'run')
 
@@ -133,8 +134,34 @@ class NativeAskTests(unittest.TestCase):
         self.env['ASK_OLLAMA_MODEL']='not-installed:latest'
         result=self.run_ask('ollama','-')
         self.assertEqual(result.returncode,4,result.stderr)
-        self.assertIn('refusing automatic pull',result.stderr)
+        self.assertIn('local models are not supported',result.stderr)
         self.assertFalse(self.capture.exists())
+
+    def test_ollama_only_accepts_explicit_cloud_source(self):
+        for model in ('qwen3:8b', 'kimi-k2.7-code', 'model:latest', 'model:120b-cloud', 'host.invalid/model:cloud'):
+            self.env['ASK_OLLAMA_MODEL']=model
+            result=self.run_ask('ollama','-')
+            self.assertEqual(result.returncode,4,result.stderr)
+            self.assertFalse(self.capture.exists())
+
+    def test_ollama_old_cli_is_rejected_before_run(self):
+        self.env.update(ASK_OLLAMA_MODEL='fixture:cloud',OLLAMA_VERSION='0.17.9')
+        result=self.run_ask('ollama','-')
+        self.assertEqual(result.returncode,4,result.stderr)
+        self.assertIn('0.18.0',result.stderr)
+        self.assertFalse(self.capture.exists())
+
+    def test_ollama_cloud_auth_error_does_not_fallback(self):
+        self.env.update(ASK_OLLAMA_MODEL='fixture:cloud',FAIL='401 sign in required')
+        result=self.run_ask('ollama','-')
+        self.assertEqual(result.returncode,3,result.stderr)
+        self.assertEqual(json.loads(self.capture.read_text())['args'][1],'fixture:cloud')
+
+    def test_ollama_zero_exit_signin_prompt_is_not_an_answer(self):
+        self.env.update(ASK_OLLAMA_MODEL='fixture:cloud',OLLAMA_OUTPUT='You need to be signed in to Ollama to run Cloud models.\nhttps://ollama.com/connect?secret-example')
+        result=self.run_ask('--json','ollama','-')
+        self.assertEqual(result.returncode,3,result.stderr)
+        self.assertNotIn('secret-example',result.stdout+result.stderr)
 
     def test_grok_no_tools_and_missing_identity_is_explicit(self):
         self.env['RESPONSE']=json.dumps({'result':'answer'})

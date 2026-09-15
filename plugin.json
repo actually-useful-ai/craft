@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "craft",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "description": "A portable workflow that discovers useful capabilities, plans deliberately, builds with clear ownership, verifies evidence, and delivers the result.",
   "author": {
     "name": "Luke Steuber",
