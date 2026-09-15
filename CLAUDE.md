@@ -43,9 +43,10 @@ controller interpreters.
   existing Claude, Codex, and Cursor projections
 
 **No hard dependency** on another plugin. Craft discovers optional providers and
-degrades with an explicit limitation. Where second-opinion or data-fetching
-capability matters, scripts try configured CLI tools and provider surfaces, then
-continue with the current runtime when none is available.
+reports an explicit limitation when they are unavailable. The main workflow can
+continue without them. Ask reports missing or failed native CLI routes without
+substituting another provider or transport; continuing the workflow does not
+count as obtaining the requested outside opinion.
 
 ## Helper profiles
 
@@ -102,7 +103,8 @@ Board HTML: `~/html/craft/board/index.html` (served via Caddy if configured).
 - Keep entry skills concise; put detailed criteria and variants in one-level `references/` directories
 - Capability roles are explicit: one executor, justified overlays/governors, and read-only auditors
 - `skills/capability-routing.md` owns shared composition and fallback behavior
-- All scripts try-then-degrade; nothing hard-depends on optional infrastructure
+- Keep optional infrastructure failures explicit. Ask never substitutes another
+  provider or transport for a failed route; the main workflow remains usable.
 
 ## Multi-model strategy
 
@@ -114,7 +116,9 @@ Board HTML: `~/html/craft/board/index.html` (served via Caddy if configured).
 
 ## Relationship to other plugins
 
-- `team`: council-style codebase-to-pitch. Different scope; team is for product/business pitches with adversarial review. Cross-link: `/craft:discuss --debate` is lighter-weight; `/team` is the heavyweight version.
+- `team`: council-style codebase assessment, committee reviews, and bounded
+  second opinions. `/craft:discuss --debate` supports focused deliberation;
+  Team owns its full council protocol and preserves dissent.
 - `elegance`: code refinement and decision council. `/craft:reconsider --validate` for routine checks; `/elegance` for deep refinement with the 14-agent council.
 - `intentional-ux`: independently versioned provider for task paths, interaction cost, recovery, and experience evidence. Craft routes relevant work to it when installed.
 - `humanize`: independently versioned provider for meaning-preserving prose edits. Craft routes publishing prose to it when installed.
@@ -146,4 +150,18 @@ and platform/domain skills remain independent providers.
 
 ## Development
 
-The package has no build step. Edit the Markdown files directly and run `python3 tests/test_manifests.py` plus the shell validators before release. Banner script (`scripts/banner.sh`) uses `pyfiglet`, `toilet`, or `figlet` when available and falls back to plain text.
+The package has no build step. Run the complete Python suite and the shell
+validators before release:
+
+```sh
+python3 -B -m unittest discover -s tests -v
+bash tests/test_plugin_parity.sh
+bash tests/validate-enhance.sh
+```
+
+The Python suite covers manifests, capability routing, native CLI consultation,
+fleet checks, and utility scripts. These checks do not establish live provider
+authentication or installed-runtime activation.
+
+The banner script (`scripts/banner.sh`) uses `pyfiglet`, `toilet`, or `figlet`
+when available and falls back to plain text.

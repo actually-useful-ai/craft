@@ -98,8 +98,9 @@ Every command takes a mode flag and a target. Defaults are sensible: `--quick` f
 - 9 workflow entry points (`activate`, `board`, `compose`, `context`, `discuss`, `distill`, `enhance`, `present`, `reconsider`)
 - 7 bundled capabilities (`ask`, `chefs-choice`, `horizon`, `impress`, `skill-auditor`, `skill-creator`, `swarm`)
 - 14 optional helper profiles for deliberation, quality, implementation, delivery, and project maintenance
-- 19 scripts, including deterministic consultation, durable bounded Swarm
-  orchestration, fleet verification, skill auditing, and packaging tools. They
+- 16 root scripts plus five bundled skill scripts, covering native CLI
+  consultation, bounded Swarm orchestration, fleet verification, skill auditing,
+  and packaging. They
   need no third-party packages on Python 3.11+; `fleet.py` accepts `tomli` on
   older controller interpreters.
 
@@ -158,7 +159,7 @@ The core stays centered on five verbs. Variants such as quick research, planning
 
 ## What it doesn't do
 
-- Pitch a codebase as a product: that's [team](https://github.com/actually-useful-ai/team).
+- Run a full council-style codebase assessment: that belongs to [Team](https://github.com/actually-useful-ai/team), which also provides bounded second opinions.
 - Code refinement at depth or council-style debate: that's [elegance](https://github.com/actually-useful-ai/elegance).
 - Rewrite user-facing prose: Craft routes that work to [humanize](https://github.com/actually-useful-ai/humanize) when installed.
 - Perform dedicated accessibility reviews: Craft routes supported web work to [Accessibility Devkit](https://github.com/actually-useful-ai/accessibility-devkit) when installed.
