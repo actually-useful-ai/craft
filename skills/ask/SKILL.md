@@ -30,13 +30,20 @@ silently substitute another model.
 
 ## Provider selection
 
-- In Codex or another OpenAI runtime, use `anthropic` by default so the second
-  opinion comes from a different model family.
-- In Claude or another Anthropic runtime, use `grok` by default so the second
-  opinion comes from Grok 4.5.
-- In another or unknown runtime, use `grok` unless Luke chooses a provider.
-- Use `openai` only when explicitly selected. The route table pins its model and
-  reasoning effort.
+- Use native `claude`, `grok`, `zai`, or `ollama` routes only. `anthropic` and
+  `xai` are compatibility aliases, not additional voices.
+- In Codex/OpenAI, prefer `claude`; in Claude/Anthropic, prefer `grok`.
+- Respect an explicit provider choice. An unavailable CLI or login is a failed
+  route, never permission to substitute an API, gateway, or different provider.
+- The `zai` route uses Claude Code with isolated Z.ai credentials and configuration;
+  its underlying model family is GLM, not Anthropic.
+- Ollama uses an explicitly configured installed model. Check its model family
+  before selecting diverse voices. A cloud-tagged model or remote OLLAMA_HOST
+  can send context off-host; local CLI does not itself prove local inference.
+
+See [CLI setup and evidence](references/cli-routes.md) for configuration and
+provenance limits. Luna/OpenAI compatibility is reserved for explicitly selected
+legacy calls and Swarm, and is excluded from Ask/Consensus discovery.
 
 The transport owns the live route table. Inspect it with
 `bash "$CRAFT_PLUGIN_ROOT/scripts/ask.sh" --list`; do not duplicate model IDs in
@@ -50,10 +57,13 @@ command projections or other skills.
    acceptance criteria. Preserve uncertainty rather than steering the model
    toward agreement.
 3. Select the provider from the rule above or Luke's explicit choice.
-4. Run `bash "$CRAFT_PLUGIN_ROOT/scripts/ask.sh" PROVIDER "QUESTION"`.
-   For multiline briefs, pass `-` as the question and pipe the brief on stdin.
-5. Report the returned provider and actual model. Treat a model mismatch or
-   missing provenance as a failed consultation.
+4. Run `bash "$CRAFT_PLUGIN_ROOT/scripts/ask.sh" --json PROVIDER -` with the
+   brief on stdin. The transport uses a fresh scratch directory, disables agent
+   tools, and bounds the process lifetime.
+5. Report `provider`, `model`, `requested_model`, and `provenance`. A model
+   mismatch fails. When the CLI omits the model, label the answer as
+   `requested-only`; it cannot count as a verified independent model vote.
+   Never turn a requested model or configured provider into reported provenance.
 6. Verify consequential claims independently. Preserve useful dissent instead
    of averaging it away.
 

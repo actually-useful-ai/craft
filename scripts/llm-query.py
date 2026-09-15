@@ -12,10 +12,10 @@ import sys
 ALIASES = {
     "xai": "grok",
     "grok": "grok",
-    "anthropic": "anthropic",
-    "claude": "anthropic",
-    "openai": "openai",
-    "gpt": "openai",
+    "anthropic": "claude",
+    "claude": "claude",
+    "zai": "zai",
+    "ollama": "ollama",
 }
 
 
@@ -33,7 +33,7 @@ def main() -> int:
         return 1
 
     providers = (
-        ("grok", "anthropic", "openai")
+        ("grok", "claude", "zai", "ollama")
         if args.provider == "all"
         else (ALIASES.get(args.provider, args.provider),)
     )

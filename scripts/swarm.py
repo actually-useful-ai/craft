@@ -366,7 +366,7 @@ def main() -> int:
         return 0
 
     ask_script = Path(
-        os.environ.get("CRAFT_SWARM_ASK", Path(__file__).with_name("ask.sh"))
+        os.environ.get("CRAFT_SWARM_ASK", Path(__file__).with_name("ask-legacy.sh"))
     )
     if not ask_script.is_file():
         print(f"swarm: Ask transport not found at {ask_script}", file=sys.stderr)
