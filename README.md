@@ -174,16 +174,19 @@ sending a bounded brief outside the current runtime. Its `--list` and `--status`
 modes make no inference calls.
 
 The versioned route table is exposed by `scripts/ask.sh --list`; documentation
-and command projections do not carry separate model labels. Configure either
-provider credentials or an OpenAI-compatible gateway in
-`${XDG_CONFIG_HOME:-~/.config}/craft/ask.env`. The legacy `scripts/llm-query.py`
-entry point delegates to this one route table.
+and command projections do not carry separate model labels. The four routes
+use native Claude Code, Grok, Ollama Cloud through its CLI, and Claude Code configured separately for
+Z.ai. No route falls back to an API or gateway. Configure executable paths and
+model choices in the private `${XDG_CONFIG_HOME:-~/.config}/craft/ask.env`.
+See [CLI setup](skills/ask/references/cli-routes.md) for credentials, model
+provenance, and runtime requirements. The legacy `scripts/llm-query.py` entry
+point delegates to these routes.
 
 Nothing in Craft depends on a configured outside provider. The workflow entry
 points work on their own and report a missing route as a limitation.
 
-`/craft:swarm` consumes Ask's canonical `luna` route rather than maintaining a
-second model table. Presets run 4, 8, 16, or 32 scouts; a hard ceiling of 64,
+`/craft:swarm` retains the `luna` route in `scripts/ask-legacy.sh`; it is separate
+from native CLI consultations. Presets run 4, 8, 16, or 32 scouts; a hard ceiling of 64,
 short per-scout responses, no retries, a global deadline, and explicit partial
 status keep the deliberately extravagant mode bounded. Dry runs make no
 inference calls. Paid runs persist private atomic result envelopes under

@@ -1,4 +1,4 @@
-# craft v0.9.0
+# craft v0.10.1
 
 Portable workflow and capability-routing package for Codex and Claude Code.
 Five modal commands plus activation, board, context, prior-art research, and
@@ -38,7 +38,7 @@ controller interpreters.
 
 - 9 workflow entry points and 7 bundled capability skills in `skills/<name>/SKILL.md`
 - 14 helper profiles in `agents/`
-- 14 root scripts plus 5 bundled skill-auditing and creation scripts
+- 16 root scripts plus 5 bundled skill-auditing and creation scripts
 - Agent Plugins 1.0 portable metadata in root `plugin.json`, alongside the
   existing Claude, Codex, and Cursor projections
 
@@ -65,8 +65,9 @@ All in `scripts/`, called from skills after resolving `CRAFT_PLUGIN_ROOT` with
 
 | Script | Purpose |
 |---|---|
-| `ask.sh` | Canonical outside-model consultation with explicit model provenance |
-| `swarm.py` | Bounded concurrent Luna scout orchestration through `ask.sh` |
+| `ask.sh`, `ask-cli.py` | Native CLI consultation with explicit model provenance |
+| `ask-legacy.sh` | Explicit OpenAI compatibility transport for Swarm |
+| `swarm.py` | Bounded concurrent Luna scouts through the legacy transport |
 | `fleet.py` | Manifest-driven cross-host package, runtime, hash, and legacy-link verification |
 | `llm-query.py` | Compatibility wrapper that delegates to `ask.sh` |
 | `data-fetch.py` | 17 data sources (uses `~/shared/data_fetching` if present) |
@@ -108,7 +109,7 @@ Board HTML: `~/html/craft/board/index.html` (served via Caddy if configured).
 | Environment | How second opinions work |
 |---|---|
 | CLI shell with codex/gemini/aider installed | `cli-invoke.sh` |
-| Configured outside provider or gateway | `/craft:ask` through `scripts/ask.sh` |
+| Native Claude, Grok, Ollama, or Z.ai CLI | `/craft:ask` through `scripts/ask.sh` |
 | Standalone client | Continue with the current model and note the missing second opinion |
 
 ## Relationship to other plugins
@@ -139,7 +140,7 @@ shared contract and should not duplicate it.
 - `skill-auditor`: read-only auditor behind `/craft:distill --skills`.
 - `skill-creator`: executor behind `/craft:compose skill`.
 
-These seven skills are canonical in Craft as of 0.9.0. Do not maintain editable
+These seven skills are canonical in Craft as of 0.10.1. Do not maintain editable
 copies in another active plugin. Accessibility, Intentional UX, Humanize, Team,
 and platform/domain skills remain independent providers.
 

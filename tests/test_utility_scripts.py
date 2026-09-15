@@ -88,7 +88,7 @@ class BoardTests(unittest.TestCase):
         self.assertIn(html.escape(label), rendered)
 
 
-class AskTests(unittest.TestCase):
+class LegacyAskTests(unittest.TestCase):
     def fixture_env(self, root: Path, *, configured: bool = True) -> tuple[dict, Path]:
         home = root / "home"
         fake_bin = root / "bin"
@@ -174,7 +174,7 @@ fi
         process_env = os.environ.copy()
         process_env.update(env)
         return subprocess.run(
-            [str(SCRIPTS / "ask.sh"), *args],
+            [str(SCRIPTS / "ask-legacy.sh"), *args],
             cwd=ROOT,
             env=process_env,
             input=input_text,
@@ -194,8 +194,6 @@ fi
             self.assertEqual(
                 [(route["provider"], route["model"], route["effort"]) for route in routes],
                 [
-                    ("grok", "grok-4.5", None),
-                    ("anthropic", "claude-opus-5", "high-default"),
                     ("luna", "gpt-5.6-luna", "low"),
                     ("openai", "gpt-5.6-sol", "medium"),
                 ],
@@ -206,14 +204,14 @@ fi
             root = Path(temporary_dir)
             env, capture = self.fixture_env(root)
             prompt = 'Quote "line"\nUnicode Ω and $(touch sentinel)'
-            result = self.run_ask("grok", "-", env=env, input_text=prompt)
+            result = self.run_ask("openai", "-", env=env, input_text=prompt)
 
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertEqual(result.stdout.strip(), "fixture answer")
-            self.assertIn("xai/grok-4.5", result.stderr)
+            self.assertIn("openai/gpt-5.6-sol", result.stderr)
             captured = json.loads(capture.read_text(encoding="utf-8"))
             self.assertEqual(captured["request"]["messages"][0]["content"], prompt)
-            self.assertEqual(captured["request"]["model"], "grok-4.5")
+            self.assertEqual(captured["request"]["model"], "gpt-5.6-sol")
             self.assertNotIn("fixture-secret", " ".join(captured["argv"]))
             self.assertNotIn("fixture-secret", result.stdout + result.stderr)
             self.assertFalse((ROOT / "sentinel").exists())
@@ -246,24 +244,24 @@ fi
             with self.subTest(status=status), tempfile.TemporaryDirectory() as temporary_dir:
                 env, _ = self.fixture_env(Path(temporary_dir))
                 env["CRAFT_ASK_FAKE_STATUS"] = status
-                result = self.run_ask("grok", "question", env=env)
+                result = self.run_ask("openai", "question", env=env)
                 self.assertEqual(result.returncode, exit_code)
                 self.assertNotIn("fixture-secret", result.stdout + result.stderr)
 
     def test_missing_route_makes_no_request_and_does_not_fallback(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_dir:
             env, capture = self.fixture_env(Path(temporary_dir), configured=False)
-            result = self.run_ask("anthropic", "question", env=env)
+            result = self.run_ask("openai", "question", env=env)
 
             self.assertEqual(result.returncode, 3)
-            self.assertIn("no configured transport for anthropic", result.stderr)
+            self.assertIn("no configured transport for openai", result.stderr)
             self.assertFalse(capture.exists())
 
     def test_model_mismatch_is_observable(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_dir:
             env, _ = self.fixture_env(Path(temporary_dir))
             env["CRAFT_ASK_FAKE_MODEL"] = "unexpected-model"
-            result = self.run_ask("grok", "question", env=env)
+            result = self.run_ask("openai", "question", env=env)
 
             self.assertEqual(result.returncode, 7)
             self.assertIn("model mismatch", result.stderr)
