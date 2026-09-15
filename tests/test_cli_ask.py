@@ -59,6 +59,13 @@ class NativeAskTests(unittest.TestCase):
         self.assertEqual(result.returncode,0,result.stderr)
         self.assertEqual(len(json.loads(result.stdout)['routes']),4)
 
+    def test_legacy_routes_are_rejected_without_api_fallback(self):
+        for route in ('luna','openai','gpt'):
+            with self.subTest(route=route):
+                result=self.run_ask(route,'-')
+                self.assertEqual(result.returncode,2,result.stderr)
+                self.assertFalse(self.capture.exists())
+
     def test_list_four_native_routes_no_inference(self):
         result=self.run_ask('--list','--json')
         self.assertEqual(result.returncode,0,result.stderr)

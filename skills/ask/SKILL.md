@@ -42,8 +42,8 @@ silently substitute another model.
   can send context off-host; local CLI does not itself prove local inference.
 
 See [CLI setup and evidence](references/cli-routes.md) for configuration and
-provenance limits. Luna/OpenAI compatibility is reserved for explicitly selected
-legacy calls and Swarm, and is excluded from Ask/Consensus discovery.
+provenance limits. Ask rejects Luna/OpenAI routes. Swarm uses its separate
+legacy transport; it is excluded from Ask/Consensus discovery.
 
 The transport owns the live route table. Inspect it with
 `bash "$CRAFT_PLUGIN_ROOT/scripts/ask.sh" --list`; do not duplicate model IDs in
