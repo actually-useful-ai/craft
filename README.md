@@ -1,8 +1,10 @@
-# craft
+# Craft
 
 A portable workflow that starts from the goal, selects useful capabilities,
 preserves clear ownership, and carries work through planning, implementation,
 verification, and delivery.
+
+[![Installation guide](https://img.shields.io/badge/Install-Get_started-2563eb?style=flat-square)](#install-in-codex) [![MIT and Apache-2.0 licenses](https://img.shields.io/badge/License-MIT_%2B_Apache--2.0-181717?style=flat-square)](#license) [![Actually Useful AI collection](https://img.shields.io/badge/Actually_Useful_AI-Collection-181717?style=flat-square)](https://github.com/actually-useful-ai)
 
 ```
 discuss → compose → distill → reconsider → present
@@ -218,9 +220,13 @@ Everything goes under `~/craft/`:
 
 Board HTML at `~/html/craft/board/index.html` if you serve it via Caddy.
 
-## Author
+## License
 
-Luke Steuber · luke@lukesteuber.com · [lukesteuber.com](https://lukesteuber.com)
+[MIT](LICENSE), with [Apache-2.0 terms](skills/skill-creator/LICENSE.txt) for the bundled Skill Creator.
 
-MIT, with Apache-2.0 terms for the bundled Skill Creator. See
-`skills/skill-creator/LICENSE.txt`.
+## Around here
+
+[Luke Steuber](https://github.com/lukeslp) · [Data Poems](https://github.com/data-poems) · [Ambient Time](https://github.com/ambient-time) · [Actually Useful AI](https://github.com/actually-useful-ai) · [One Impossible Thing](https://github.com/one-impossible-thing)
+
+Made by [Luke Steuber](https://lukesteuber.com). Questions or collaboration:
+[luke@lukesteuber.com](mailto:luke@lukesteuber.com).
