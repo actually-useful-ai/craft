@@ -1,4 +1,4 @@
-# craft v0.10.1
+# craft v0.10.2
 
 Portable workflow and capability-routing package for Codex and Claude Code.
 Five modal commands plus activation, board, context, prior-art research, and
@@ -111,7 +111,7 @@ Board HTML: `~/html/craft/board/index.html` (served via Caddy if configured).
 | Environment | How second opinions work |
 |---|---|
 | CLI shell with codex/gemini/aider installed | `cli-invoke.sh` |
-| Native Claude, Grok, Ollama, or Z.ai CLI | `/craft:ask` through `scripts/ask.sh` |
+| Native Claude, Grok, Ollama, Z.ai, or Muse CLI | `/craft:ask` through `scripts/ask.sh` |
 | Standalone client | Continue with the current model and note the missing second opinion |
 
 ## Relationship to other plugins
@@ -144,7 +144,7 @@ shared contract and should not duplicate it.
 - `skill-auditor`: read-only auditor behind `/craft:distill --skills`.
 - `skill-creator`: executor behind `/craft:compose skill`.
 
-These seven skills are canonical in Craft as of 0.10.1. Do not maintain editable
+These seven skills are canonical in Craft as of 0.10.2. Do not maintain editable
 copies in another active plugin. Accessibility, Intentional UX, Humanize, Team,
 and platform/domain skills remain independent providers.
 

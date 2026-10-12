@@ -175,9 +175,9 @@ sending a bounded brief outside the current runtime. Its `--list` and `--status`
 modes make no inference calls.
 
 The versioned route table is exposed by `scripts/ask.sh --list`; documentation
-and command projections do not carry separate model labels. The four routes
-use native Claude Code, Grok, Ollama Cloud through its CLI, and Claude Code configured separately for
-Z.ai. No route falls back to an API or gateway. Configure executable paths and
+and command projections do not carry separate model labels. The five routes
+use native Claude Code, Grok, Ollama Cloud through its CLI, Claude Code configured separately for
+Z.ai, and Muse Code. No route falls back to an API or gateway. Configure executable paths and
 model choices in the private `${XDG_CONFIG_HOME:-~/.config}/craft/ask.env`.
 See [CLI setup](skills/ask/references/cli-routes.md) for credentials, model
 provenance, and runtime requirements. The legacy `scripts/llm-query.py` entry
