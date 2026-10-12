@@ -87,6 +87,12 @@ The [authentication guide](https://docs.ollama.com/api/authentication) describes
 native sign-in. Selecting another GLM model through Ollama does not add a new
 model family alongside the Z.ai route.
 
+A route that reasons at length can outlast the default 120-second deadline on
+a full brief while still answering a probe in seconds. Grok 1.0.46 at its
+default effort did: over 240 seconds on a three-question brief, 54 seconds with
+`--effort low`. Lower the effort or raise `ASK_TIMEOUT` for that call; a second
+attempt at the same settings spends the same time.
+
 Timeout kills the process group; failures do not retry or fall back. Error bodies
 are classified without being echoed, since a CLI may include secrets in errors.
 A CLI may maintain its own account/session logs; Ask's scratch cleanup does not
