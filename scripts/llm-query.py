@@ -16,6 +16,8 @@ ALIASES = {
     "claude": "claude",
     "zai": "zai",
     "ollama": "ollama",
+    "meta": "muse",
+    "muse": "muse",
 }
 
 
@@ -33,7 +35,7 @@ def main() -> int:
         return 1
 
     providers = (
-        ("grok", "claude", "zai", "ollama")
+        ("grok", "claude", "zai", "ollama", "muse")
         if args.provider == "all"
         else (ALIASES.get(args.provider, args.provider),)
     )

@@ -23,13 +23,20 @@ if args == ['inspect','--json']:
 if args == ['--version']:
  print('ollama version is '+os.environ.get('OLLAMA_VERSION','0.32.14'));sys.exit(0)
 prompt=sys.stdin.read()
+brief=Path(args[args.index('--prompt-file')+1]) if args[0]=='exec' else None
 Path(os.environ['CAPTURE']).write_text(json.dumps({'args':args,'prompt':prompt,'cwd':os.getcwd(),
+ 'brief':brief.read_text() if brief else None,'brief_mode':brief.stat().st_mode & 0o777 if brief else None,
+ 'workspace_entries':os.listdir(args[args.index('--workspace')+1]) if brief else None,
  'grok_config':Path(os.environ['GROK_HOME'],'config.toml').read_text() if os.environ.get('GROK_HOME') else None,
- 'env':{k:v for k,v in os.environ.items() if k.startswith(('ANTHROPIC_', 'ZAI_', 'ASK_GATEWAY_', 'CLAUDE_', 'GROK_', 'DREAMER_'))}}))
+ 'env':{k:v for k,v in os.environ.items() if k.startswith(('ANTHROPIC_', 'ZAI_', 'ASK_GATEWAY_', 'CLAUDE_', 'GROK_', 'DREAMER_', 'META_', 'MUSE_'))}}))
 if os.environ.get('SLEEP'): time.sleep(10)
 if os.environ.get('FAIL'):
  print(os.environ['FAIL'],file=sys.stderr);sys.exit(1)
 if args[0]=='run': print(os.environ.get('OLLAMA_OUTPUT','fixture answer'));sys.exit(0)
+if args[0]=='exec':
+ event=lambda kind,payload: json.dumps({'schema_version':1,'payload_type':kind,'payload':payload})
+ print(os.environ.get('MUSE_OUTPUT','\\n'.join([event('run.model.configured',{'provider_id':'meta','model_id':'muse-wonder-1.0'}),
+  event('run.output.delta',{'text':'fixture '}),event('run.terminal.completed',{'terminal':'completed','text':'fixture answer','reason':None})])));sys.exit(0)
 print(os.environ.get('RESPONSE',json.dumps({'result':'fixture answer','modelUsage':{'claude-opus-example':{'inputTokens':1}},'usage':{'input_tokens':1}})))
 '''
 
@@ -46,7 +53,7 @@ class NativeAskTests(unittest.TestCase):
         self.env.update(HOME=str(self.root), CRAFT_ASK_ENV=str(self.root / 'absent'), CAPTURE=str(self.capture))
         for route in ask.PROVIDERS:
             self.env[f'ASK_{route.upper()}_CLI'] = str(self.fake)
-        for key in ('ZAI_API_KEY', 'ZAI_API_KEY_FILE', 'ASK_DEFAULT_PROVIDER', 'ASK_TIMEOUT', 'ASK_CLAUDE_MODEL', 'ASK_GROK_MODEL', 'ASK_ZAI_MODEL', 'ASK_OLLAMA_MODEL'):
+        for key in ('ZAI_API_KEY', 'ZAI_API_KEY_FILE', 'ASK_DEFAULT_PROVIDER', 'ASK_TIMEOUT', 'ASK_CLAUDE_MODEL', 'ASK_GROK_MODEL', 'ASK_ZAI_MODEL', 'ASK_OLLAMA_MODEL', 'ASK_MUSE_MODEL'):
             self.env.pop(key, None)
 
     def run_ask(self,*args,prompt='Question'):
@@ -57,7 +64,7 @@ class NativeAskTests(unittest.TestCase):
         link.symlink_to(ROOT/'scripts/ask.sh')
         result=subprocess.run([str(link),'--list','--json'],text=True,capture_output=True,env=self.env)
         self.assertEqual(result.returncode,0,result.stderr)
-        self.assertEqual(len(json.loads(result.stdout)['routes']),4)
+        self.assertEqual(len(json.loads(result.stdout)['routes']),5)
 
     def test_legacy_routes_are_rejected_without_api_fallback(self):
         for route in ('luna','openai','gpt'):
@@ -66,10 +73,10 @@ class NativeAskTests(unittest.TestCase):
                 self.assertEqual(result.returncode,2,result.stderr)
                 self.assertFalse(self.capture.exists())
 
-    def test_list_four_native_routes_no_inference(self):
+    def test_list_five_native_routes_no_inference(self):
         result=self.run_ask('--list','--json')
         self.assertEqual(result.returncode,0,result.stderr)
-        self.assertEqual([x['provider'] for x in json.loads(result.stdout)['routes']],['claude','grok','zai','ollama'])
+        self.assertEqual([x['provider'] for x in json.loads(result.stdout)['routes']],['claude','grok','zai','ollama','muse'])
         self.assertFalse(self.capture.exists())
 
     def test_prompt_is_stdin_tools_disabled_and_secrets_isolated(self):
@@ -186,6 +193,74 @@ class NativeAskTests(unittest.TestCase):
         self.assertEqual(data['content'],'OK')
         self.assertEqual(data['model'],'grok-4.6-build')
         self.assertEqual(data['provenance'],'cli-reported')
+
+    def muse_stream(self,*events):
+        return '\n'.join(json.dumps({'schema_version':1,'payload_type':kind,'payload':payload}) for kind,payload in events)
+
+    def test_muse_brief_is_a_private_file_tools_disabled_and_stream_decoded(self):
+        prompt='Quote "this"\nΩ $(touch sentinel)'
+        self.env.update(META_API_KEY='meta-secret',MUSE_TOKEN='muse-secret',DREAMER_API_KEY='other-secret')
+        result=self.run_ask('--json','muse','--effort','low','-',prompt=prompt)
+        self.assertEqual(result.returncode,0,result.stderr)
+        capture=json.loads(self.capture.read_text())
+        args=capture['args']
+        self.assertEqual(args[0],'exec')
+        self.assertEqual(capture['prompt'],'')
+        self.assertTrue(capture['brief'].endswith(prompt))
+        self.assertTrue(capture['brief'].startswith(ask.SYSTEM))
+        self.assertEqual(capture['brief_mode'],0o600)
+        self.assertEqual(capture['workspace_entries'],[])
+        self.assertFalse(any(prompt in arg for arg in args))
+        for flag in ('--json','--disable-write','--disable-shell','--disable-web-tools','--disable-reminders','--no-foreign-personal-context','--no-session-log'):
+            self.assertIn(flag,args)
+        for flag in ('--yolo','--disable-sandbox','--trust-workspace','--disable-approval'):
+            self.assertNotIn(flag,args)
+        self.assertEqual(args[args.index('--approval-mode')+1],'never')
+        self.assertEqual(args[args.index('--max-model-steps')+1],'1')
+        self.assertEqual(args[args.index('--model')+1],'muse-wonder-1.0')
+        self.assertEqual(args[args.index('--reasoning-effort')+1],'low')
+        for name in ('META_API_KEY','MUSE_TOKEN','DREAMER_API_KEY'):
+            self.assertNotIn(name,capture['env'])
+        self.assertFalse(Path(args[args.index('--prompt-file')+1]).exists())
+        self.assertFalse(Path(capture['cwd']).exists())
+        payload=json.loads(result.stdout)
+        self.assertEqual(payload['content'],'fixture answer')
+        self.assertEqual(payload['provider'],'meta')
+        self.assertEqual(payload['model'],'muse-wonder-1.0')
+        self.assertEqual(payload['provenance'],'cli-reported')
+        self.assertNotIn('meta-secret',result.stdout+result.stderr)
+
+    def test_muse_alias_and_unreported_model_is_requested_only(self):
+        self.env['MUSE_OUTPUT']=self.muse_stream(('run.terminal.completed',{'terminal':'completed','text':'answer','reason':None}))
+        result=self.run_ask('--json','meta','-')
+        self.assertEqual(result.returncode,0,result.stderr)
+        payload=json.loads(result.stdout)
+        self.assertEqual(payload['route'],'muse')
+        self.assertIsNone(payload['model'])
+        self.assertEqual(payload['requested_model'],'muse-wonder-1.0')
+        self.assertEqual(payload['provenance'],'requested-only')
+
+    def test_muse_model_mismatch_and_unfinished_runs_are_not_answers(self):
+        self.env['MUSE_OUTPUT']=self.muse_stream(('run.model.configured',{'model_id':'another-model'}),('run.terminal.completed',{'terminal':'completed','text':'answer'}))
+        self.assertEqual(self.run_ask('muse','-').returncode,7)
+        for stream,code in [('garbage',7),('[]',7),('',7),
+                            (self.muse_stream(('run.output.delta',{'text':'partial'})),7),
+                            (self.muse_stream(('run.terminal.completed',{'terminal':'completed','text':''})),7),
+                            (self.muse_stream(('run.terminal.failed',{'terminal':'failed','text':'','reason':'401 secret-token'})),3),
+                            (self.muse_stream(('run.terminal.failed',{'terminal':'failed','text':'half an answer','reason':'usage limit secret-token'})),5),
+                            (self.muse_stream(('run.terminal.cancelled',{'terminal':'cancelled','text':'half an answer','reason':None})),6)]:
+            with self.subTest(stream=stream[:60]):
+                self.env['MUSE_OUTPUT']=stream
+                result=self.run_ask('--json','muse','-')
+                self.assertEqual(result.returncode,code,result.stderr)
+                self.assertEqual(result.stdout,'')
+                self.assertNotIn('secret-token',result.stdout+result.stderr)
+
+    def test_missing_muse_cli_does_not_fallback(self):
+        self.env.update(ASK_MUSE_CLI='/absent/muse',META_API_KEY='meta-secret')
+        result=self.run_ask('muse','-')
+        self.assertEqual(result.returncode,4,result.stderr)
+        self.assertFalse(self.capture.exists())
 
     def test_exact_model_mismatch_rejected(self):
         result=self.run_ask('claude','--model','exact-model','-')

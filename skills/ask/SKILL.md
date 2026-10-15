@@ -30,13 +30,16 @@ silently substitute another model.
 
 ## Provider selection
 
-- Use native `claude`, `grok`, `zai`, or `ollama` routes only. `anthropic` and
-  `xai` are compatibility aliases, not additional voices.
+- Use native `claude`, `grok`, `zai`, `ollama`, or `muse` routes only.
+  `anthropic`, `xai`, and `meta` are compatibility aliases, not additional voices.
 - In Codex/OpenAI, prefer `claude`; in Claude/Anthropic, prefer `grok`.
 - Respect an explicit provider choice. An unavailable CLI or login is a failed
   route, never permission to substitute an API, gateway, or different provider.
 - The `zai` route uses Claude Code with isolated Z.ai credentials and configuration;
   its underlying model family is GLM, not Anthropic.
+- The `muse` route uses Meta's Muse Code CLI in headless mode with shell,
+  file writes, and web tools off and an empty workspace. Its model family is
+  Muse, a fifth family beside Anthropic, xAI, GLM, and whatever Ollama serves.
 - The Ollama route uses Ollama Cloud through the native CLI, with an explicit
   `<model>:cloud` selection. Local inference is not a fallback. The brief leaves
   the host. Check the selected model family before choosing diverse voices.
