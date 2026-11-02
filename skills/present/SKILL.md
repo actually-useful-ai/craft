@@ -53,11 +53,14 @@ must remain at the evidence level actually reached.
 4. **Upload**: use `twine upload`, `npm publish`, or `gh repo create / push`.
 5. **Verify**: fetch the published version's metadata.
 
+For a skill-bearing plugin, follow the [plugin release checklist](references/plugin-release.md):
+every runtime manifest, every version string, aligned shared fields, and reinstall steps.
+
 ### `pr` (open pull request)
 1. **Branch check**: confirm the current branch is not main.
 2. **Push if needed**: `git push -u origin HEAD`.
 3. **PR draft**: write a title under 70 characters and a body with a summary and test plan.
-4. **Open**: run `gh pr create` with the drafted body.
+4. **Open**: run `gh pr create` with the drafted body. For a stacked PR, record the parent; after it merges, run `gh pr edit N --base main`.
 5. **Return URL**.
 
 ### `wrap` (session end)

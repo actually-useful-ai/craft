@@ -252,6 +252,28 @@ class CapabilityRoutingTests(unittest.TestCase):
         self.assertIn("no aggregate score", normalized.lower())
         self.assertIn("Semantic predictions remain `Planned`", normalized)
 
+    def test_present_publish_routes_plugin_releases_to_the_parity_checklist(self) -> None:
+        present = (ROOT / "skills/present/SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("references/plugin-release.md", present)
+        release = (ROOT / "skills/present/references/plugin-release.md").read_text(
+            encoding="utf-8"
+        )
+        normalized = " ".join(release.split())
+        for manifest in (
+            "plugin.json", ".claude-plugin/plugin.json", ".claude-plugin/marketplace.json",
+            ".codex-plugin/plugin.json", ".cursor-plugin/plugin.json",
+            ".cursor-plugin/marketplace.json",
+        ):
+            self.assertIn(f"`{manifest}`", release)
+        for rule in (
+            "every version string",
+            "gh pr edit",
+            "Never hand-edit generated",
+            "installed copies are projections",
+            "does not establish live provider authentication",
+        ):
+            self.assertIn(rule, normalized)
+
 
 if __name__ == "__main__":
     unittest.main()
