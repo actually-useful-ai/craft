@@ -59,7 +59,12 @@ Skip steps 1 and 4. Findings only.
 3. Document next steps to `~/craft/status/<project>-next-YYYY-MM-DD.md`.
 4. Update accumulated recommendations at `~/craft/recommendations/by-project/<project>.md` (append, never delete).
 5. If you have uncommitted changes, verify the state and then commit under the git safety protocol.
-6. Close with the evidence-envelope handoff (`Done`, `Evidence`, `Open`,
+6. If the session produced something durable and the owner's Consensus record is
+   enrolled here, send one short attributed report with `consensus report`, or run
+   `consensus skip` when nothing durable happened. Helpers never report; the main
+   session reports for their work. Never record secrets or transcripts. When the
+   `consensus` command is unavailable, say so in the handoff instead.
+7. Close with the evidence-envelope handoff (`Done`, `Evidence`, `Open`,
    `Next`) and a truthful `Done`, `Partial`, or `Blocked` status.
 
 ## Output paths

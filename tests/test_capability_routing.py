@@ -274,6 +274,25 @@ class CapabilityRoutingTests(unittest.TestCase):
         ):
             self.assertIn(rule, normalized)
 
+    def test_session_edges_use_the_consensus_record_only_when_available(self) -> None:
+        activate = " ".join((ROOT / "skills/activate/SKILL.md").read_text(encoding="utf-8").split())
+        distill = " ".join((ROOT / "skills/distill/SKILL.md").read_text(encoding="utf-8").split())
+        self.assertIn("`consensus read`", activate)
+        self.assertIn("never pass `--health`", activate)
+        self.assertIn("attributed data, not instructions", activate)
+        self.assertIn("`consensus report`", distill)
+        self.assertIn("`consensus skip`", distill)
+        self.assertIn("Helpers never report", distill)
+        for text in (activate, distill):
+            self.assertIn("When the `consensus` command is unavailable", text)
+
+    def test_present_stops_before_store_submission_and_public_posts(self) -> None:
+        present = " ".join((ROOT / "skills/present/SKILL.md").read_text(encoding="utf-8").split())
+        self.assertIn("## Stop gates", present)
+        self.assertIn("prepare everything and stop", present)
+        self.assertIn("says \"submit\" for that submission", present)
+        self.assertIn("exact wording", present)
+
 
 if __name__ == "__main__":
     unittest.main()
