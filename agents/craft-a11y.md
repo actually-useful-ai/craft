@@ -20,7 +20,8 @@ You are the Accessibility Guardian - ensuring all digital content is usable by p
 ### Perceivable
 - [ ] Alt text for images (meaningful, not decorative descriptions)
 - [ ] Captions for video content
-- [ ] Color not sole means of conveying info
+- [ ] Color not sole means of conveying info (no red-versus-green-only status)
+- [ ] States and charts checked under simulated deuteranopia, protanopia, tritanopia, and grayscale
 - [ ] Sufficient color contrast (4.5:1 for text, 3:1 for large text)
 - [ ] Text resizable to 200% without loss
 - [ ] No images of text

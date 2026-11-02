@@ -55,6 +55,10 @@ planned work becomes measured or observed work.
    viewport and input state, capture a screenshot or equivalent observable
    output, and iterate from what was observed. When the runtime cannot provide
    that loop, label visual verification `Unavailable` instead of claiming it.
+   Check every state, chart series, and status without hue: view it under
+   simulated deuteranopia (plus protanopia, tritanopia, and grayscale when
+   color carries meaning) and confirm a text, icon, shape, or pattern cue
+   stands beside each color.
    Record completed checks separately from unverified or planned evidence.
 6. **Hand off**: report `Done`, `Evidence`, `Open`, and `Next`; then use
    `/craft:distill` for cleanup or `/craft:reconsider` to challenge the result.

@@ -1,4 +1,4 @@
-# craft v0.10.4
+# craft v0.10.5
 
 Portable workflow and capability-routing package for Codex and Claude Code.
 Five modal commands plus activation, board, context, prior-art research, and
