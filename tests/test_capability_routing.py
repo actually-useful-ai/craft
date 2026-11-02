@@ -293,6 +293,28 @@ class CapabilityRoutingTests(unittest.TestCase):
         self.assertIn("says \"submit\" for that submission", present)
         self.assertIn("exact wording", present)
 
+    def test_impress_applies_owner_standards_including_color_vision(self) -> None:
+        impress = " ".join((ROOT / "skills/impress/SKILL.md").read_text(encoding="utf-8").split())
+        self.assertIn("references/owner-standards.md", impress)
+        self.assertIn("Does the work meet the owner standards?", impress)
+        standards = " ".join(
+            (ROOT / "skills/impress/references/owner-standards.md").read_text(encoding="utf-8").split()
+        )
+        for rule in ("deuteranopia", "red versus green", "American English",
+                     "recognizably the real thing", "client-side", "switch"):
+            self.assertIn(rule, standards)
+
+    def test_visual_work_is_checked_without_hue(self) -> None:
+        for relative in (
+            "skills/compose/SKILL.md",
+            "skills/impress/references/product-design.md",
+            "agents/craft-design.md",
+            "agents/craft-a11y.md",
+        ):
+            text = " ".join((ROOT / relative).read_text(encoding="utf-8").split())
+            with self.subTest(path=relative):
+                self.assertIn("deuteranopia", text)
+
 
 if __name__ == "__main__":
     unittest.main()

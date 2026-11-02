@@ -9,7 +9,7 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "0.10.4"
+VERSION = "0.10.5"
 PLUGIN_NAME = "craft"
 AGENT_PLUGIN_SCHEMA = (
     "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json"

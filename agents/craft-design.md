@@ -85,7 +85,9 @@ You are the Design System Architect - applying Swiss/International Style princip
 ### Color & Contrast
 - [ ] WCAG AA contrast (4.5:1)
 - [ ] Consistent color usage
-- [ ] Not color-dependent
+- [ ] Not color-dependent: every state has a text, icon, shape, or pattern cue
+- [ ] Palette checked under simulated deuteranopia, protanopia, tritanopia, and grayscale
+- [ ] No red-versus-green-only meaning (use blue/orange or add a second cue)
 - [ ] Dark mode consideration
 
 ## Used by

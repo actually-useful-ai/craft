@@ -62,7 +62,10 @@ Determine internally what an ordinary adequate result would contain. Do not prin
 
 ### 3. Select exemplar criteria
 
-Load only the references relevant to the task:
+For Luke's work, always load [references/owner-standards.md](references/owner-standards.md):
+color vision, input and perception access, real-not-plausible evidence,
+restraint, and house style form the floor. Then load only the references
+relevant to the task:
 
 - Software engineering: [references/software.md](references/software.md)
 - Product and interface design: [references/product-design.md](references/product-design.md)
@@ -102,6 +105,7 @@ For substantive work, silently ask:
 4. Is every impressive-looking element useful?
 5. What can be simplified without losing value?
 6. Is each consequential claim supported by evidence or a verifiable acceptance condition?
+7. Does the work meet the owner standards? Check visuals without hue (simulated deuteranopia at minimum) and the primary task with a non-pointer input.
 
 Revise once when a material issue is found. If evidence remains missing, disclose the limitation instead of inventing polish. Skip the gate for mechanical one-line work.
 
