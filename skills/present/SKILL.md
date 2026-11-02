@@ -66,6 +66,14 @@ every runtime manifest, every version string, aligned shared fields, and reinsta
 ### `wrap` (session end)
 Equivalent to `/craft:distill --conclude`. Use `wrap` here when you want explicit ship intent (commit + push), not just hygiene (which `--conclude` may skip if state is dirty).
 
+## Stop gates
+
+- **Store submission** (App Store, Google Play, Amazon, KDP, and other stores):
+  prepare everything and stop. The owner submits, or says "submit" for that
+  submission. Approval for one submission does not carry to the next.
+- **Public posts and announcements**: nothing goes out until the owner approves
+  the exact wording. A release note in the repository is not a public post.
+
 ## Anti-patterns
 
 - `save` without verifying git state first (parallel agents may have committed).
