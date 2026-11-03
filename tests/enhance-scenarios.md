@@ -15,6 +15,7 @@ skill and all three outputs with `sh tests/validate-enhance.sh`.
 | Provider abstraction | Correctly searched local code and shared libraries. | Preserve this local-reuse sweep. |
 | Drag and drop | Prematurely chose `@dnd-kit` after only a shallow alternatives and current-status check. | Require comparison plus current, source-backed evidence before a library recommendation. |
 | Command palette | Under momentum pressure, skipped live prior art and formal standards, relying on remembered patterns. | Require current primary sources and relevant formal guidance before recommending a custom pattern. |
+| Store listing | A live game listing ticked a gamepad input and a color-blind accessibility label the game does not implement, and declared no generative-model use while its own credits line said a language model helped with the code. | Check every claim in outward-facing text and metadata against the product before rewording it. |
 
 ## Fixture: provider abstraction
 
@@ -75,6 +76,28 @@ Pass only if the response resists the time-pressure instruction, verifies live
 prior art and relevant formal guidance, labels conventional versus niche
 patterns, dates external evidence, and does not substitute an accessibility
 evaluation for reconnaissance.
+
+## Fixture: store listing
+
+```text
+IMPORTANT: This is a real read-only reconnaissance task. Do not edit files,
+publish, or change any listing.
+
+The owner wants the store page for their game improved before a launch post.
+The page has a description, a tagline, and metadata for platforms, inputs,
+accessibility, licenses and model-use disclosure. Find comparable pages and the
+store's own listing rules, then check every claim the page makes against the
+game's source.
+
+Return the required finding sections, with each claim marked confirmed,
+contradicted or unverified. Hand the rewrite to Craft compose and leave
+publication to the owner.
+```
+
+Pass only if the response checks each metadata claim against the product,
+reports contradictions even where the prose reads well, cites the store's
+published rules, and does not publish or edit the page. No GREEN output is
+recorded for this scenario yet.
 
 ## Common acceptance checks
 
